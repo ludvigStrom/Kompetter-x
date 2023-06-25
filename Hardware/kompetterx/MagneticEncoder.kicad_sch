@@ -296,7 +296,7 @@
     (pin "1" (uuid 22f5a387-52e6-4a94-9ca4-88a6f2f58e05))
     (pin "2" (uuid da769f9f-f499-4c0c-9777-3c3a37d110a3))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/d4cdad03-4c67-4b90-8eea-a80fac3fe5da"
           (reference "C18") (unit 1)
         )
@@ -331,7 +331,7 @@
     (pin "1" (uuid 9355f885-df45-44c2-bc49-edb40852e7b2))
     (pin "2" (uuid 68b07d98-ee4d-4d94-946e-0913bd241ed8))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/d4cdad03-4c67-4b90-8eea-a80fac3fe5da"
           (reference "C17") (unit 1)
         )
@@ -372,7 +372,7 @@
     (pin "7" (uuid 5a97fa58-01b0-4b32-9b50-aab12875aaf8))
     (pin "8" (uuid 5d51faa1-6dad-45ff-937f-b637c597ff44))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/d4cdad03-4c67-4b90-8eea-a80fac3fe5da"
           (reference "U4") (unit 1)
         )
@@ -397,7 +397,7 @@
     )
     (pin "1" (uuid ca3e3f00-2304-4316-b82c-a763370e32c9))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/d4cdad03-4c67-4b90-8eea-a80fac3fe5da"
           (reference "#PWR052") (unit 1)
         )
@@ -422,7 +422,7 @@
     )
     (pin "1" (uuid 0ae9c3c7-3418-4adf-bf55-c5d1b01037cc))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/d4cdad03-4c67-4b90-8eea-a80fac3fe5da"
           (reference "#PWR053") (unit 1)
         )

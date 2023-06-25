@@ -21,6 +21,7 @@
 #include "main.h"
 #include "usb_device.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -29,10 +30,11 @@
 #include "angleSensor.h"
 #include <string.h>
 #include "stdio.h" //printf
+#include "usbd_cdc_if.h"
 
 #define NUM_ROWS 4
 #define NUM_COLS 4
-#define DEBOUNCE_DELAY 500 // Debounce delay in milliseconds
+#define DEBOUNCE_DELAY 150 // Debounce delay in milliseconds
 
 GPIO_TypeDef* row_ports[NUM_ROWS] = {KEY_ROW_1_GPIO_Port, KEY_ROW_2_GPIO_Port, KEY_ROW_3_GPIO_Port, KEY_ROW_4_GPIO_Port};
 uint16_t row_pins[NUM_ROWS] = {KEY_ROW_1_Pin, KEY_ROW_2_Pin, KEY_ROW_3_Pin, KEY_ROW_4_Pin};
@@ -63,6 +65,8 @@ I2C_HandleTypeDef hi2c2;
 SPI_HandleTypeDef hspi2;
 
 /* USER CODE BEGIN PV */
+char txBuf[8];
+uint8_t count = 1;
 
 /* USER CODE END PV */
 
@@ -81,8 +85,6 @@ int _write(int file, char *ptr, int len){
 		ITM_SendChar((*ptr++));
 	return len;
 }
-
-uint8_t count = 0;
 
 
 
@@ -188,6 +190,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	sprintf(txBuf, "%u\r\n", count);
+	count++;
+	if(count > 100){
+		count = 1;
+	}
+
+	CDC_Transmit_FS((uint8_t *) txBuf, strlen(txBuf));
+
+	//HAL_Delay(100);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -208,24 +219,28 @@ int main(void)
 	SSD1306_Puts(angle_str, &Font_11x18, 1);
 
 	//debounce scan:
-	// Variables to store the state and time of the last key press
-	char last_key_str[3] = "";
-	uint32_t last_key_time = 0;
-	uint8_t last_key_state = GPIO_PIN_RESET; // Assume no key was pressed initially
+	enum KeyState { IDLE, PRESSED };
+	enum KeyState key_state[NUM_ROWS][NUM_COLS];  // Declare the array of states
 
-	for(int i = 0; i < NUM_ROWS; i++)
-	{
-	    // Set the current row to high
+	for(int i = 0; i < NUM_ROWS; i++) {
+	    for(int j = 0; j < NUM_COLS; j++) {
+	        key_state[i][j] = IDLE;  // Initialize each state to IDLE
+	    }
+	}
+
+	uint32_t last_key_time[NUM_ROWS][NUM_COLS] = {0};
+
+	for(int i = 0; i < NUM_ROWS; i++) {
 	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
 
-	    for(int j = 0; j < NUM_COLS; j++)
-	    {
-	        // Check if the current column is high
-	        uint8_t key_state = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]);
+	    for(int j = 0; j < NUM_COLS; j++) {
+	        uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
 
-	        // If a key is pressed and the key state has changed and the debounce delay has passed
-	        if(key_state == GPIO_PIN_SET && key_state != last_key_state && HAL_GetTick() - last_key_time > DEBOUNCE_DELAY)
-	        {
+	        if (is_pressed && key_state[i][j] == IDLE) {
+	            // Key was just pressed, change state and record time
+	            key_state[i][j] = PRESSED;
+	            last_key_time[i][j] = HAL_GetTick();
+
 	            // Format the key string
 	            char key_str[3];
 	            sprintf(key_str, "%d%d", i+1, j+1);
@@ -234,21 +249,16 @@ int main(void)
 	            SSD1306_GotoXY(0, 40);
 	            SSD1306_Puts(key_str, &Font_11x18, 1);
 
-	            // Store the current state and time
-	            strcpy(last_key_str, key_str);
-	            last_key_time = HAL_GetTick();
-
 	            // Light up led:
 	            HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
+	        } else if (!is_pressed && key_state[i][j] == PRESSED && HAL_GetTick() - last_key_time[i][j] > DEBOUNCE_DELAY) {
+	            // Key was released and debounce delay passed, go back to idle
+	            key_state[i][j] = IDLE;
 	        }
-	        last_key_state = key_state;
 	    }
 
-	    // Set the current row back to low
 	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_RESET);
 	}
-
-	//HAL_Delay(10);
 	//Debounce scan END
 
   	// Update the OLED display
@@ -392,7 +402,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;

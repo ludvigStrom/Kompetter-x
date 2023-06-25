@@ -75,156 +75,6 @@
         )
       )
     )
-    (symbol "New Business Card-rescue:+3.3V-power" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
-      (property "Reference" "#PWR" (at 0 -3.81 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Value" "+3.3V-power" (at 0 3.556 0)
-        (effects (font (size 1.27 1.27)))
-      )
-      (property "Footprint" "" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Datasheet" "" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (symbol "+3.3V-power_0_1"
-        (polyline
-          (pts
-            (xy -0.762 1.27)
-            (xy 0 2.54)
-          )
-          (stroke (width 0) (type solid))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0 0)
-            (xy 0 2.54)
-          )
-          (stroke (width 0) (type solid))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0 2.54)
-            (xy 0.762 1.27)
-          )
-          (stroke (width 0) (type solid))
-          (fill (type none))
-        )
-      )
-      (symbol "+3.3V-power_1_1"
-        (pin power_in line (at 0 0 90) (length 0) hide
-          (name "+3V3" (effects (font (size 1.27 1.27))))
-          (number "1" (effects (font (size 1.27 1.27))))
-        )
-      )
-    )
-    (symbol "power:+12V" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
-      (property "Reference" "#PWR" (at 0 -3.81 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Value" "+12V" (at 0 3.556 0)
-        (effects (font (size 1.27 1.27)))
-      )
-      (property "Footprint" "" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Datasheet" "" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_keywords" "global power" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_description" "Power symbol creates a global label with name \"+12V\"" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (symbol "+12V_0_1"
-        (polyline
-          (pts
-            (xy -0.762 1.27)
-            (xy 0 2.54)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0 0)
-            (xy 0 2.54)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0 2.54)
-            (xy 0.762 1.27)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-      )
-      (symbol "+12V_1_1"
-        (pin power_in line (at 0 0 90) (length 0) hide
-          (name "+12V" (effects (font (size 1.27 1.27))))
-          (number "1" (effects (font (size 1.27 1.27))))
-        )
-      )
-    )
-    (symbol "power:+3.3VA" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
-      (property "Reference" "#PWR" (at 0 -3.81 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Value" "+3.3VA" (at 0 3.556 0)
-        (effects (font (size 1.27 1.27)))
-      )
-      (property "Footprint" "" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Datasheet" "" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_keywords" "global power" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_description" "Power symbol creates a global label with name \"+3.3VA\"" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (symbol "+3.3VA_0_1"
-        (polyline
-          (pts
-            (xy -0.762 1.27)
-            (xy 0 2.54)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0 0)
-            (xy 0 2.54)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0 2.54)
-            (xy 0.762 1.27)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-      )
-      (symbol "+3.3VA_1_1"
-        (pin power_in line (at 0 0 90) (length 0) hide
-          (name "+3.3VA" (effects (font (size 1.27 1.27))))
-          (number "1" (effects (font (size 1.27 1.27))))
-        )
-      )
-    )
     (symbol "power:+5V" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
       (property "Reference" "#PWR" (at 0 -3.81 0)
         (effects (font (size 1.27 1.27)) hide)
@@ -359,9 +209,6 @@
     )
   )
 
-  (junction (at 142.24 54.61) (diameter 0) (color 0 0 0 0)
-    (uuid 18b6cb74-17c1-42a0-ac20-ed938cb3e03a)
-  )
   (junction (at 158.75 111.76) (diameter 0) (color 0 0 0 0)
     (uuid 46c285e8-8216-45b3-92a9-41de052254bd)
   )
@@ -373,12 +220,6 @@
   )
   (junction (at 184.15 111.76) (diameter 0) (color 0 0 0 0)
     (uuid 9531013f-cdc9-4014-9fce-0154a6c2a5f5)
-  )
-  (junction (at 111.76 54.61) (diameter 0) (color 0 0 0 0)
-    (uuid b69731d0-b203-4608-b8bb-fc2ab1b92c18)
-  )
-  (junction (at 156.21 54.61) (diameter 0) (color 0 0 0 0)
-    (uuid d651f161-8220-42b5-9f7e-dcd3ed876610)
   )
   (junction (at 127 54.61) (diameter 0) (color 0 0 0 0)
     (uuid e31ec370-b112-4fb1-8743-3eaa361c9dcc)
@@ -433,31 +274,6 @@
     (uuid ee3e7c8a-c71d-4275-8bc0-d672b171a49a)
   )
 
-  (symbol (lib_id "power:PWR_FLAG") (at 111.76 54.61 90) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
-    (uuid 010dde67-0acf-4569-a1f3-446f849692af)
-    (property "Reference" "#FLG01" (at 109.855 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "PWR_FLAG" (at 107.95 54.61 90)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Footprint" "" (at 111.76 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "~" (at 111.76 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 597ab268-a68d-4459-9040-c75358a97a38))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
-          (reference "#FLG01") (unit 1)
-        )
-      )
-    )
-  )
-
   (symbol (lib_id "Connector:TestPoint") (at 127 54.61 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 2512314b-0073-4bc1-911c-39d09e5f55b7)
@@ -467,7 +283,7 @@
     (property "Value" "TestPoint" (at 129.54 59.182 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "TestPoint:TestPoint_Plated_Hole_D2.0mm" (at 121.92 54.61 0)
+    (property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm" (at 121.92 54.61 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 121.92 54.61 0)
@@ -481,37 +297,9 @@
     )
     (pin "1" (uuid f96392a1-272c-429b-9f4d-f4be5f5ba8b8))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
           (reference "TP2") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "New Business Card-rescue:+3.3V-power") (at 156.21 54.61 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 4c12534d-dac3-4766-bb7a-35a491549743)
-    (property "Reference" "#PWR?" (at 156.21 58.42 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+3.3V" (at 156.591 50.2158 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 156.21 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 156.21 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 76f6fed3-5f2c-4bce-b418-807ef4c483fb))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
-          (reference "#PWR?") (unit 1)
-        )
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
-          (reference "#PWR049") (unit 1)
         )
       )
     )
@@ -534,37 +322,12 @@
     )
     (pin "1" (uuid 1a064b48-6452-4451-af2b-93200b66d47c))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR?") (unit 1)
         )
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
           (reference "#PWR042") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:PWR_FLAG") (at 156.21 54.61 90) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
-    (uuid 5fa20ad8-4d6c-4a58-81cb-8375c02ca983)
-    (property "Reference" "#FLG04" (at 154.305 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "PWR_FLAG" (at 152.4 54.61 90)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Footprint" "" (at 156.21 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "~" (at 156.21 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 48bea61d-d4ac-4688-bebc-8fb9b80f1123))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
-          (reference "#FLG04") (unit 1)
         )
       )
     )
@@ -593,7 +356,7 @@
     )
     (pin "1" (uuid 9d9dc492-dddb-4be0-a34f-a7851087be26))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
           (reference "H4") (unit 1)
         )
@@ -624,40 +387,9 @@
     )
     (pin "1" (uuid b17bf5af-d846-4095-87b8-c84ab4eac295))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
           (reference "H6") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "Connector:TestPoint") (at 142.24 54.61 180) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
-    (uuid 6dfaa133-bd3b-4785-bff0-939e8f8af534)
-    (property "Reference" "TP3" (at 144.78 56.642 0)
-      (effects (font (size 1.27 1.27)) (justify right))
-    )
-    (property "Value" "TestPoint" (at 144.78 59.182 0)
-      (effects (font (size 1.27 1.27)) (justify right))
-    )
-    (property "Footprint" "TestPoint:TestPoint_Plated_Hole_D2.0mm" (at 137.16 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "~" (at 137.16 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "BASIC/EXT" "" (at 142.24 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "web" "" (at 142.24 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 626a1dd3-cdef-44bc-bac2-e62a145ecd4d))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
-          (reference "TP3") (unit 1)
         )
       )
     )
@@ -670,7 +402,7 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "PWR_FLAG" (at 123.19 54.61 90)
-      (effects (font (size 1.27 1.27)) (justify left))
+      (effects (font (size 1.27 1.27)) (justify left) hide)
     )
     (property "Footprint" "" (at 127 54.61 0)
       (effects (font (size 1.27 1.27)) hide)
@@ -680,7 +412,7 @@
     )
     (pin "1" (uuid 6725bae0-4df0-4e86-bcfc-f04eccd800e0))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
           (reference "#FLG02") (unit 1)
         )
@@ -711,7 +443,7 @@
     )
     (pin "1" (uuid ae7dee4c-6664-4365-8fe6-d66d6223afad))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
           (reference "H3") (unit 1)
         )
@@ -736,7 +468,7 @@
     )
     (pin "1" (uuid 985cd11a-ee54-49d7-a103-ae9e681db242))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR?") (unit 1)
         )
@@ -747,83 +479,24 @@
     )
   )
 
-  (symbol (lib_id "Connector:TestPoint") (at 111.76 54.61 180) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
-    (uuid 81f82057-dedd-470e-8c81-33593c9029f6)
-    (property "Reference" "TP1" (at 114.3 56.642 0)
-      (effects (font (size 1.27 1.27)) (justify right))
-    )
-    (property "Value" "TestPoint" (at 114.3 59.182 0)
-      (effects (font (size 1.27 1.27)) (justify right))
-    )
-    (property "Footprint" "TestPoint:TestPoint_Plated_Hole_D2.0mm" (at 106.68 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "~" (at 106.68 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "BASIC/EXT" "" (at 111.76 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "web" "" (at 111.76 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 66bf6a1c-11cc-43c3-b713-2dec16092e32))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
-          (reference "TP1") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:+12V") (at 111.76 54.61 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 8bfccc5c-e6dd-417c-98ef-ff2b28d844e6)
-    (property "Reference" "#PWR?" (at 111.76 58.42 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+12V" (at 112.141 50.2158 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 111.76 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 111.76 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 35294d64-adc5-4fe0-b4ff-753319d45ee8))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
-          (reference "#PWR?") (unit 1)
-        )
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
-          (reference "#PWR046") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:GND") (at 179.07 60.96 0) (unit 1)
+  (symbol (lib_id "power:GND") (at 140.97 55.88 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9ab2b71f-9f01-4207-b027-dd291897908f)
-    (property "Reference" "#PWR011" (at 179.07 67.31 0)
+    (property "Reference" "#PWR011" (at 140.97 62.23 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Value" "GND" (at 179.197 65.3542 0)
+    (property "Value" "GND" (at 141.097 60.2742 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "" (at 179.07 60.96 0)
+    (property "Footprint" "" (at 140.97 55.88 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Datasheet" "" (at 179.07 60.96 0)
+    (property "Datasheet" "" (at 140.97 55.88 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid 085f4933-6682-4b5b-a272-fe4b1fb5eea1))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR011") (unit 1)
         )
@@ -857,37 +530,9 @@
     )
     (pin "1" (uuid 02f45f89-e6c9-448a-9181-8ded8302e961))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
           (reference "H1") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:+3.3VA") (at 142.24 54.61 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid ba74def4-ed5c-4dc7-9627-8fac721c674f)
-    (property "Reference" "#PWR?" (at 142.24 58.42 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+3.3VA" (at 142.621 50.2158 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 142.24 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 142.24 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 97ac07d7-39e9-40ce-9e0e-9de86db72f63))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
-          (reference "#PWR?") (unit 1)
-        )
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
-          (reference "#PWR048") (unit 1)
         )
       )
     )
@@ -916,7 +561,7 @@
     )
     (pin "1" (uuid decb9727-99cf-4141-8e9f-ad50623f6570))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
           (reference "H2") (unit 1)
         )
@@ -941,7 +586,7 @@
     )
     (pin "1" (uuid d574dbdd-3c34-4e1a-96e9-bec0f598ffa1))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR?") (unit 1)
         )
@@ -952,86 +597,30 @@
     )
   )
 
-  (symbol (lib_id "power:PWR_FLAG") (at 142.24 54.61 90) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
-    (uuid e49101cf-881e-4f52-8cc9-6a4dd89503a7)
-    (property "Reference" "#FLG03" (at 140.335 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "PWR_FLAG" (at 138.43 54.61 90)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Footprint" "" (at 142.24 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "~" (at 142.24 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 307e5b9c-372d-4eba-89ab-ee880575c1e4))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
-          (reference "#FLG03") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "Connector:TestPoint") (at 156.21 54.61 180) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
-    (uuid f56c7cdb-7aa3-425e-81be-872df45d5dc1)
-    (property "Reference" "TP4" (at 158.75 56.642 0)
-      (effects (font (size 1.27 1.27)) (justify right))
-    )
-    (property "Value" "TestPoint" (at 158.75 59.182 0)
-      (effects (font (size 1.27 1.27)) (justify right))
-    )
-    (property "Footprint" "TestPoint:TestPoint_Plated_Hole_D2.0mm" (at 151.13 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "~" (at 151.13 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "BASIC/EXT" "" (at 156.21 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "web" "" (at 156.21 54.61 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid ddf21e83-d3e7-4992-ad8f-ad0f4d6178fc))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
-          (reference "TP4") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "Connector:TestPoint") (at 179.07 60.96 0) (unit 1)
+  (symbol (lib_id "Connector:TestPoint") (at 140.97 55.88 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid f671a021-a315-4ea5-8fcb-5df288262236)
-    (property "Reference" "TP5" (at 181.61 56.388 0)
+    (property "Reference" "TP5" (at 143.51 51.308 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "TestPoint" (at 181.61 58.928 0)
+    (property "Value" "TestPoint" (at 143.51 53.848 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "TestPoint:TestPoint_Plated_Hole_D2.0mm" (at 184.15 60.96 0)
+    (property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm" (at 146.05 55.88 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Datasheet" "~" (at 184.15 60.96 0)
+    (property "Datasheet" "~" (at 146.05 55.88 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "BASIC/EXT" "" (at 179.07 60.96 0)
+    (property "BASIC/EXT" "" (at 140.97 55.88 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "web" "" (at 179.07 60.96 0)
+    (property "web" "" (at 140.97 55.88 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid b8b91fe9-c1b0-4dd1-a6a5-1526c84dfda1))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
           (reference "TP5") (unit 1)
         )
@@ -1062,7 +651,7 @@
     )
     (pin "1" (uuid 216686c1-2ed7-4a93-a660-e57327d62e3f))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa/08a39041-f6d0-4ea6-aa15-5b272d9a8337"
           (reference "H5") (unit 1)
         )

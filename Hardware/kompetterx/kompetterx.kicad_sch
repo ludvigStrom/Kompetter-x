@@ -991,57 +991,6 @@
         )
       )
     )
-    (symbol "New Business Card-rescue:Conn_01x02_Male-Connector" (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
-      (property "Reference" "J" (at 0 2.54 0)
-        (effects (font (size 1.27 1.27)))
-      )
-      (property "Value" "Connector_Conn_01x02_Male" (at 0 -5.08 0)
-        (effects (font (size 1.27 1.27)))
-      )
-      (property "Footprint" "" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Datasheet" "" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_fp_filters" "Connector*:*_1x??_*" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (symbol "Conn_01x02_Male-Connector_1_1"
-        (polyline
-          (pts
-            (xy 1.27 -2.54)
-            (xy 0.8636 -2.54)
-          )
-          (stroke (width 0.1524) (type solid))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 1.27 0)
-            (xy 0.8636 0)
-          )
-          (stroke (width 0.1524) (type solid))
-          (fill (type none))
-        )
-        (rectangle (start 0.8636 -2.413) (end 0 -2.667)
-          (stroke (width 0.1524) (type solid))
-          (fill (type outline))
-        )
-        (rectangle (start 0.8636 0.127) (end 0 -0.127)
-          (stroke (width 0.1524) (type solid))
-          (fill (type outline))
-        )
-        (pin passive line (at 5.08 0 180) (length 3.81)
-          (name "Pin_1" (effects (font (size 1.27 1.27))))
-          (number "1" (effects (font (size 1.27 1.27))))
-        )
-        (pin passive line (at 5.08 -2.54 180) (length 3.81)
-          (name "Pin_2" (effects (font (size 1.27 1.27))))
-          (number "2" (effects (font (size 1.27 1.27))))
-        )
-      )
-    )
     (symbol "New Business Card-rescue:Ferrite_Bead_Small-Device" (pin_numbers hide) (pin_names (offset 0)) (in_bom yes) (on_board yes)
       (property "Reference" "FB" (at 1.905 1.27 0)
         (effects (font (size 1.27 1.27)) (justify left))
@@ -1756,206 +1705,6 @@
         )
       )
     )
-    (symbol "Transistor_FET:AO3401A" (pin_names hide) (in_bom yes) (on_board yes)
-      (property "Reference" "Q" (at 5.08 1.905 0)
-        (effects (font (size 1.27 1.27)) (justify left))
-      )
-      (property "Value" "AO3401A" (at 5.08 0 0)
-        (effects (font (size 1.27 1.27)) (justify left))
-      )
-      (property "Footprint" "Package_TO_SOT_SMD:SOT-23" (at 5.08 -1.905 0)
-        (effects (font (size 1.27 1.27) italic) (justify left) hide)
-      )
-      (property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3401A.pdf" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) (justify left) hide)
-      )
-      (property "ki_keywords" "P-Channel MOSFET" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_description" "-4.0A Id, -30V Vds, P-Channel MOSFET, SOT-23" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_fp_filters" "SOT?23*" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (symbol "AO3401A_0_1"
-        (polyline
-          (pts
-            (xy 0.254 0)
-            (xy -2.54 0)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0.254 1.905)
-            (xy 0.254 -1.905)
-          )
-          (stroke (width 0.254) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0.762 -1.27)
-            (xy 0.762 -2.286)
-          )
-          (stroke (width 0.254) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0.762 0.508)
-            (xy 0.762 -0.508)
-          )
-          (stroke (width 0.254) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0.762 2.286)
-            (xy 0.762 1.27)
-          )
-          (stroke (width 0.254) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 2.54 2.54)
-            (xy 2.54 1.778)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 2.54 -2.54)
-            (xy 2.54 0)
-            (xy 0.762 0)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0.762 1.778)
-            (xy 3.302 1.778)
-            (xy 3.302 -1.778)
-            (xy 0.762 -1.778)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 2.286 0)
-            (xy 1.27 0.381)
-            (xy 1.27 -0.381)
-            (xy 2.286 0)
-          )
-          (stroke (width 0) (type default))
-          (fill (type outline))
-        )
-        (polyline
-          (pts
-            (xy 2.794 -0.508)
-            (xy 2.921 -0.381)
-            (xy 3.683 -0.381)
-            (xy 3.81 -0.254)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 3.302 -0.381)
-            (xy 2.921 0.254)
-            (xy 3.683 0.254)
-            (xy 3.302 -0.381)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (circle (center 1.651 0) (radius 2.794)
-          (stroke (width 0.254) (type default))
-          (fill (type none))
-        )
-        (circle (center 2.54 -1.778) (radius 0.254)
-          (stroke (width 0) (type default))
-          (fill (type outline))
-        )
-        (circle (center 2.54 1.778) (radius 0.254)
-          (stroke (width 0) (type default))
-          (fill (type outline))
-        )
-      )
-      (symbol "AO3401A_1_1"
-        (pin input line (at -5.08 0 0) (length 2.54)
-          (name "G" (effects (font (size 1.27 1.27))))
-          (number "1" (effects (font (size 1.27 1.27))))
-        )
-        (pin passive line (at 2.54 -5.08 90) (length 2.54)
-          (name "S" (effects (font (size 1.27 1.27))))
-          (number "2" (effects (font (size 1.27 1.27))))
-        )
-        (pin passive line (at 2.54 5.08 270) (length 2.54)
-          (name "D" (effects (font (size 1.27 1.27))))
-          (number "3" (effects (font (size 1.27 1.27))))
-        )
-      )
-    )
-    (symbol "power:+12V" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
-      (property "Reference" "#PWR" (at 0 -3.81 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Value" "+12V" (at 0 3.556 0)
-        (effects (font (size 1.27 1.27)))
-      )
-      (property "Footprint" "" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Datasheet" "" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_keywords" "global power" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_description" "Power symbol creates a global label with name \"+12V\"" (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (symbol "+12V_0_1"
-        (polyline
-          (pts
-            (xy -0.762 1.27)
-            (xy 0 2.54)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0 0)
-            (xy 0 2.54)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0 2.54)
-            (xy 0.762 1.27)
-          )
-          (stroke (width 0) (type default))
-          (fill (type none))
-        )
-      )
-      (symbol "+12V_1_1"
-        (pin power_in line (at 0 0 90) (length 0) hide
-          (name "+12V" (effects (font (size 1.27 1.27))))
-          (number "1" (effects (font (size 1.27 1.27))))
-        )
-      )
-    )
     (symbol "power:+3.3VA" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
       (property "Reference" "#PWR" (at 0 -3.81 0)
         (effects (font (size 1.27 1.27)) hide)
@@ -2142,9 +1891,6 @@
     )
   )
 
-  (junction (at 48.26 34.29) (diameter 0) (color 0 0 0 0)
-    (uuid 06b644a6-adce-4ae9-b910-1257b8df0817)
-  )
   (junction (at 48.26 91.44) (diameter 0) (color 0 0 0 0)
     (uuid 123b2563-3c00-4d6e-aa8c-2c808bcaf392)
   )
@@ -2302,10 +2048,6 @@
   (wire (pts (xy 60.96 69.85) (xy 60.96 71.12))
     (stroke (width 0) (type default))
     (uuid 0165a154-23ad-4563-9446-50bab9da15eb)
-  )
-  (wire (pts (xy 152.4 71.12) (xy 149.86 71.12))
-    (stroke (width 0) (type default))
-    (uuid 02446bbe-ec7c-47eb-9f14-3d1d72984506)
   )
   (wire (pts (xy 102.87 93.98) (xy 102.87 96.52))
     (stroke (width 0) (type default))
@@ -2524,10 +2266,6 @@
   (wire (pts (xy 191.77 27.94) (xy 198.12 27.94))
     (stroke (width 0) (type default))
     (uuid 391ac566-fce5-49ca-8502-361b248f7bd9)
-  )
-  (wire (pts (xy 149.86 68.58) (xy 149.86 66.04))
-    (stroke (width 0) (type default))
-    (uuid 3a6977e9-496f-4d72-87be-32aa7945b094)
   )
   (wire (pts (xy 60.96 63.5) (xy 73.66 63.5))
     (stroke (width 0) (type default))
@@ -2831,10 +2569,6 @@
     (stroke (width 0) (type default))
     (uuid baa2edd0-8b9e-466a-b0ab-e8077d2da3d1)
   )
-  (wire (pts (xy 20.32 34.29) (xy 35.56 34.29))
-    (stroke (width 0) (type default))
-    (uuid bbb753f3-c8f1-492f-b606-65e233198dfa)
-  )
   (wire (pts (xy 165.1 107.95) (xy 166.37 107.95))
     (stroke (width 0) (type default))
     (uuid bd4a3e1d-b302-4886-85d9-d76830ee47b8)
@@ -2871,10 +2605,6 @@
     (stroke (width 0) (type default))
     (uuid c368d09a-0a6c-4bf9-a0d9-b7444c9a1746)
   )
-  (wire (pts (xy 45.72 34.29) (xy 48.26 34.29))
-    (stroke (width 0) (type default))
-    (uuid c6583160-8e2e-4d52-b179-485ba85e973f)
-  )
   (wire (pts (xy 50.8 91.44) (xy 53.34 91.44))
     (stroke (width 0) (type default))
     (uuid c6d3c2a2-3a8e-4325-b61d-e92af6f9f430)
@@ -2883,17 +2613,9 @@
     (stroke (width 0) (type default))
     (uuid c748c123-79e8-4bb9-b870-c259d649192a)
   )
-  (wire (pts (xy 152.4 68.58) (xy 149.86 68.58))
-    (stroke (width 0) (type default))
-    (uuid cb67cc68-611f-4e2d-bb81-4f4d9bc7a90d)
-  )
   (wire (pts (xy 35.56 110.49) (xy 30.48 110.49))
     (stroke (width 0) (type default))
     (uuid cba044a9-ddbb-4c09-9661-686e3904edd9)
-  )
-  (wire (pts (xy 20.32 30.48) (xy 20.32 34.29))
-    (stroke (width 0) (type default))
-    (uuid cbd35326-ea23-484a-a357-807b7d786fc5)
   )
   (wire (pts (xy 21.59 118.11) (xy 21.59 119.38))
     (stroke (width 0) (type default))
@@ -3012,10 +2734,6 @@
     (stroke (width 0) (type default))
     (uuid e9a318cf-2e75-451a-8f04-afab8ef3e299)
   )
-  (wire (pts (xy 149.86 71.12) (xy 149.86 73.66))
-    (stroke (width 0) (type default))
-    (uuid e9ea22eb-931a-4125-a2a9-78694fe3ef3a)
-  )
   (wire (pts (xy 184.15 168.91) (xy 185.42 168.91))
     (stroke (width 0) (type default))
     (uuid eb576208-b1ac-4e6e-9870-8b8b5600af10)
@@ -3105,6 +2823,13 @@
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 06f4a6b8-e8cc-452a-987e-ae34af044cd0)
     (property "Intersheetrefs" "${INTERSHEET_REFS}" (at 35.56 146.05 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+  )
+  (global_label "USB_CONN_D+" (shape input) (at 187.96 168.91 0)
+    (effects (font (size 1.27 1.27)) (justify left))
+    (uuid 0962e7ef-c61c-4c3c-923a-3a68192a61ed)
+    (property "Intersheetrefs" "${INTERSHEET_REFS}" (at 187.96 168.91 0)
       (effects (font (size 1.27 1.27)) hide)
     )
   )
@@ -3325,13 +3050,6 @@
       (effects (font (size 1.27 1.27)) hide)
     )
   )
-  (global_label "USB_CONN_D+" (shape input) (at 187.96 161.29 0)
-    (effects (font (size 1.27 1.27)) (justify left))
-    (uuid 79e56aa4-37d1-4a27-afab-23d200c1161e)
-    (property "Intersheetrefs" "${INTERSHEET_REFS}" (at 187.96 161.29 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-  )
   (global_label "BUCK_IN" (shape input) (at 78.74 34.29 0)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid 7a459ddd-dc6a-4853-8193-3822939dc031)
@@ -3343,13 +3061,6 @@
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid 7c8f9fc9-93a0-4668-8462-77f3387e0221)
     (property "Intersheetrefs" "${INTERSHEET_REFS}" (at 248.92 161.29 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-  )
-  (global_label "USB_CONN_D-" (shape input) (at 187.96 168.91 0)
-    (effects (font (size 1.27 1.27)) (justify left))
-    (uuid 7d2526f1-4f14-4259-aefe-af99eb24ba31)
-    (property "Intersheetrefs" "${INTERSHEET_REFS}" (at 187.96 168.91 0)
       (effects (font (size 1.27 1.27)) hide)
     )
   )
@@ -3490,6 +3201,13 @@
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid d52d6369-c438-4f70-b8e7-a55cf0fbc993)
     (property "Intersheetrefs" "${INTERSHEET_REFS}" (at 219.71 69.85 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+  )
+  (global_label "USB_CONN_D-" (shape input) (at 187.96 161.29 0)
+    (effects (font (size 1.27 1.27)) (justify left))
+    (uuid d75605df-ff2c-4d91-a689-bf46d149534b)
+    (property "Intersheetrefs" "${INTERSHEET_REFS}" (at 187.96 161.29 0)
       (effects (font (size 1.27 1.27)) hide)
     )
   )
@@ -3674,7 +3392,7 @@
     (pin "8" (uuid 53de1042-1abd-4e67-9523-a10059d21ba3))
     (pin "9" (uuid bc68c90d-fc60-470d-adf8-3f8ff562f0d0))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "U2") (unit 1)
         )
@@ -3699,7 +3417,7 @@
     )
     (pin "1" (uuid fd811098-0846-4b6e-a83f-e3ed0988cb5b))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR041") (unit 1)
         )
@@ -3724,7 +3442,7 @@
     )
     (pin "1" (uuid 6671d182-1b12-429c-ab53-c562fd2a4c1b))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR026") (unit 1)
         )
@@ -3749,7 +3467,7 @@
     )
     (pin "1" (uuid ea187679-eed4-4f61-88a7-6c9c8c58f87c))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR027") (unit 1)
         )
@@ -3784,7 +3502,7 @@
     (pin "1" (uuid 8f24694b-d596-446d-b3ba-4f9432feb7f1))
     (pin "2" (uuid 2bbc999c-3269-4cc3-9847-ce6725e4a864))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C14") (unit 1)
         )
@@ -3819,7 +3537,7 @@
     (pin "1" (uuid 52db2f28-60f3-4d49-b8c7-4e82d469b790))
     (pin "2" (uuid 7554b898-8e08-4429-a2b3-9db39fb2414c))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C13") (unit 1)
         )
@@ -3844,7 +3562,7 @@
     )
     (pin "1" (uuid 53855387-195c-4a64-bc9f-47a4c5936523))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR031") (unit 1)
         )
@@ -3869,7 +3587,7 @@
     )
     (pin "1" (uuid a7dee5a7-230d-449f-a8c7-8d62feacb1b6))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR032") (unit 1)
         )
@@ -3902,7 +3620,7 @@
     (pin "2" (uuid 7c890c48-ec0f-446c-9788-a156f9e6bc46))
     (pin "3" (uuid 9ba2013b-b1ec-42dd-849e-52f7908de8b3))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "SW1") (unit 1)
         )
@@ -3937,7 +3655,7 @@
     (pin "1" (uuid 719b036c-7433-49c1-82d6-a8ffe7f998cc))
     (pin "2" (uuid c13b7b59-ec34-49ed-ad92-f18bf1350fda))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R7") (unit 1)
         )
@@ -3962,7 +3680,7 @@
     )
     (pin "1" (uuid b3fecfa5-8840-458d-b568-a2a5dd1c2abb))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR030") (unit 1)
         )
@@ -3987,7 +3705,7 @@
     )
     (pin "1" (uuid 9b44c5ae-a20f-4902-8676-603f96931fd4))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR033") (unit 1)
         )
@@ -4022,7 +3740,7 @@
     (pin "1" (uuid 632d6ca5-8afb-43fc-9075-01a0097e3834))
     (pin "2" (uuid d8bcf526-9aef-4590-8614-07e00049cef5))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C5") (unit 1)
         )
@@ -4057,7 +3775,7 @@
     (pin "1" (uuid 3ce86a9c-7158-4a95-b1b6-e6d085209e06))
     (pin "2" (uuid 2d3cb4c4-2f4f-4261-b721-6a40035c6a0e))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C6") (unit 1)
         )
@@ -4092,7 +3810,7 @@
     (pin "1" (uuid f96999c1-eddc-46ba-9567-b80b09735069))
     (pin "2" (uuid 46b9ee53-464e-4ede-b7c3-84878d18ff10))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C7") (unit 1)
         )
@@ -4127,7 +3845,7 @@
     (pin "1" (uuid b74a6b5b-0596-44aa-9302-5fa26556bcce))
     (pin "2" (uuid 9547803a-d9e2-47b4-ac2a-1625efbcfaa3))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C8") (unit 1)
         )
@@ -4162,7 +3880,7 @@
     (pin "1" (uuid dd8b0ec8-e562-4cbd-a67a-25602e9d2b07))
     (pin "2" (uuid 002c2f32-1178-43d8-b485-b5e3c06525ed))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C9") (unit 1)
         )
@@ -4197,7 +3915,7 @@
     (pin "1" (uuid 527a9993-ac51-49c8-94d6-8bcd15ad532a))
     (pin "2" (uuid 303cc248-099e-488e-838e-9f5ddcca5858))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C10") (unit 1)
         )
@@ -4222,7 +3940,7 @@
     )
     (pin "1" (uuid 99c3258e-282c-458c-be39-a08e02a43917))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR018") (unit 1)
         )
@@ -4247,7 +3965,7 @@
     )
     (pin "1" (uuid 620c72ae-6e89-4abb-81d5-3ab97880a76b))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR022") (unit 1)
         )
@@ -4286,7 +4004,7 @@
     (pin "5" (uuid 1df85a02-8d60-4ca3-88a1-8b2193b45a07))
     (pin "6" (uuid a6b50d50-547d-46a3-acba-c5bd32e0e967))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "U1") (unit 1)
         )
@@ -4321,7 +4039,7 @@
     (pin "1" (uuid c8e27f89-923c-457e-8919-e0014d7f08ab))
     (pin "2" (uuid cfc16bcf-faa2-4c77-82ca-95939151818d))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "L2") (unit 1)
         )
@@ -4346,7 +4064,7 @@
     )
     (pin "1" (uuid 31b55b68-cf7c-49b6-9f10-574a19fb88cd))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR015") (unit 1)
         )
@@ -4371,34 +4089,9 @@
     )
     (pin "1" (uuid 1178ca7c-651f-42a3-940d-ef1818c82324))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR06") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:+12V") (at 20.32 30.48 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 00000000-0000-0000-0000-0000604812bb)
-    (property "Reference" "#PWR04" (at 20.32 34.29 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+12V" (at 20.701 26.0858 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 20.32 30.48 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 20.32 30.48 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 25036bfb-c706-4b3e-9b53-83a450858c45))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
-          (reference "#PWR04") (unit 1)
         )
       )
     )
@@ -4431,7 +4124,7 @@
     (pin "1" (uuid e3f9df01-067b-4980-b092-5e562067a4d1))
     (pin "2" (uuid 07b39b21-9b2a-49ad-a97a-8633cf54e026))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C11") (unit 1)
         )
@@ -4466,7 +4159,7 @@
     (pin "1" (uuid 9fd26df9-bbde-4552-b929-631d58dd7327))
     (pin "2" (uuid 21f04243-c2f9-48d6-9536-3f541468916a))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C12") (unit 1)
         )
@@ -4491,70 +4184,9 @@
     )
     (pin "1" (uuid 3465daa4-03f1-49a8-95a1-9449641ce0d6))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR021") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "Transistor_FET:AO3401A") (at 40.64 36.83 90) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 00000000-0000-0000-0000-00006048b61c)
-    (property "Reference" "Q1" (at 40.64 28.1432 90)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Value" "AO3401A" (at 40.64 30.4546 90)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "Package_TO_SOT_SMD:SOT-23" (at 42.545 31.75 0)
-      (effects (font (size 1.27 1.27) italic) (justify left) hide)
-    )
-    (property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3401A.pdf" (at 40.64 36.83 0)
-      (effects (font (size 1.27 1.27)) (justify left) hide)
-    )
-    (property "LCSC" "C15127" (at 40.64 36.83 90)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "BASIC/EXT" "BASIC" (at 40.64 36.83 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "web" "" (at 40.64 36.83 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 91daa6ec-8dae-4014-ba63-3e965edff0af))
-    (pin "2" (uuid 26cd0432-2a55-410f-b5bc-9c9740be070e))
-    (pin "3" (uuid 1aa106c0-b0ea-411d-904b-9d44ce2cd652))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
-          (reference "Q1") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:GND") (at 40.64 41.91 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 00000000-0000-0000-0000-00006048e17e)
-    (property "Reference" "#PWR011" (at 40.64 48.26 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "GND" (at 40.767 46.3042 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 40.64 41.91 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 40.64 41.91 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 9bb620db-47f3-47e8-8af4-e0444d33a265))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
-          (reference "#PWR011") (unit 1)
         )
       )
     )
@@ -4577,7 +4209,7 @@
     )
     (pin "1" (uuid 40017e4e-07d6-4c5d-9534-ddbf18713098))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR016") (unit 1)
         )
@@ -4614,7 +4246,7 @@
     (pin "3" (uuid 769891b5-1716-4113-b29b-9edb9762cd75))
     (pin "4" (uuid da6a5165-d8ef-4d9f-acea-e69dd0db2747))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "Y1") (unit 1)
         )
@@ -4649,7 +4281,7 @@
     (pin "1" (uuid 0e140e12-3669-479d-a21c-97b74892aa79))
     (pin "2" (uuid 912c10d7-c9b8-4225-9ad8-bcb8e1e71d85))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C16") (unit 1)
         )
@@ -4684,7 +4316,7 @@
     (pin "1" (uuid e7e9192a-2b12-4049-888f-7e5c4b43ac76))
     (pin "2" (uuid f66bda83-74c8-417d-9f1f-c70a64bfad07))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C15") (unit 1)
         )
@@ -4709,7 +4341,7 @@
     )
     (pin "1" (uuid 6a3859ef-6c31-408e-8b0b-4a8551f04076))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR037") (unit 1)
         )
@@ -4744,7 +4376,7 @@
     (pin "1" (uuid 6396aa74-b096-4b0d-a506-68bff08f6bce))
     (pin "2" (uuid 706af0e1-c662-47b5-9dff-5e9fdc6d2266))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "FB1") (unit 1)
         )
@@ -4779,7 +4411,7 @@
     (pin "1" (uuid 63403d76-5166-46c6-83b9-a2642b0affd4))
     (pin "2" (uuid 21e887e2-9c18-442c-8246-dda1f8b6cda3))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C4") (unit 1)
         )
@@ -4804,7 +4436,7 @@
     )
     (pin "1" (uuid 40a4e978-26b8-4dc3-9f18-a37f83851910))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR012") (unit 1)
         )
@@ -4839,7 +4471,7 @@
     (pin "1" (uuid 1dc20265-8e25-4e86-9348-fdea6d73fd4f))
     (pin "2" (uuid 051a548e-baa2-4306-ad39-bc3e65814512))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R10") (unit 1)
         )
@@ -4874,7 +4506,7 @@
     (pin "1" (uuid 6a68e8d3-83da-446a-9c72-9240a4af9173))
     (pin "2" (uuid a9e204cb-9d80-4c77-8c43-13399a0b8eb4))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R2") (unit 1)
         )
@@ -4909,7 +4541,7 @@
     (pin "1" (uuid 37c12026-94da-4e6e-b54f-36c94ba2454e))
     (pin "2" (uuid 58de4773-48e0-4d30-bc88-95acf01c4297))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R4") (unit 1)
         )
@@ -4934,7 +4566,7 @@
     )
     (pin "1" (uuid cf23cfd7-70d4-4766-94a3-7685e9b88e66))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR05") (unit 1)
         )
@@ -4969,7 +4601,7 @@
     (pin "1" (uuid dbade0df-0171-43fe-b54c-db9170994a79))
     (pin "2" (uuid 1bdcbe31-62c7-4e9d-90eb-62082e16bdfc))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C1") (unit 1)
         )
@@ -5004,7 +4636,7 @@
     (pin "1" (uuid 23850c9f-50c7-4394-bbc3-7c486a5e76ea))
     (pin "2" (uuid f3ffdf88-68c1-4022-888d-cca886ae2bb1))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "D2") (unit 1)
         )
@@ -5029,7 +4661,7 @@
     )
     (pin "1" (uuid 3041ebd6-9b63-43aa-a7ca-4d417596b4d0))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR07") (unit 1)
         )
@@ -5064,7 +4696,7 @@
     (pin "1" (uuid 320e3f3d-1493-493e-8be6-4ff587569548))
     (pin "2" (uuid 605c4192-f8dc-4b11-a1b7-f127b107039b))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "L1") (unit 1)
         )
@@ -5099,7 +4731,7 @@
     (pin "1" (uuid aae3578b-4317-410a-b9e4-0077b5829990))
     (pin "2" (uuid d7719a59-64e9-4323-920d-3c546355dbec))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C2") (unit 1)
         )
@@ -5134,7 +4766,7 @@
     (pin "1" (uuid bf180a37-cec5-41f1-b301-c203b8c5665d))
     (pin "2" (uuid 0dff1932-b59d-4e03-b407-8399975b6422))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "C3") (unit 1)
         )
@@ -5159,7 +4791,7 @@
     )
     (pin "1" (uuid 1fe48bfe-72b3-4ebf-b66d-d8607e857391))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR08") (unit 1)
         )
@@ -5184,7 +4816,7 @@
     )
     (pin "1" (uuid df3f7af5-f906-4362-8dd8-a800cf800f29))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR09") (unit 1)
         )
@@ -5209,7 +4841,7 @@
     )
     (pin "1" (uuid c7f447e2-8e08-4ce2-b182-a5e166c727a8))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR03") (unit 1)
         )
@@ -5234,7 +4866,7 @@
     )
     (pin "1" (uuid e11727df-2ff3-4a8e-a1ee-0120fc0d0872))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR02") (unit 1)
         )
@@ -5269,7 +4901,7 @@
     (pin "1" (uuid ac2f8462-69d7-4cbf-bb1d-056a210ea6e7))
     (pin "2" (uuid 20129402-2baa-4c52-aabb-55e8c68c8648))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R1") (unit 1)
         )
@@ -5304,7 +4936,7 @@
     (pin "1" (uuid 64069113-555d-4d2c-b6ad-6c73058d8110))
     (pin "2" (uuid fad256fc-4145-4a5e-9bd9-a6cc1e934a01))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R3") (unit 1)
         )
@@ -5339,7 +4971,7 @@
     (pin "1" (uuid 2f860b96-b5ae-4690-b5fa-8d560509af96))
     (pin "2" (uuid ff40510c-3ce4-45b5-9418-3a292ad3a44e))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R5") (unit 1)
         )
@@ -5364,7 +4996,7 @@
     )
     (pin "1" (uuid 9928e9e6-552b-44c6-84d5-61510d276e28))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR010") (unit 1)
         )
@@ -5399,7 +5031,7 @@
     (pin "1" (uuid 97dd0aaa-a23e-444a-8edc-f6f5dff4825a))
     (pin "2" (uuid 69c24474-0fee-4520-a0fa-b02927481afc))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "D3") (unit 1)
         )
@@ -5434,7 +5066,7 @@
     (pin "1" (uuid cae6b561-ef05-403f-ae2f-eb6d465db4c6))
     (pin "2" (uuid ef56deba-d75f-45f1-b22e-e0330d07f645))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R6") (unit 1)
         )
@@ -5459,91 +5091,9 @@
     )
     (pin "1" (uuid cdf99f7f-4ded-4b0c-873d-61fc38619f84))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR029") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "New Business Card-rescue:Conn_01x02_Male-Connector") (at 157.48 71.12 180) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 00000000-0000-0000-0000-0000605253ed)
-    (property "Reference" "J4" (at 151.13 55.88 0)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Value" "+12V PWR" (at 154.94 58.42 0)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" (at 157.48 71.12 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "~" (at 157.48 71.12 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "BASIC/EXT" "" (at 157.48 71.12 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "web" "" (at 157.48 71.12 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 57a3b3d5-be8a-486d-b308-2594e12d8424))
-    (pin "2" (uuid e191bd08-6f44-41b8-8651-f4f1bd7cf283))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
-          (reference "J4") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:GND") (at 149.86 73.66 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 00000000-0000-0000-0000-000060533507)
-    (property "Reference" "#PWR023" (at 149.86 80.01 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "GND" (at 149.987 78.0542 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 149.86 73.66 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 149.86 73.66 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 84cb21a4-fd95-407b-806f-63205c09dfee))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
-          (reference "#PWR023") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:+12V") (at 149.86 66.04 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 00000000-0000-0000-0000-000060533f8a)
-    (property "Reference" "#PWR020" (at 149.86 69.85 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+12V" (at 150.241 61.6458 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 149.86 66.04 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 149.86 66.04 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 43ef093c-cc8b-414c-b72a-5a51604f742d))
-    (instances
-      (project "New Business Card"
-        (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
-          (reference "#PWR020") (unit 1)
         )
       )
     )
@@ -5558,7 +5108,7 @@
     (property "Value" "Programming" (at 186.69 60.2996 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "Connector_PinSocket_1.27mm:PinSocket_2x05_P1.27mm_Vertical" (at 185.42 68.58 0)
+    (property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_2x05_P2.54mm_Vertical" (at 185.42 68.58 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 185.42 68.58 0)
@@ -5581,7 +5131,7 @@
     (pin "8" (uuid 084699e7-9f2c-4b32-b496-a8200bcddf20))
     (pin "9" (uuid 78e1b829-959e-4b89-80b0-f8567a9bb0ab))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "J3") (unit 1)
         )
@@ -5606,7 +5156,7 @@
     )
     (pin "1" (uuid 5a63ed8c-046d-438b-a1a7-2ef1a2e65839))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR013") (unit 1)
         )
@@ -5631,7 +5181,7 @@
     )
     (pin "1" (uuid 21a91dae-4b8c-4549-b453-39c4d006a5e3))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR024") (unit 1)
         )
@@ -5666,7 +5216,7 @@
     (pin "1" (uuid 363b4a8f-7dbf-4999-963c-cd8be05b7f3b))
     (pin "2" (uuid d251eaa2-93e4-42c0-9c57-4470c506ac2a))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R13") (unit 1)
         )
@@ -5701,7 +5251,7 @@
     (pin "1" (uuid a539b323-701f-44bf-91d0-bb432f6ced09))
     (pin "2" (uuid 2d0f8d7d-7637-4805-a751-aab57055b8ed))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R14") (unit 1)
         )
@@ -5726,7 +5276,7 @@
     )
     (pin "1" (uuid 2d378a50-702d-4094-b312-09db30d22bd6))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR039") (unit 1)
         )
@@ -5751,7 +5301,7 @@
     )
     (pin "1" (uuid 117ae7c9-2de9-4620-9e30-e92e8308eae7))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR040") (unit 1)
         )
@@ -5785,7 +5335,7 @@
     (pin "3" (uuid 596e324c-61a0-4221-98e8-0ded8700692b))
     (pin "4" (uuid b9a5a650-07d9-47af-9c09-8ffaa7880239))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "J1") (unit 1)
         )
@@ -5827,7 +5377,7 @@
     (pin "5" (uuid e4a39601-efa5-46f3-8d34-b2f657e360cb))
     (pin "6" (uuid 62ad9fc0-6a69-4b12-bdef-a458ad71143b))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "U3") (unit 1)
         )
@@ -5862,7 +5412,7 @@
     (pin "1" (uuid 7cc6b3f6-ab4c-460f-a588-532a5e1c54bf))
     (pin "2" (uuid 3756bc9d-4e7b-4edd-b916-eb197239c61a))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "D1") (unit 1)
         )
@@ -5887,7 +5437,7 @@
     )
     (pin "1" (uuid f1fd4947-0052-4d89-a967-124b27cb1cad))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR01") (unit 1)
         )
@@ -5912,7 +5462,7 @@
     )
     (pin "1" (uuid a11cb2f1-8083-47e8-863b-e6ae25cfed1e))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR035") (unit 1)
         )
@@ -5937,7 +5487,7 @@
     )
     (pin "1" (uuid cd50b780-80b6-4a6b-89af-a3e5396ca801))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR038") (unit 1)
         )
@@ -5962,7 +5512,7 @@
     )
     (pin "1" (uuid 3a9dccbe-6b64-4706-a5f0-3acfe3e86126))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR044") (unit 1)
         )
@@ -5997,7 +5547,7 @@
     (pin "1" (uuid 2b42e19c-62ec-4633-8fe3-01347875873e))
     (pin "2" (uuid 3464eb73-f7ff-4354-956d-10c9b87cbcd0))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R9") (unit 1)
         )
@@ -6022,7 +5572,7 @@
     )
     (pin "1" (uuid 4fc9da68-ae94-4dc4-86b7-4bc606f474ce))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR045") (unit 1)
         )
@@ -6047,7 +5597,7 @@
     )
     (pin "1" (uuid a1ab6a4e-ff4e-4a0a-8e77-f715f90b1a40))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR036") (unit 1)
         )
@@ -6082,7 +5632,7 @@
     (pin "1" (uuid 61b36c8f-a35a-4de2-9cc0-84b46a13ef9e))
     (pin "2" (uuid 1bf939a5-e8d6-42e6-b093-e63b2410cb25))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R12") (unit 1)
         )
@@ -6107,7 +5657,7 @@
     )
     (pin "1" (uuid f04f12cf-936f-4ee5-b9d9-1c46f9314b73))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR025") (unit 1)
         )
@@ -6132,7 +5682,7 @@
     )
     (pin "1" (uuid 80e9154c-b108-4119-bbaf-351e7c8bc6ed))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR017") (unit 1)
         )
@@ -6167,7 +5717,7 @@
     (pin "1" (uuid b33fc238-ca8f-413f-9f82-b83713ab4f38))
     (pin "2" (uuid 64745d46-b992-4501-ad9b-fdef032349a3))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R8") (unit 1)
         )
@@ -6192,7 +5742,7 @@
     )
     (pin "1" (uuid 08765f6a-bfa9-445f-8b31-aa2cdb62070e))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR034") (unit 1)
         )
@@ -6217,7 +5767,7 @@
     )
     (pin "1" (uuid 8ddbf6c5-21ba-4356-8fba-fe0c6bbd34f5))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR014") (unit 1)
         )
@@ -6252,7 +5802,7 @@
     (pin "1" (uuid f8c00701-f466-4fc1-b155-6471eb85ef8a))
     (pin "2" (uuid 93bb60d8-f609-4c0f-82c0-34129d8df22b))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "F1") (unit 1)
         )
@@ -6287,7 +5837,7 @@
     (pin "1" (uuid dec102ad-cec0-4d62-826d-6e738ba06722))
     (pin "2" (uuid 49c83902-2d26-42b6-bb19-210ff0751b6f))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R15") (unit 1)
         )
@@ -6312,7 +5862,7 @@
     )
     (pin "1" (uuid 3c0fbc08-7cd1-4a62-898e-bf312652371c))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR028") (unit 1)
         )
@@ -6337,7 +5887,7 @@
     )
     (pin "1" (uuid dd4846de-b383-40b4-8ed4-3fa0fafba1b0))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#FLG06") (unit 1)
         )
@@ -6362,7 +5912,7 @@
     )
     (pin "1" (uuid c07d842c-873e-43b8-9366-de5fde12ba9b))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR043") (unit 1)
         )
@@ -6412,7 +5962,7 @@
     (pin "B9" (uuid 3f8fce7a-d39f-45a8-ae81-f20bba99c095))
     (pin "S1" (uuid 4413d265-0bbb-42a4-bfda-cf96446eda4a))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "J5") (unit 1)
         )
@@ -6437,7 +5987,7 @@
     )
     (pin "1" (uuid 7ce5f4be-e395-4f6f-b57c-73c31d821f10))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#PWR019") (unit 1)
         )
@@ -6472,7 +6022,7 @@
     (pin "1" (uuid 375ff49e-5d5f-4abf-9656-a1de270aa61c))
     (pin "2" (uuid 3d72768a-acc2-46a0-8c8f-612a19d00b87))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R11") (unit 1)
         )
@@ -6507,7 +6057,7 @@
     (pin "4" (uuid 53388823-844b-4008-a82d-9b816b6443cc))
     (pin "5" (uuid 9a3a5b76-7a84-4647-a725-45fa8c74e7ef))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "J2") (unit 1)
         )
@@ -6542,7 +6092,7 @@
     (pin "1" (uuid 6431b707-073a-4f93-b3c6-2e6f2fac8fc2))
     (pin "2" (uuid 5ba6d427-4c8b-4975-b355-f6fe7a2bb993))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "R16") (unit 1)
         )
@@ -6567,7 +6117,7 @@
     )
     (pin "1" (uuid c3cdc96f-67a0-4d0c-815e-20fe71d30c25))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#FLG05") (unit 1)
         )
@@ -6592,7 +6142,7 @@
     )
     (pin "1" (uuid 6265477f-b42c-4c2f-a637-c61534f64a32))
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa"
           (reference "#FLG07") (unit 1)
         )
@@ -6611,7 +6161,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa" (page "4"))
       )
     )
@@ -6660,7 +6210,7 @@
       (uuid a7781183-4c7b-4811-aff1-4949f7405260)
     )
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa" (page "3"))
       )
     )
@@ -6689,7 +6239,7 @@
       (uuid d8049e5a-77ab-4bd7-b16c-e782e9a28efa)
     )
     (instances
-      (project "New Business Card"
+      (project "kompetterx"
         (path "/250bd8d3-ffd9-4c64-8f07-dbd2f5af95fa" (page "4"))
       )
     )
