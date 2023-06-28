@@ -390,10 +390,10 @@
       (net 64 "KEY_ROW_2") (pinfunction "1") (pintype "passive") (tstamp 43086fa1-ad35-4a37-b442-6b082e146beb))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 25 "Net-(D9-A)") (pinfunction "2") (pintype "passive") (tstamp e04f72bf-17fc-455f-8e0d-142144cc0947))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -893,10 +893,10 @@
       (net 66 "KEY_ROW_4") (pinfunction "1") (pintype "passive") (tstamp fd030139-013e-4a2c-a16b-c87c36da0f8e))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 35 "Net-(D19-A)") (pinfunction "2") (pintype "passive") (tstamp 89f773b1-c7d3-4914-bfc7-f9260b7a2b1b))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -1848,10 +1848,10 @@
       (net 65 "KEY_ROW_3") (pinfunction "1") (pintype "passive") (tstamp c73ceb42-972b-4497-b560-8d03d979411c))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 28 "Net-(D12-A)") (pinfunction "2") (pintype "passive") (tstamp 12b2e3c5-ebf4-41a7-aca3-c976dc1d8cfb))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -2049,10 +2049,10 @@
       (net 66 "KEY_ROW_4") (pinfunction "1") (pintype "passive") (tstamp c69f33fd-e7e2-48eb-adfe-267da4f545c5))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 32 "Net-(D16-A)") (pinfunction "2") (pintype "passive") (tstamp c41b87a3-587c-4ace-8cd8-3d7019cd7a0e))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -2532,10 +2532,10 @@
       (net 63 "KEY_ROW_1") (pinfunction "1") (pintype "passive") (tstamp bf539f52-2f94-4300-9bf5-b869ea3286fe))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 23 "Net-(D7-A)") (pinfunction "2") (pintype "passive") (tstamp 3c9078db-03b4-413d-97dc-335afe59db3d))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -2603,10 +2603,10 @@
       (net 63 "KEY_ROW_1") (pinfunction "1") (pintype "passive") (tstamp 6ce48794-eeb5-49ba-88b8-fa2551a29df7))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 19 "Net-(D5-A)") (pinfunction "2") (pintype "passive") (tstamp ce179274-1c81-426b-acb5-7f0ca14726f0))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -2674,10 +2674,10 @@
       (net 64 "KEY_ROW_2") (pinfunction "1") (pintype "passive") (tstamp 0e693b76-f0e3-4e29-b059-7dc836ec4a7e))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 26 "Net-(D10-A)") (pinfunction "2") (pintype "passive") (tstamp 5e174144-2f33-457e-a7de-d796a21d9278))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -2778,10 +2778,10 @@
       (net 63 "KEY_ROW_1") (pinfunction "1") (pintype "passive") (tstamp 72784d16-8003-4a85-90c6-f3ddcc0d1b9f))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 17 "Net-(D4-A)") (pinfunction "2") (pintype "passive") (tstamp ca1c13bb-c14a-48b6-abec-0ea755d8d836))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -2849,10 +2849,10 @@
       (net 63 "KEY_ROW_1") (pinfunction "1") (pintype "passive") (tstamp b09edb7b-0535-4992-8936-667bd146f340))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 21 "Net-(D6-A)") (pinfunction "2") (pintype "passive") (tstamp f36a41f6-03ce-4707-a0c9-28d3f513a6c9))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -3208,8 +3208,8 @@
       (net 98 "unconnected-(J5-SHIELD-PadS1)") (pinfunction "SHIELD") (pintype "passive+no_connect") (tstamp 2dec562c-2392-4f81-abab-50372f8c3c62))
     (pad "S1" thru_hole oval (at 4.32 1.05 180) (size 1 1.6) (drill oval 0.6 1.2) (layers "*.Cu" "*.Mask")
       (net 98 "unconnected-(J5-SHIELD-PadS1)") (pinfunction "SHIELD") (pintype "passive+no_connect") (tstamp 50f816bb-ed27-42c7-8ee8-d232a5ff1d95))
-    (model "${KICAD6_3DMODEL_DIR}/Connector_USB.3dshapes/USB_C_Receptacle_HRO_TYPE-C-31-M-12.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/HRO_TYPE-C-31-M-12.step"
+      (offset (xyz -4.48 -3.65 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
     )
@@ -3279,10 +3279,10 @@
       (net 65 "KEY_ROW_3") (pinfunction "1") (pintype "passive") (tstamp de7d4ae8-3068-4345-bdf4-4199040b0bb1))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 29 "Net-(D13-A)") (pinfunction "2") (pintype "passive") (tstamp 0176a7e6-4bdf-47af-8e87-26459d22f371))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -3746,7 +3746,12 @@
       (net 64 "KEY_ROW_2") (pinfunction "1") (pintype "passive") (tstamp 3c8de9cf-5e79-4eae-b662-b702f8dae423))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 27 "Net-(D11-A)") (pinfunction "2") (pintype "passive") (tstamp 123e95cf-9c71-41c9-87bf-d900e548757b))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 180 0 90))
+    )
+    (model "${KIPRJMOD}/3d/Cherry MX Keycap.STL" hide
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4290,10 +4295,10 @@
       (net 64 "KEY_ROW_2") (pinfunction "1") (pintype "passive") (tstamp 091ccc47-2ce9-4743-abff-0823d3b9ccf4))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 24 "Net-(D8-A)") (pinfunction "2") (pintype "passive") (tstamp 71837aad-47c4-4cc2-bfc4-560203f6cbb6))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -4499,6 +4504,16 @@
         b940f413-5b23-458f-b636-98d828493476
       )
     )
+    (model "${KIPRJMOD}/3d/OLED Display 0.96_.step" hide
+      (offset (xyz -12.65 -25.5 3.5))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
+    (model "${KIPRJMOD}/3d/SSD1306_OLED_Display(128x64).step"
+      (offset (xyz 0.375 -12.8 3.5))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 0))
+    )
   )
 
   (footprint "Button_Switch_Keyboard:SW_Cherry_MX_1.00u_PCB" (layer "F.Cu")
@@ -4565,10 +4580,10 @@
       (net 66 "KEY_ROW_4") (pinfunction "1") (pintype "passive") (tstamp 396a1b15-2061-4c13-8309-6a0eecea754a))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 33 "Net-(D17-A)") (pinfunction "2") (pintype "passive") (tstamp 48502415-de92-4475-b50d-38563d0d019b))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -4636,10 +4651,10 @@
       (net 65 "KEY_ROW_3") (pinfunction "1") (pintype "passive") (tstamp 63d882f8-8cd7-4739-b67c-6b2082bfa208))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 31 "Net-(D15-A)") (pinfunction "2") (pintype "passive") (tstamp 8f7a17fb-2e69-463d-a948-4ff68608e2f3))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -5356,10 +5371,10 @@
       (net 66 "KEY_ROW_4") (pinfunction "1") (pintype "passive") (tstamp 156fedfe-d785-4c50-97dc-263bed7f95b9))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 34 "Net-(D18-A)") (pinfunction "2") (pintype "passive") (tstamp 681939de-ed4b-40e1-ba1e-dc4196c31b64))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
@@ -5517,10 +5532,10 @@
       (net 65 "KEY_ROW_3") (pinfunction "1") (pintype "passive") (tstamp 605dbb15-1af3-4a2b-9c16-12ec9cf2c9dc))
     (pad "2" thru_hole circle (at -6.35 2.54) (size 2.2 2.2) (drill 1.5) (layers "*.Cu" "*.Mask")
       (net 30 "Net-(D14-A)") (pinfunction "2") (pintype "passive") (tstamp 127f22fe-cd29-42e3-add4-3477df235e27))
-    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_Keyboard.3dshapes/SW_Cherry_MX_1.00u_PCB.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/3d/asm_mx_asm_PLATE.stp"
+      (offset (xyz -2.24 -4.8 5.5))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 180 0 90))
     )
   )
 
