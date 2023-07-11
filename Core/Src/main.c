@@ -21,7 +21,6 @@
 #include "main.h"
 #include "usb_device.h"
 
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -171,8 +170,12 @@ int main(void)
   SSD1306_GotoXY (0,0);
   SSD1306_Puts ("Kompetter-X", &Font_11x18, 1);
   SSD1306_GotoXY (0, 20);
-  SSD1306_Puts ("v.01", &Font_7x10, 1);
+  SSD1306_Puts ("v.02", &Font_7x10, 1);
   SSD1306_UpdateScreen();
+
+  sprintf(txBuf, "Kompetter-X\r\nv.02");
+  CDC_Transmit_FS((uint8_t *) txBuf, strlen(txBuf));
+
 
   HAL_Delay(1500);
 
@@ -183,6 +186,11 @@ int main(void)
   SSD1306_GotoXY(0, 40);
   SSD1306_Puts("--  ", &Font_11x18, 1);
 
+  SSD1306_GotoXY(40, 30);
+  SSD1306_Puts("Magnet: ", &Font_7x10, 1);
+  SSD1306_GotoXY(40, 40);
+  SSD1306_Puts("--  ", &Font_11x18, 1);
+
 
   /* USER CODE END 2 */
 
@@ -190,6 +198,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
 	sprintf(txBuf, "%u\r\n", count);
 	count++;
 	if(count > 100){
@@ -205,18 +214,30 @@ int main(void)
 
 	//ANGLE SENSOR
 	uint16_t angle = AS5600_ReadAngle(&hi2c2);
+	uint8_t magnetPresent = AS5600_IsMagnetPresent(&hi2c2);
 
-	//Convert the angle to a string
-	char angle_str[5]; // Buffer to hold the string. Make sure it's large enough to hold all digits of the angle and the null-terminating character.
+	//Magnet status
+	if( magnetPresent == 1){
 
-    //Convert to a string with leading spaces
-    sprintf(angle_str, "%4u", angle);
+		SSD1306_GotoXY(40, 40);
+		SSD1306_Puts("ok!  ", &Font_11x18, 1);
 
-	// Display the angle on the OLED display
-	SSD1306_GotoXY (0,0);
-	SSD1306_Puts("Angle: ", &Font_7x10, 1);
-	SSD1306_GotoXY (0, 12);
-	SSD1306_Puts(angle_str, &Font_11x18, 1);
+		//Convert the angle to a string
+		char angle_str[5]; // Buffer to hold the string. Make sure it's large enough to hold all digits of the angle and the null-terminating character.
+
+	    //Convert to a string with leading spaces
+	    sprintf(angle_str, "%4u", angle);
+
+		// Display the angle on the OLED display
+		SSD1306_GotoXY (0,0);
+		SSD1306_Puts("Angle: ", &Font_7x10, 1);
+		SSD1306_GotoXY (0, 12);
+		SSD1306_Puts(angle_str, &Font_11x18, 1);
+
+	} else {
+		SSD1306_GotoXY(40, 40);
+		SSD1306_Puts("No :(", &Font_11x18, 1);
+	}
 
 	//debounce scan:
 	enum KeyState { IDLE, PRESSED };

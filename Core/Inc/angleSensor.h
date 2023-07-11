@@ -7,4 +7,8 @@
 
 uint16_t AS5600_ReadAngle(I2C_HandleTypeDef *hi2c);
 
+uint8_t AS5600_ReadStatus(I2C_HandleTypeDef *hi2c);
+
+uint8_t AS5600_IsMagnetPresent(I2C_HandleTypeDef *hi2c);
+
 #endif /* AS5600_H */
