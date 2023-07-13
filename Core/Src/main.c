@@ -56,8 +56,8 @@ keyboardHID keyboardhid = {0,0,0,0,0,0,0,0};
 uint8_t keycode_map[NUM_ROWS][NUM_COLS] = {
     {0x1E, 0x1F, 0x20, 0x21}, // HID keycodes for '1', '2', '3', '4'
     {0x22, 0x23, 0x24, 0x25}, // HID keycodes for '5', '6', '7', '8'
-    {0x26, 0x27, 0x1C, 0x1D}, // HID keycodes for '9', 'A', 'B', 'C'
-    {0x1E, 0x1F, 0x20, 0x21}  // HID keycodes for 'D', 'E', 'F', 'G'
+    {0x26, 0x04, 0x05, 0x06}, // HID keycodes for '9', 'A', 'B', 'C'
+    {0x07, 0x08, 0x09, 0x0A}  // HID keycodes for 'D', 'E', 'F', 'G'
 };
 
 #define DEBOUNCE_DELAY 20 // Debounce delay in milliseconds
