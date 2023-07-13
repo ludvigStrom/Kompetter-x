@@ -231,6 +231,15 @@ int main(void)
   SSD1306_GotoXY(40, 40);
   SSD1306_Puts("--  ", &Font_11x18, 1);
 
+	//debounce scan:
+	enum KeyState { IDLE, PRESSED };
+	enum KeyState key_state[NUM_ROWS][NUM_COLS];  // Declare the array of states
+
+	for(int i = 0; i < NUM_ROWS; i++) {
+	    for(int j = 0; j < NUM_COLS; j++) {
+	        key_state[i][j] = IDLE;  // Initialize each state to IDLE
+	    }
+	}
 
   /* USER CODE END 2 */
 
@@ -269,19 +278,12 @@ int main(void)
 		SSD1306_Puts("No :(", &Font_11x18, 1);
 	}
 
-	//debounce scan:
-	enum KeyState { IDLE, PRESSED };
-	enum KeyState key_state[NUM_ROWS][NUM_COLS];  // Declare the array of states
 
-	for(int i = 0; i < NUM_ROWS; i++) {
-	    for(int j = 0; j < NUM_COLS; j++) {
-	        key_state[i][j] = IDLE;  // Initialize each state to IDLE
-	    }
-	}
 
 	uint32_t last_key_time[NUM_ROWS][NUM_COLS] = {0};
 
-	int key_pressed = 0; // flag to track if a key was pressed during this cycle
+	uint8_t key_pressed = 0; // flag to track if a key was pressed during this cycle
+	uint8_t state_changed = 0;
 	char key_str[3];
 
 	for(int i = 0; i < NUM_ROWS; i++) {
@@ -289,12 +291,18 @@ int main(void)
 	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
 	    HAL_Delay(1); // delay after setting row high
 
+
 	    for(int j = 0; j < NUM_COLS; j++) {
-	        uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
+	    	uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
 
 	        if (is_pressed && key_state[i][j] == IDLE) {
-	            // Format the key string
-	            sprintf(key_str, "%d%d", i+1, j+1);
+	            //KEY has been pressed from an idle state
+	        	//Change key state:
+	        	key_state[i][j] = PRESSED;
+	        	state_changed = 1;
+
+	        	// Format the key string
+	        	sprintf(key_str, "%d%d", i+1, j+1);
 
 	            //send_key(HID_KEY_A);
 	            keyboardhid.KEYCODE1 = keycode_map[i][j]; //send corresponding HID keycode
@@ -303,16 +311,15 @@ int main(void)
 	            keyboardhid.KEYCODE1 = 0x00; //release key press
 	            USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
 
-	            // Light up led:
-	            HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
-
 	            key_pressed = 1; // set key pressed flag
 	            key_state[i][j] = PRESSED;
 	            last_key_time[i][j] = current_tick;
 
-	            break; // exit loop as soon as a key press is detected
 	        } else if (!is_pressed && key_state[i][j] == PRESSED && current_tick - last_key_time[i][j] > DEBOUNCE_DELAY) {
 	            key_state[i][j] = IDLE;
+	            // Light up led:
+	            HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
+	            HAL_Delay(5);
 	        }
 	    }
 
@@ -324,6 +331,7 @@ int main(void)
 	    // Display the key on the OLED display
 	    SSD1306_GotoXY(0, 40);
 	    SSD1306_Puts(key_str, &Font_11x18, 1);
+	    key_pressed = 0;
 	} else {
 	    // Display '--' on the OLED display
 	    SSD1306_GotoXY(0, 40);
