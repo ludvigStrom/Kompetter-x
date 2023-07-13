@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0002020c  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00013cfc  00000000  00000000  0002023c  2**0
+ 12 .debug_info   00013972  00000000  00000000  0002023c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00003326  00000000  00000000  00033f38  2**0
+ 13 .debug_abbrev 00003274  00000000  00000000  00033bae  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 000010c8  00000000  00000000  00037260  2**3
+ 14 .debug_aranges 000010a0  00000000  00000000  00036e28  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000f68  00000000  00000000  00038328  2**3
+ 15 .debug_ranges 00000f40  00000000  00000000  00037ec8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  0002224d  00000000  00000000  00039290  2**0
+ 16 .debug_macro  0002223b  00000000  00000000  00038e08  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00015fad  00000000  00000000  0005b4dd  2**0
+ 17 .debug_line   00015e65  00000000  00000000  0005b043  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000bdf1d  00000000  00000000  0007148a  2**0
+ 18 .debug_str    000bde69  00000000  00000000  00070ea8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  0012f3a7  2**0
+ 19 .comment      00000050  00000000  00000000  0012ed11  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000048f4  00000000  00000000  0012f3f8  2**2
+ 20 .debug_frame  0000483c  00000000  00000000  0012ed64  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -603,9 +603,6 @@ int main(void)
  800066a:	f000 fd47 	bl	80010fc <SSD1306_Puts>
   SSD1306_UpdateScreen();
  800066e:	f000 fc09 	bl	8000e84 <SSD1306_UpdateScreen>
-/*
-  sprintf(txBuf, "Kompetter-X\r\nv.02");
-  CDC_Transmit_FS((uint8_t *) txBuf, strlen(txBuf));*/
 
   HAL_Delay(1500);
  8000672:	f240 50dc 	movw	r0, #1500	; 0x5dc
@@ -917,7 +914,7 @@ int main(void)
  800087a:	f851 3023 	ldr.w	r3, [r1, r3, lsl #2]
  800087e:	6a3a      	ldr	r2, [r7, #32]
  8000880:	1ad3      	subs	r3, r2, r3
- 8000882:	2b14      	cmp	r3, #20
+ 8000882:	2b0a      	cmp	r3, #10
  8000884:	d951      	bls.n	800092a <main+0x31a>
 	            // Key has been released
 

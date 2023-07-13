@@ -28,7 +28,7 @@
 #include "ssd1306.h"
 #include "angleSensor.h"
 #include <string.h>
-#include "stdio.h" //printf
+#include "stdio.h"
 #include "usbd_hid.h"
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
@@ -58,19 +58,12 @@ uint8_t keycode_map[NUM_ROWS][NUM_COLS] = {
     {0x07, 0x08, 0x09, 0x0A}  // HID keycodes for 'D', 'E', 'F', 'G'
 };
 
-#define DEBOUNCE_DELAY 20 // Debounce delay in milliseconds
-
-// HID keyboard usage IDs (codes) for keys
-// These values and more can be found in the "HID Usage Tables" document from USB.org
-#define HID_KEY_A 0x04
-#define HID_KEY_B 0x05
-#define HID_KEY_C 0x06
+#define DEBOUNCE_DELAY 10 // Debounce delay in milliseconds
 
 uint32_t last_key_time[NUM_ROWS][NUM_COLS] = {0};
 uint8_t hid_report[NUM_KEYS] = {0};
 uint8_t hid_report_prev[NUM_KEYS] = {0};
 char last_key[3] = {0};
-
 
 GPIO_TypeDef* row_ports[NUM_ROWS] = {KEY_ROW_1_GPIO_Port, KEY_ROW_2_GPIO_Port, KEY_ROW_3_GPIO_Port, KEY_ROW_4_GPIO_Port};
 uint16_t row_pins[NUM_ROWS] = {KEY_ROW_1_Pin, KEY_ROW_2_Pin, KEY_ROW_3_Pin, KEY_ROW_4_Pin};
@@ -114,61 +107,10 @@ static void MX_I2C2_Init(void);
 static void MX_SPI2_Init(void);
 /* USER CODE BEGIN PFP */
 
-int _write(int file, char *ptr, int len){
-	int i = 0;
-	for(i=0; i<len; i++)
-		ITM_SendChar((*ptr++));
-	return len;
-}
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-/*
-void send_key(uint8_t key) {
-    uint8_t report[8] = {0}; // HID keyboard input reports have 8 bytes
-    report[2] = key; // keycode goes into third byte
-
-    USBD_HID_SendReport(&hUsbDeviceFS, report, sizeof(report));
-
-    // Release key
-    report[2] = 0;
-    USBD_HID_SendReport(&hUsbDeviceFS, report, sizeof(report));
-}*/
-
-void set_row_low(int row){
-    // Set all rows to high
-    for(int i=0; i<NUM_ROWS; i++){
-        HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
-    }
-
-    // Set the specific row to low
-    HAL_GPIO_WritePin(row_ports[row], row_pins[row], GPIO_PIN_RESET);
-}
-/*
-uint8_t read_column(int col){
-    return HAL_GPIO_ReadPin(col_ports[col], col_pins[col]);
-}*/
-
-uint8_t read_column(int col){
-    return (HAL_GPIO_ReadPin(col_ports[col], col_pins[col]) == GPIO_PIN_SET);
-}
-
-char read_keypad(void){
-    for(int row=0; row<NUM_ROWS; row++){
-        set_row_low(row);
-        for(int col=0; col<NUM_COLS; col++){
-            if(read_column(col) == GPIO_PIN_RESET){
-                // Key at (row, col) is pressed.
-                // Return its ASCII value or a specific code depending on your needs
-                return '0' + row * NUM_COLS + col + 1;
-            }
-        }
-    }
-    // No key is pressed
-    return 0;
-}
 
 /* USER CODE END 0 */
 
@@ -218,9 +160,6 @@ int main(void)
   SSD1306_GotoXY (0, 20);
   SSD1306_Puts ("v.02", &Font_7x10, 1);
   SSD1306_UpdateScreen();
-/*
-  sprintf(txBuf, "Kompetter-X\r\nv.02");
-  CDC_Transmit_FS((uint8_t *) txBuf, strlen(txBuf));*/
 
   HAL_Delay(1500);
 
