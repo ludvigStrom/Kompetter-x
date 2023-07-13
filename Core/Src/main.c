@@ -32,7 +32,6 @@
 #include "usbd_hid.h"
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
-
 typedef struct
 {
 	uint8_t MODIFER;
@@ -45,12 +44,11 @@ typedef struct
 	uint8_t KEYCODE6;
 } keyboardHID;
 
-
-
 keyboardHID keyboardhid = {0,0,0,0,0,0,0,0};
 
 #define NUM_ROWS 4
 #define NUM_COLS 4
+#define NUM_KEYS 16
 
 // Define a 4x4 array of HID keycodes
 uint8_t keycode_map[NUM_ROWS][NUM_COLS] = {
@@ -67,6 +65,12 @@ uint8_t keycode_map[NUM_ROWS][NUM_COLS] = {
 #define HID_KEY_A 0x04
 #define HID_KEY_B 0x05
 #define HID_KEY_C 0x06
+
+uint32_t last_key_time[NUM_ROWS][NUM_COLS] = {0};
+uint8_t hid_report[NUM_KEYS] = {0};
+uint8_t hid_report_prev[NUM_KEYS] = {0};
+char last_key[3] = {0};
+
 
 GPIO_TypeDef* row_ports[NUM_ROWS] = {KEY_ROW_1_GPIO_Port, KEY_ROW_2_GPIO_Port, KEY_ROW_3_GPIO_Port, KEY_ROW_4_GPIO_Port};
 uint16_t row_pins[NUM_ROWS] = {KEY_ROW_1_Pin, KEY_ROW_2_Pin, KEY_ROW_3_Pin, KEY_ROW_4_Pin};
@@ -165,6 +169,7 @@ char read_keypad(void){
     // No key is pressed
     return 0;
 }
+
 /* USER CODE END 0 */
 
 /**
@@ -278,48 +283,44 @@ int main(void)
 		SSD1306_Puts("No :(", &Font_11x18, 1);
 	}
 
-
-
-	uint32_t last_key_time[NUM_ROWS][NUM_COLS] = {0};
-
-	uint8_t key_pressed = 0; // flag to track if a key was pressed during this cycle
-	uint8_t state_changed = 0;
-	char key_str[3];
-
+	//Scan!
 	for(int i = 0; i < NUM_ROWS; i++) {
 	    uint32_t current_tick = HAL_GetTick();
 	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
 	    HAL_Delay(1); // delay after setting row high
 
-
 	    for(int j = 0; j < NUM_COLS; j++) {
-	    	uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
+	        uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
 
 	        if (is_pressed && key_state[i][j] == IDLE) {
-	            //KEY has been pressed from an idle state
-	        	//Change key state:
-	        	key_state[i][j] = PRESSED;
-	        	state_changed = 1;
+	            // Key has been pressed from an idle state
 
-	        	// Format the key string
-	        	sprintf(key_str, "%d%d", i+1, j+1);
+	            // Find a slot in the HID report
+	            for (int k = 0; k < NUM_KEYS; k++) {
+	                if (hid_report[k] == 0) { // 0 indicates an empty slot
+	                    hid_report[k] = keycode_map[i][j]; // Add the key to the HID report
+	                    break;
+	                }
+	            }
 
-	            //send_key(HID_KEY_A);
-	            keyboardhid.KEYCODE1 = keycode_map[i][j]; //send corresponding HID keycode
-	            USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
-	            HAL_Delay(50);
-	            keyboardhid.KEYCODE1 = 0x00; //release key press
-	            USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
-
-	            key_pressed = 1; // set key pressed flag
 	            key_state[i][j] = PRESSED;
 	            last_key_time[i][j] = current_tick;
 
+	            sprintf(last_key, "%d%d", i+1, j+1);  // Save the last key pressed
+
+
 	        } else if (!is_pressed && key_state[i][j] == PRESSED && current_tick - last_key_time[i][j] > DEBOUNCE_DELAY) {
+	            // Key has been released
+
+	            // Remove the key from the HID report
+	            for (int k = 0; k < NUM_KEYS; k++) {
+	                if (hid_report[k] == keycode_map[i][j]) {
+	                    hid_report[k] = 0; // Remove the key
+	                    break;
+	                }
+	            }
+
 	            key_state[i][j] = IDLE;
-	            // Light up led:
-	            HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
-	            HAL_Delay(5);
 	        }
 	    }
 
@@ -327,17 +328,34 @@ int main(void)
 	    HAL_Delay(1); // delay after setting row low
 	}
 
-	if (key_pressed) {
-	    // Display the key on the OLED display
-	    SSD1306_GotoXY(0, 40);
-	    SSD1306_Puts(key_str, &Font_11x18, 1);
-	    key_pressed = 0;
-	} else {
-	    // Display '--' on the OLED display
-	    SSD1306_GotoXY(0, 40);
-	    SSD1306_Puts("--", &Font_11x18, 1);
+	// Check if the HID report has changed
+	uint8_t report_changed = 0;
+	for (int i = 0; i < NUM_KEYS; i++) {
+	    if (hid_report[i] != hid_report_prev[i]) {
+	        report_changed = 1;
+	        break;
+	    }
 	}
-	//Debounce scan END
+
+	if (report_changed) {
+	    // Update the HID report
+	    keyboardhid.KEYCODE1 = hid_report[0];
+	    keyboardhid.KEYCODE2 = hid_report[1];
+	    keyboardhid.KEYCODE3 = hid_report[2];
+	    keyboardhid.KEYCODE4 = hid_report[3];
+	    keyboardhid.KEYCODE5 = hid_report[4];
+	    keyboardhid.KEYCODE6 = hid_report[5];
+
+	    // Send the HID report
+	    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
+
+	    // Update the previous report state
+	    memcpy(hid_report_prev, hid_report, NUM_KEYS);
+
+	    // Update the OLED display
+	    SSD1306_GotoXY(0, 40);
+	    SSD1306_Puts(last_key, &Font_11x18, 1);
+	}
 
   	// Update the OLED display
 	SSD1306_UpdateScreen();
