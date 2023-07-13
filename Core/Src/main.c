@@ -32,7 +32,6 @@
 #include "usbd_hid.h"
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
-
 typedef struct
 {
 	uint8_t MODIFER;
@@ -46,6 +45,17 @@ typedef struct
 } keyboardHID;
 
 keyboardHID keyboardhid = {0,0,0,0,0,0,0,0};
+
+
+#define N 4 // size of arrays, number of rows and columns
+
+// ASCII values
+const int ascii_vals[N][N] = {
+  {68, 67, 66, 65},
+  {35, 57, 54, 51},
+  {48, 56, 53, 50},
+  {42, 55, 52, 49}
+};
 
 #define NUM_ROWS 4
 #define NUM_COLS 4
@@ -88,6 +98,12 @@ SPI_HandleTypeDef hspi2;
 /* USER CODE BEGIN PV */
 char txBuf[8];
 uint8_t count = 1;
+
+GPIO_InitTypeDef GPIO_InitStructPrivate = {0};
+  uint32_t previousMillis = 0;
+  uint32_t currentMillis = 0;
+  uint8_t keyPressed = 0;
+  uint8_t keyPressedOld = 0;
 
 /* USER CODE END PV */
 
@@ -189,6 +205,11 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_GPIO_WritePin(row_ports[0], row_pins[0], GPIO_PIN_SET);
+  HAL_GPIO_WritePin(row_ports[1], row_pins[1], GPIO_PIN_SET);
+  HAL_GPIO_WritePin(row_ports[2], row_pins[2], GPIO_PIN_SET);
+  HAL_GPIO_WritePin(row_ports[3], row_pins[3], GPIO_PIN_SET);
+
   HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
 
   HAL_Delay(50);
@@ -258,56 +279,19 @@ int main(void)
 		SSD1306_Puts("No :(", &Font_11x18, 1);
 	}
 
-	//debounce scan:
-	enum KeyState { IDLE, PRESSED };
-	enum KeyState key_state[NUM_ROWS][NUM_COLS];  // Declare the array of states
+	if(keyPressed != keyPressedOld) {
+	    // Key has been pressed
+	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
 
-	for(int i = 0; i < NUM_ROWS; i++) {
-	    for(int j = 0; j < NUM_COLS; j++) {
-	        key_state[i][j] = IDLE;  // Initialize each state to IDLE
-	    }
+	    char key_str[3];
+	    sprintf(key_str, "%d", keyPressed); // display the value of keyPressed not keyPressedOld
+
+	    // Display the key on the OLED display
+	    SSD1306_GotoXY(0, 40);
+	    SSD1306_Puts(key_str, &Font_11x18, 1);
+
+	    keyPressedOld = keyPressed; // update keyPressedOld after using keyPressed
 	}
-
-	uint32_t last_key_time[NUM_ROWS][NUM_COLS] = {0};
-
-	for(int i = 0; i < NUM_ROWS; i++) {
-	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
-
-	    for(int j = 0; j < NUM_COLS; j++) {
-	        uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
-
-	        if (is_pressed && key_state[i][j] == IDLE) {
-	            // Key was just pressed, change state and record time
-	            key_state[i][j] = PRESSED;
-	            last_key_time[i][j] = HAL_GetTick();
-
-	            // Format the key string
-	            char key_str[3];
-	            sprintf(key_str, "%d%d", i+1, j+1);
-
-	            // Display the key on the OLED display
-	            SSD1306_GotoXY(0, 40);
-	            SSD1306_Puts(key_str, &Font_11x18, 1);
-
-	            //send_key(HID_KEY_A);
-	            keyboardhid.KEYCODE1 = 0x04; //send 'a'
-	            USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
-	            HAL_Delay(50);
-	            keyboardhid.KEYCODE1 = 0x00; //release key press
-	            USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
-
-	            // Light up led:
-	            HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
-
-	        } else if (!is_pressed && key_state[i][j] == PRESSED && HAL_GetTick() - last_key_time[i][j] > DEBOUNCE_DELAY) {
-	            // Key was released and debounce delay passed, go back to idle
-	            key_state[i][j] = IDLE;
-	        }
-	    }
-
-	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_RESET);
-	}
-	//Debounce scan END
 
   	// Update the OLED display
 	SSD1306_UpdateScreen();
@@ -486,8 +470,8 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : KEY_COL_1_Pin KEY_COL_2_Pin KEY_COL_3_Pin KEY_COL_4_Pin */
   GPIO_InitStruct.Pin = KEY_COL_1_Pin|KEY_COL_2_Pin|KEY_COL_3_Pin|KEY_COL_4_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED_STATUS_Pin KEY_ROW_1_Pin KEY_ROW_2_Pin KEY_ROW_3_Pin
@@ -499,9 +483,54 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 1);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 2);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 3);
+  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  currentMillis = HAL_GetTick();
+
+  if (currentMillis - previousMillis > 10) {
+
+    // Loop over rows
+    for (int r = 0; r < N; r++) {
+      // set only current row pin, reset others
+      for (int i = 0; i < N; i++) {
+        HAL_GPIO_WritePin(row_ports[i], row_pins[i], (i == r) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+      }
+
+      // Loop over columns
+      for (int c = 0; c < N; c++) {
+        // check if the current pin caused the interrupt and if it's read as high
+        if (GPIO_Pin == col_pins[c] && HAL_GPIO_ReadPin(col_ports[c], col_pins[c])) {
+          keyPressed = ascii_vals[r][c];
+          // once key is found, break the loop
+          break;
+        }
+      }
+    }
+
+    // Set all rows to high
+    for (int i = 0; i < N; i++) {
+      HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
+    }
+
+    previousMillis = currentMillis;
+  }
+}
 
 /* USER CODE END 4 */
 
