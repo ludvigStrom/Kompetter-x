@@ -100,10 +100,12 @@ char txBuf[8];
 uint8_t count = 1;
 
 GPIO_InitTypeDef GPIO_InitStructPrivate = {0};
-  uint32_t previousMillis = 0;
-  uint32_t currentMillis = 0;
-  uint8_t keyPressed = 0;
-  uint8_t keyPressedOld = 0;
+uint32_t previousMillis = 0;
+uint32_t currentMillis = 0;
+uint8_t keyPressed = 0;
+uint8_t keyPressedOld = 0;
+uint8_t interuptTriggerd = 0;
+
 
 /* USER CODE END PV */
 
@@ -126,50 +128,7 @@ int _write(int file, char *ptr, int len){
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-/*
-void send_key(uint8_t key) {
-    uint8_t report[8] = {0}; // HID keyboard input reports have 8 bytes
-    report[2] = key; // keycode goes into third byte
 
-    USBD_HID_SendReport(&hUsbDeviceFS, report, sizeof(report));
-
-    // Release key
-    report[2] = 0;
-    USBD_HID_SendReport(&hUsbDeviceFS, report, sizeof(report));
-}*/
-
-void set_row_low(int row){
-    // Set all rows to high
-    for(int i=0; i<NUM_ROWS; i++){
-        HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
-    }
-
-    // Set the specific row to low
-    HAL_GPIO_WritePin(row_ports[row], row_pins[row], GPIO_PIN_RESET);
-}
-/*
-uint8_t read_column(int col){
-    return HAL_GPIO_ReadPin(col_ports[col], col_pins[col]);
-}*/
-
-uint8_t read_column(int col){
-    return (HAL_GPIO_ReadPin(col_ports[col], col_pins[col]) == GPIO_PIN_SET);
-}
-
-char read_keypad(void){
-    for(int row=0; row<NUM_ROWS; row++){
-        set_row_low(row);
-        for(int col=0; col<NUM_COLS; col++){
-            if(read_column(col) == GPIO_PIN_RESET){
-                // Key at (row, col) is pressed.
-                // Return its ASCII value or a specific code depending on your needs
-                return '0' + row * NUM_COLS + col + 1;
-            }
-        }
-    }
-    // No key is pressed
-    return 0;
-}
 /* USER CODE END 0 */
 
 /**
@@ -223,9 +182,6 @@ int main(void)
   SSD1306_GotoXY (0, 20);
   SSD1306_Puts ("v.02", &Font_7x10, 1);
   SSD1306_UpdateScreen();
-/*
-  sprintf(txBuf, "Kompetter-X\r\nv.02");
-  CDC_Transmit_FS((uint8_t *) txBuf, strlen(txBuf));*/
 
   HAL_Delay(1500);
 
@@ -279,19 +235,24 @@ int main(void)
 		SSD1306_Puts("No :(", &Font_11x18, 1);
 	}
 
-	if(keyPressed != keyPressedOld) {
-	    // Key has been pressed
-	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
-
-	    char key_str[3];
+	if(interuptTriggerd == 1){
+		char key_str[3];
 	    sprintf(key_str, "%d", keyPressed); // display the value of keyPressed not keyPressedOld
-
 	    // Display the key on the OLED display
 	    SSD1306_GotoXY(0, 40);
 	    SSD1306_Puts(key_str, &Font_11x18, 1);
 
-	    keyPressedOld = keyPressed; // update keyPressedOld after using keyPressed
+        //send_key(HID_KEY_A);
+        keyboardhid.KEYCODE1 = key_str; //key pressed
+        USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
+        HAL_Delay(50);
+        keyboardhid.KEYCODE1 = 0x00; //release key press
+        USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
+
+
+		interuptTriggerd = 0;
 	}
+
 
   	// Update the OLED display
 	SSD1306_UpdateScreen();
@@ -310,7 +271,7 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-  */
+  *'
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
   /** Initializes the RCC Oscillators according to the specified parameters
@@ -503,7 +464,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   currentMillis = HAL_GetTick();
 
-  if (currentMillis - previousMillis > 10) {
+  if (currentMillis - previousMillis > 50) {
 
     // Loop over rows
     for (int r = 0; r < N; r++) {
@@ -529,6 +490,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
 
     previousMillis = currentMillis;
+    interuptTriggerd = 1;
   }
 }
 
