@@ -30,6 +30,11 @@
 #include <string.h>
 #include "stdio.h"
 #include "usbd_hid.h"
+#include <stdint.h>
+
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
+
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
 typedef struct
@@ -60,10 +65,19 @@ uint8_t keycode_map[NUM_ROWS][NUM_COLS] = {
 
 #define DEBOUNCE_DELAY 10 // Debounce delay in milliseconds
 
+//Keyboard scanning
 uint32_t last_key_time[NUM_ROWS][NUM_COLS] = {0};
 uint8_t hid_report[NUM_KEYS] = {0};
 uint8_t hid_report_prev[NUM_KEYS] = {0};
 char last_key[3] = {0};
+
+//Magnetic encoder
+int16_t currentEncoderVal = 0;
+int16_t lastEncoderVal = 0;
+int32_t encoderAccumulator = 0;
+int32_t smoothedAccumulator = 0;
+
+#define ALPHA_SMOOTHING 0.4
 
 GPIO_TypeDef* row_ports[NUM_ROWS] = {KEY_ROW_1_GPIO_Port, KEY_ROW_2_GPIO_Port, KEY_ROW_3_GPIO_Port, KEY_ROW_4_GPIO_Port};
 uint16_t row_pins[NUM_ROWS] = {KEY_ROW_1_Pin, KEY_ROW_2_Pin, KEY_ROW_3_Pin, KEY_ROW_4_Pin};
@@ -111,6 +125,32 @@ static void MX_SPI2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+int32_t encoderValueFunction(int16_t currentValue, int16_t previousValue, int32_t accumulator) {
+	int16_t difference = (int16_t)currentValue - (int16_t)previousValue;
+
+	// Handle wraparound from 0 to 4095 and from 4095 to 0
+	if (abs(difference) > 2048) {
+		if (difference > 0) {
+			difference -= 4096;
+		} else {
+			difference += 4096;
+		}
+	}
+
+	if (abs(difference) > 10) {
+		accumulator += difference;
+	}
+
+	// Exponential smoothing
+	float alpha = ALPHA_SMOOTHING; // Smoothing factor, adjust as needed
+	smoothedAccumulator = alpha * accumulator + (1 - alpha) * smoothedAccumulator;
+
+	// Limit smoothedAccumulator to the range -127 to 127
+	smoothedAccumulator = max(-127, min(127, smoothedAccumulator));
+
+	return smoothedAccumulator;
+}
 
 /* USER CODE END 0 */
 
@@ -185,7 +225,11 @@ int main(void)
 	}
   }
 
+  // Initialize lastEncoderVal with the initial encoder value
+  lastEncoderVal = AS5600_ReadAngle(&hi2c2);
+
   /* USER CODE END 2 */
+
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -198,6 +242,9 @@ int main(void)
 	//ANGLE SENSOR
 	uint16_t angle = AS5600_ReadAngle(&hi2c2);
 	uint8_t magnetPresent = AS5600_IsMagnetPresent(&hi2c2);
+
+	smoothedAccumulator = encoderValueFunction(angle, lastEncoderVal, encoderAccumulator);
+	lastEncoderVal = angle; // Update lastEncoderVal after calling encoderValueFunction
 
 	//Magnet status
 	if( magnetPresent == 1){
@@ -216,6 +263,19 @@ int main(void)
 		SSD1306_Puts("Angle: ", &Font_7x10, 1);
 		SSD1306_GotoXY (0, 12);
 		SSD1306_Puts(angle_str, &Font_11x18, 1);
+
+
+		//ACCUMULATOR:
+	    //Convert to a string with leading spaces
+		sprintf(angle_str, "%5d", smoothedAccumulator);
+
+		//display accumulator
+		SSD1306_GotoXY (80,0);
+		SSD1306_Puts("Acc: ", &Font_7x10, 1);
+		SSD1306_GotoXY (60, 12);
+		SSD1306_Puts(angle_str, &Font_7x10, 1);
+
+
 
 	} else {
 		SSD1306_GotoXY(40, 40);
