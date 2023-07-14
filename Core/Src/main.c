@@ -39,17 +39,26 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 
 typedef struct
 {
-	uint8_t MODIFER;
-	uint8_t RESERVED;
-	uint8_t KEYCODE1;
-	uint8_t KEYCODE2;
-	uint8_t KEYCODE3;
-	uint8_t KEYCODE4;
-	uint8_t KEYCODE5;
-	uint8_t KEYCODE6;
+    uint8_t REPORT_ID;
+    uint8_t MODIFIER;
+    uint8_t RESERVED;
+    uint8_t KEYCODE1;
+    uint8_t KEYCODE2;
+    uint8_t KEYCODE3;
+    uint8_t KEYCODE4;
+    uint8_t KEYCODE5;
+    uint8_t KEYCODE6;
 } keyboardHID;
 
-keyboardHID keyboardhid = {0,0,0,0,0,0,0,0};
+keyboardHID keyboardhid = {0x01,0,0,0,0,0,0,0,0};
+
+typedef struct
+{
+    uint8_t REPORT_ID;
+    int8_t WHEEL;
+} mouseHID;
+
+mouseHID mousehid = {0x02, 0};
 
 #define NUM_ROWS 4
 #define NUM_COLS 4
@@ -76,6 +85,7 @@ int16_t currentEncoderVal = 0;
 int16_t lastEncoderVal = 0;
 int32_t encoderAccumulator = 0;
 int32_t smoothedAccumulator = 0;
+int32_t lastSmoothedAccumulator = 0;
 
 #define ALPHA_SMOOTHING 0.4
 
@@ -335,7 +345,7 @@ int main(void)
 	}
 
 	if (report_changed) {
-	    // Update the HID report
+	    // Update the Keyboard HID report
 	    keyboardhid.KEYCODE1 = hid_report[0];
 	    keyboardhid.KEYCODE2 = hid_report[1];
 	    keyboardhid.KEYCODE3 = hid_report[2];
@@ -344,7 +354,8 @@ int main(void)
 	    keyboardhid.KEYCODE6 = hid_report[5];
 
 	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
-	    // Send the HID report
+
+	    // Send the Keyboard HID report
 	    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
 
 	    // Update the previous report state
@@ -354,6 +365,21 @@ int main(void)
 	    // Update the OLED display
 	    SSD1306_GotoXY(0, 40);
 	    SSD1306_Puts(last_key, &Font_11x18, 1);
+	}
+
+	if(smoothedAccumulator != lastSmoothedAccumulator) {
+	    // Update the Mouse HID report
+	    mousehid.WHEEL = (int8_t)smoothedAccumulator;
+
+	    // Remember the last value of smoothedAccumulator for the next loop
+	    lastSmoothedAccumulator = smoothedAccumulator;
+
+	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
+
+	    // Send the Mouse HID report
+	    USBD_HID_SendReport(&hUsbDeviceFS, (int8_t*)&mousehid, sizeof(mousehid));
+
+	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
 	}
 
   	// Update the OLED display
