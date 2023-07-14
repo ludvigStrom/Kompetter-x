@@ -175,15 +175,15 @@ int main(void)
   SSD1306_GotoXY(40, 40);
   SSD1306_Puts("--  ", &Font_11x18, 1);
 
-	//debounce scan:
-	enum KeyState { IDLE, PRESSED };
-	enum KeyState key_state[NUM_ROWS][NUM_COLS];  // Declare the array of states
+  //debounce scan:
+  enum KeyState { IDLE, PRESSED };
+  enum KeyState key_state[NUM_ROWS][NUM_COLS];  // Declare the array of states
 
-	for(int i = 0; i < NUM_ROWS; i++) {
-	    for(int j = 0; j < NUM_COLS; j++) {
-	        key_state[i][j] = IDLE;  // Initialize each state to IDLE
-	    }
+  for(int i = 0; i < NUM_ROWS; i++) {
+    for(int j = 0; j < NUM_COLS; j++) {
+	  key_state[i][j] = IDLE;  // Initialize each state to IDLE
 	}
+  }
 
   /* USER CODE END 2 */
 
@@ -241,12 +241,10 @@ int main(void)
 	                    break;
 	                }
 	            }
-
 	            key_state[i][j] = PRESSED;
 	            last_key_time[i][j] = current_tick;
 
 	            sprintf(last_key, "%d%d", i+1, j+1);  // Save the last key pressed
-
 
 	        } else if (!is_pressed && key_state[i][j] == PRESSED && current_tick - last_key_time[i][j] > DEBOUNCE_DELAY) {
 	            // Key has been released
@@ -285,11 +283,13 @@ int main(void)
 	    keyboardhid.KEYCODE5 = hid_report[4];
 	    keyboardhid.KEYCODE6 = hid_report[5];
 
+	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
 	    // Send the HID report
 	    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
 
 	    // Update the previous report state
 	    memcpy(hid_report_prev, hid_report, NUM_KEYS);
+	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
 
 	    // Update the OLED display
 	    SSD1306_GotoXY(0, 40);
