@@ -1317,7 +1317,7 @@ int main(void)
 	    mousehid.WHEEL = (int8_t)smoothedAccumulator;
  8000b66:	4b16      	ldr	r3, [pc, #88]	; (8000bc0 <main+0x4d4>)
  8000b68:	681b      	ldr	r3, [r3, #0]
- 8000b6a:	b25a      	sxtb	r2, r3
+ 8000b6a:	b2da      	uxtb	r2, r3
  8000b6c:	4b16      	ldr	r3, [pc, #88]	; (8000bc8 <main+0x4dc>)
  8000b6e:	705a      	strb	r2, [r3, #1]
 

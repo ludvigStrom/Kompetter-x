@@ -55,7 +55,7 @@ keyboardHID keyboardhid = {0x01,0,0,0,0,0,0,0,0};
 typedef struct
 {
     uint8_t REPORT_ID;
-    int8_t WHEEL;
+    uint8_t WHEEL;
 } mouseHID;
 
 mouseHID mousehid = {0x02, 0};

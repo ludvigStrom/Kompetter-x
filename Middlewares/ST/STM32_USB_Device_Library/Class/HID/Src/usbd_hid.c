@@ -463,7 +463,6 @@ __ALIGN_BEGIN static uint8_t HID_MOUSE_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE] __
 	0x81, 0x00,                    //   INPUT (Data,Ary,Abs)
 	0xc0,                           // END_COLLECTION
 
-
 	// Mouse Wheel Collection
 	0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
 	0x09, 0x02,                    // USAGE (Mouse)
