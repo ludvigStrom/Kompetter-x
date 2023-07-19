@@ -31,9 +31,11 @@
 #include "stdio.h"
 #include "usbd_hid.h"
 #include <stdint.h>
+#include "utils.h"
 
+/*
 #define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) > (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))*/
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
