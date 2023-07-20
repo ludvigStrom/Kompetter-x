@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020270  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00014620  00000000  00000000  000202a0  2**0
+ 12 .debug_info   0001461c  00000000  00000000  000202a0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 000032ac  00000000  00000000  000348c0  2**0
+ 13 .debug_abbrev 000032ac  00000000  00000000  000348bc  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 000010a8  00000000  00000000  00037b70  2**3
+ 14 .debug_aranges 000010a8  00000000  00000000  00037b68  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000f48  00000000  00000000  00038c18  2**3
+ 15 .debug_ranges 00000f48  00000000  00000000  00038c10  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  000222c3  00000000  00000000  00039b60  2**0
+ 16 .debug_macro  000222c3  00000000  00000000  00039b58  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00015f3c  00000000  00000000  0005be23  2**0
+ 17 .debug_line   00015f3c  00000000  00000000  0005be1b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000bfbfb  00000000  00000000  00071d5f  2**0
+ 18 .debug_str    000bfbfb  00000000  00000000  00071d57  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  0013195a  2**0
+ 19 .comment      00000050  00000000  00000000  00131952  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00004864  00000000  00000000  001319ac  2**2
+ 20 .debug_frame  00004864  00000000  00000000  001319a4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -640,7 +640,7 @@ int32_t encoderValueFunction(int16_t currentValue, int16_t previousValue, int32_
  80006dc:	46bd      	mov	sp, r7
  80006de:	f85d 7b04 	ldr.w	r7, [sp], #4
  80006e2:	4770      	bx	lr
- 80006e4:	3ecccccd 	.word	0x3ecccccd
+ 80006e4:	3e4ccccd 	.word	0x3e4ccccd
  80006e8:	200002f8 	.word	0x200002f8
 
 080006ec <main>:
@@ -854,7 +854,7 @@ int main(void)
  800082a:	2300      	movs	r3, #0
  800082c:	f887 303f 	strb.w	r3, [r7, #63]	; 0x3f
 
-	//Magnet status
+	//Handle magnet status
 	if( magnetPresent == 1){
  8000830:	f897 3021 	ldrb.w	r3, [r7, #33]	; 0x21
  8000834:	2b01      	cmp	r3, #1
@@ -947,7 +947,7 @@ int main(void)
  80008c0:	f000 fcfc 	bl	80012bc <SSD1306_Puts>
 	}
 
-	//Scan!
+	//Keyboard Scan!
 	for(int i = 0; i < NUM_ROWS; i++) {
  80008c4:	2300      	movs	r3, #0
  80008c6:	63bb      	str	r3, [r7, #56]	; 0x38
@@ -1127,7 +1127,7 @@ int main(void)
  8000a28:	2000004c 	.word	0x2000004c
  8000a2c:	2000005c 	.word	0x2000005c
  8000a30:	200002cc 	.word	0x200002cc
- 8000a34:	20000024 	.word	0x20000024
+ 8000a34:	2000001c 	.word	0x2000001c
  8000a38:	2000028c 	.word	0x2000028c
  8000a3c:	08008c8c 	.word	0x08008c8c
  8000a40:	200002ec 	.word	0x200002ec
@@ -1239,6 +1239,7 @@ int main(void)
 	    }
 	}
 
+	//Send Keyboard HID report over USB
 	if (report_changed) {
  8000af6:	f897 302b 	ldrb.w	r3, [r7, #43]	; 0x2b
  8000afa:	2b00      	cmp	r3, #0
@@ -1305,12 +1306,13 @@ int main(void)
  8000b58:	f887 303f 	strb.w	r3, [r7, #63]	; 0x3f
 	}
 
+	//Send Mouse HID report over USB
 	if(smoothedAccumulator != 0){
  8000b5c:	4b1c      	ldr	r3, [pc, #112]	; (8000bd0 <main+0x4e4>)
  8000b5e:	681b      	ldr	r3, [r3, #0]
  8000b60:	2b00      	cmp	r3, #0
  8000b62:	d018      	beq.n	8000b96 <main+0x4aa>
-		// Always update the Mouse HID report
+		// Update the Mouse HID report
 		mousehid.WHEEL = (int8_t)smoothedAccumulator / 35;
  8000b64:	4b1a      	ldr	r3, [pc, #104]	; (8000bd0 <main+0x4e4>)
  8000b66:	681b      	ldr	r3, [r3, #0]
@@ -1358,7 +1360,7 @@ int main(void)
   {
  8000baa:	e622      	b.n	80007f2 <main+0x106>
  8000bac:	200002cc 	.word	0x200002cc
- 8000bb0:	20000024 	.word	0x20000024
+ 8000bb0:	2000001c 	.word	0x2000001c
  8000bb4:	20000034 	.word	0x20000034
  8000bb8:	20000044 	.word	0x20000044
  8000bbc:	200002dc 	.word	0x200002dc
@@ -1368,7 +1370,7 @@ int main(void)
  8000bcc:	200002ec 	.word	0x200002ec
  8000bd0:	200002f8 	.word	0x200002f8
  8000bd4:	ea0ea0eb 	.word	0xea0ea0eb
- 8000bd8:	2000001c 	.word	0x2000001c
+ 8000bd8:	2000002c 	.word	0x2000002c
  8000bdc:	200002fc 	.word	0x200002fc
 
 08000be0 <SystemClock_Config>:
