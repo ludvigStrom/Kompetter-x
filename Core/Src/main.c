@@ -33,10 +33,6 @@
 #include <stdint.h>
 #include "utils.h"
 
-/*
-#define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) > (b) ? (a) : (b))*/
-
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
 typedef struct
@@ -54,13 +50,16 @@ typedef struct
 
 keyboardHID keyboardhid = {0x01,0,0,0,0,0,0,0,0};
 
-typedef struct
-{
-    uint8_t REPORT_ID;
-    uint8_t WHEEL;
+typedef struct {
+    uint8_t REPORT_ID;    // REPORT_ID
+    uint8_t BUTTONS;     // Button states - bitmapped
+    int8_t  X;           // X-axis movement
+    int8_t  Y;           // Y-axis movement
+    int8_t  WHEEL;       // Wheel movement
+    uint8_t VENDOR_DEFINED[2]; // Vendor-defined usage
 } mouseHID;
 
-mouseHID mousehid = {0x02, 0};
+mouseHID mousehid = {0x02,0,0,0,0,0};
 
 #define NUM_ROWS 4
 #define NUM_COLS 4
