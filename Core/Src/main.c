@@ -32,6 +32,7 @@
 #include "usbd_hid.h"
 #include <stdint.h>
 #include "utils.h"
+#include "ImprovedKeylayouts.h"
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
@@ -50,28 +51,29 @@ typedef struct
 
 keyboardHID keyboardhid = {0x01,0,0,0,0,0,0,0,0};
 
-typedef struct {
-    uint8_t REPORT_ID;    // REPORT_ID
-    uint8_t BUTTONS;     // Button states - bitmapped
-    int8_t  X;           // X-axis movement
-    int8_t  Y;           // Y-axis movement
-    int8_t  WHEEL;       // Wheel movement
-    uint8_t VENDOR_DEFINED[2]; // Vendor-defined usage
-} mouseHID;
-
-mouseHID mousehid = {0x02,0,0,0,0,0};
-
 #define NUM_ROWS 4
 #define NUM_COLS 4
 #define NUM_KEYS 16
 
-// Define a 4x4 array of HID keycodes
 uint8_t keycode_map[NUM_ROWS][NUM_COLS] = {
-    {0x1E, 0x1F, 0x20, 0x21}, // HID keycodes for '1', '2', '3', '4'
-    {0x22, 0x23, 0x24, 0x25}, // HID keycodes for '5', '6', '7', '8'
-    {0x26, 0x04, 0x05, 0x06}, // HID keycodes for '9', 'A', 'B', 'C'
-    {0x07, 0x08, 0x09, 0x0A}  // HID keycodes for 'D', 'E', 'F', 'G'
+    {KEY_1, KEY_2, KEY_3, KEY_4}, // HID keycodes for '1', '2', '3', '4'
+    {KEY_5, KEY_6, KEY_7, KEY_8}, // HID keycodes for '5', '6', '7', '8'
+    {KEY_9, KEY_A, KEY_B, KEY_C}, // HID keycodes for '9', 'A', 'B', 'C'
+    {KEY_D, KEY_E, KEY_F, KEY_G}  // HID keycodes for 'D', 'E', 'F', 'G'
 };
+
+typedef struct {
+    uint8_t REPORT_ID;    		// REPORT_ID
+    uint8_t BUTTONS;     		// Button states - bitmapped
+    int8_t  X;           		// X-axis movement
+    int8_t  Y;           		// Y-axis movement
+    int8_t  WHEEL;       		// Wheel movement
+    uint8_t VENDOR_DEFINED[2];  // Vendor-defined usage
+} mouseHID;
+
+mouseHID mousehid = {0x02,0,0,0,0,0};
+
+#define ALPHA_SMOOTHING 0.4
 
 #define DEBOUNCE_DELAY 10 // Debounce delay in milliseconds
 
@@ -87,8 +89,6 @@ int16_t lastEncoderVal = 0;
 int32_t encoderAccumulator = 0;
 int32_t smoothedAccumulator = 0;
 int32_t lastSmoothedAccumulator = 0;
-
-#define ALPHA_SMOOTHING 0.4
 
 GPIO_TypeDef* row_ports[NUM_ROWS] = {KEY_ROW_1_GPIO_Port, KEY_ROW_2_GPIO_Port, KEY_ROW_3_GPIO_Port, KEY_ROW_4_GPIO_Port};
 uint16_t row_pins[NUM_ROWS] = {KEY_ROW_1_Pin, KEY_ROW_2_Pin, KEY_ROW_3_Pin, KEY_ROW_4_Pin};
@@ -225,6 +225,7 @@ int main(void)
   SSD1306_Puts("Magnet: ", &Font_7x10, 1);
   SSD1306_GotoXY(40, 40);
   SSD1306_Puts("--  ", &Font_11x18, 1);
+  SSD1306_UpdateScreen();
 
   //debounce scan:
   enum KeyState { IDLE, PRESSED };
@@ -257,7 +258,9 @@ int main(void)
 	smoothedAccumulator = encoderValueFunction(angle, lastEncoderVal, encoderAccumulator);
 	lastEncoderVal = angle; // Update lastEncoderVal after calling encoderValueFunction
 
-	//Magnet status
+	uint8_t screenNotUpdated = 0;
+
+	//Handle magnet status
 	if( magnetPresent == 1){
 
 		SSD1306_GotoXY(40, 40);
@@ -286,14 +289,12 @@ int main(void)
 		SSD1306_GotoXY (60, 12);
 		SSD1306_Puts(angle_str, &Font_7x10, 1);
 
-
-
 	} else {
 		SSD1306_GotoXY(40, 40);
 		SSD1306_Puts("No :(", &Font_11x18, 1);
 	}
 
-	//Scan!
+	//Keyboard Scan!
 	for(int i = 0; i < NUM_ROWS; i++) {
 	    uint32_t current_tick = HAL_GetTick();
 	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
@@ -345,6 +346,7 @@ int main(void)
 	    }
 	}
 
+	//Send Keyboard HID report over USB
 	if (report_changed) {
 	    // Update the Keyboard HID report
 	    keyboardhid.KEYCODE1 = hid_report[0];
@@ -354,37 +356,38 @@ int main(void)
 	    keyboardhid.KEYCODE5 = hid_report[4];
 	    keyboardhid.KEYCODE6 = hid_report[5];
 
-	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
-
 	    // Send the Keyboard HID report
 	    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
 
 	    // Update the previous report state
 	    memcpy(hid_report_prev, hid_report, NUM_KEYS);
-	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
 
 	    // Update the OLED display
 	    SSD1306_GotoXY(0, 40);
 	    SSD1306_Puts(last_key, &Font_11x18, 1);
+	    screenNotUpdated = 1;
 	}
 
-	if(smoothedAccumulator != lastSmoothedAccumulator) {
-	    // Update the Mouse HID report
-	    mousehid.WHEEL = (int8_t)smoothedAccumulator;
+	//Send Mouse HID report over USB
+	if(smoothedAccumulator != 0){
+		// Update the Mouse HID report
+		mousehid.WHEEL = (int8_t)smoothedAccumulator / 35;
 
-	    // Remember the last value of smoothedAccumulator for the next loop
-	    lastSmoothedAccumulator = smoothedAccumulator;
+		// Remember the last value of smoothedAccumulator for the next loop
+		lastSmoothedAccumulator = smoothedAccumulator;
 
-	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
+		// Send the Mouse HID report
+		USBD_HID_SendReport(&hUsbDeviceFS, (int8_t*)&mousehid, sizeof(mousehid));
 
-	    // Send the Mouse HID report
-	    USBD_HID_SendReport(&hUsbDeviceFS, (int8_t*)&mousehid, sizeof(mousehid));
-
-	    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
+		// Update the OLED display
+		//SSD1306_UpdateScreen();
+		screenNotUpdated = 1;
 	}
 
-  	// Update the OLED display
-	SSD1306_UpdateScreen();
+	if(screenNotUpdated == 1){
+		  SSD1306_UpdateScreen();
+		  screenNotUpdated = 0;
+	}
   }
 
   /* USER CODE END 3 */
