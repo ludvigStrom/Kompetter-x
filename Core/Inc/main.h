@@ -55,6 +55,8 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
+extern uint8_t screenNotUpdated;
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

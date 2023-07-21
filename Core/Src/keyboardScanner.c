@@ -30,12 +30,6 @@ void keyboardScannerInit(void)
 
 void keyboardScan(void)
 {
-	//debug
-	HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
-	HAL_Delay(5);
-	HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
-	HAL_Delay(5);
-
 	//Keyboard Scan!
 	for(int i = 0; i < NUM_ROWS; i++) {
 		uint32_t current_tick = HAL_GetTick();
