@@ -13,7 +13,3 @@ Stm32 based HID macro 4x4 keypad with magnetic encoder.
 * State Machine: Implement a state machine that keeps track of the current state of the system (e.g., which menu is currently being displayed, which option is selected, etc.). The state machine should update the state based on the input from the user and call the appropriate functions from the USB and display modules.
 
 * Menu Functionality: Finally, implement the functionality for each menu option. This could involve sending a certain USB command, entering a submenu, etc.
-
-* Remember to test each module and functionality as you implement it. This will make it easier to catch and fix bugs early on. Also, consider using version control (like Git) to keep track of your changes and make it easier to revert back if something goes wrong.
-
-* This is a high-level roadmap and you might need to adjust it based on your specific requirements and constraints. Good luck with your project!
