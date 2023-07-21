@@ -21,29 +21,29 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   8 .data         00000270  20000000  0800a220  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          00000ea0  20000270  0800a490  00020270  2**2
+  9 .bss          00000eb0  20000270  0800a490  00020270  2**2
                   ALLOC
- 10 ._user_heap_stack 00000600  20001110  0800a490  00021110  2**0
+ 10 ._user_heap_stack 00000600  20001120  0800a490  00021120  2**0
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020270  2**0
                   CONTENTS, READONLY
- 12 .debug_info   000147bd  00000000  00000000  000202a0  2**0
+ 12 .debug_info   00015402  00000000  00000000  000202a0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00003380  00000000  00000000  00034a5d  2**0
+ 13 .debug_abbrev 00003462  00000000  00000000  000356a2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 000010c8  00000000  00000000  00037de0  2**3
+ 14 .debug_aranges 000010d0  00000000  00000000  00038b08  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000f58  00000000  00000000  00038ea8  2**3
+ 15 .debug_ranges 00000f60  00000000  00000000  00039bd8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  000224de  00000000  00000000  00039e00  2**0
+ 16 .debug_macro  0002266e  00000000  00000000  0003ab38  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00016670  00000000  00000000  0005c2de  2**0
+ 17 .debug_line   0001689c  00000000  00000000  0005d1a6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000bfc3d  00000000  00000000  0007294e  2**0
+ 18 .debug_str    000bfc48  00000000  00000000  00073a42  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  0013258b  2**0
+ 19 .comment      00000050  00000000  00000000  0013368a  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00004890  00000000  00000000  001325dc  2**2
+ 20 .debug_frame  000048c0  00000000  00000000  001336dc  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -526,883 +526,900 @@ uint8_t AS5600_IsMagnetPresent(I2C_HandleTypeDef *hi2c)
  800060c:	46bd      	mov	sp, r7
  800060e:	bd80      	pop	{r7, pc}
 
-08000610 <keyboardScanner>:
-#include "keyboardScanner.h"
-#include "main.h" // Include this if necessary for GPIO functions
+08000610 <keyboardScannerInit>:
+uint8_t hid_report_prev[NUM_KEYS] = {0};
+char last_key[3] = {0};
+enum KeyState key_state[NUM_ROWS][NUM_COLS];
 
-void keyboardScanner(void)
+void keyboardScannerInit(void)
 {
- 8000610:	b580      	push	{r7, lr}
- 8000612:	af00      	add	r7, sp, #0
-	HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
- 8000614:	2104      	movs	r1, #4
- 8000616:	4807      	ldr	r0, [pc, #28]	; (8000634 <keyboardScanner+0x24>)
- 8000618:	f001 fc35 	bl	8001e86 <HAL_GPIO_TogglePin>
-	HAL_Delay(10);
- 800061c:	200a      	movs	r0, #10
- 800061e:	f001 f92f 	bl	8001880 <HAL_Delay>
-	HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
- 8000622:	2104      	movs	r1, #4
- 8000624:	4803      	ldr	r0, [pc, #12]	; (8000634 <keyboardScanner+0x24>)
- 8000626:	f001 fc2e 	bl	8001e86 <HAL_GPIO_TogglePin>
-	HAL_Delay(10);
- 800062a:	200a      	movs	r0, #10
- 800062c:	f001 f928 	bl	8001880 <HAL_Delay>
+ 8000610:	b480      	push	{r7}
+ 8000612:	b083      	sub	sp, #12
+ 8000614:	af00      	add	r7, sp, #0
+  // Initialize each state to IDLE
+  for(int i = 0; i < NUM_ROWS; i++) {
+ 8000616:	2300      	movs	r3, #0
+ 8000618:	607b      	str	r3, [r7, #4]
+ 800061a:	e013      	b.n	8000644 <keyboardScannerInit+0x34>
+    for(int j = 0; j < NUM_COLS; j++) {
+ 800061c:	2300      	movs	r3, #0
+ 800061e:	603b      	str	r3, [r7, #0]
+ 8000620:	e00a      	b.n	8000638 <keyboardScannerInit+0x28>
+      key_state[i][j] = IDLE;
+ 8000622:	4a0d      	ldr	r2, [pc, #52]	; (8000658 <keyboardScannerInit+0x48>)
+ 8000624:	687b      	ldr	r3, [r7, #4]
+ 8000626:	009b      	lsls	r3, r3, #2
+ 8000628:	441a      	add	r2, r3
+ 800062a:	683b      	ldr	r3, [r7, #0]
+ 800062c:	4413      	add	r3, r2
+ 800062e:	2200      	movs	r2, #0
+ 8000630:	701a      	strb	r2, [r3, #0]
+    for(int j = 0; j < NUM_COLS; j++) {
+ 8000632:	683b      	ldr	r3, [r7, #0]
+ 8000634:	3301      	adds	r3, #1
+ 8000636:	603b      	str	r3, [r7, #0]
+ 8000638:	683b      	ldr	r3, [r7, #0]
+ 800063a:	2b03      	cmp	r3, #3
+ 800063c:	ddf1      	ble.n	8000622 <keyboardScannerInit+0x12>
+  for(int i = 0; i < NUM_ROWS; i++) {
+ 800063e:	687b      	ldr	r3, [r7, #4]
+ 8000640:	3301      	adds	r3, #1
+ 8000642:	607b      	str	r3, [r7, #4]
+ 8000644:	687b      	ldr	r3, [r7, #4]
+ 8000646:	2b03      	cmp	r3, #3
+ 8000648:	dde8      	ble.n	800061c <keyboardScannerInit+0xc>
+    }
+  }
 }
- 8000630:	bf00      	nop
- 8000632:	bd80      	pop	{r7, pc}
- 8000634:	40020000 	.word	0x40020000
+ 800064a:	bf00      	nop
+ 800064c:	bf00      	nop
+ 800064e:	370c      	adds	r7, #12
+ 8000650:	46bd      	mov	sp, r7
+ 8000652:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000656:	4770      	bx	lr
+ 8000658:	200002f0 	.word	0x200002f0
 
-08000638 <encoderValueFunction>:
+0800065c <keyboardScan>:
+
+void keyboardScan(void)
+{
+ 800065c:	b580      	push	{r7, lr}
+ 800065e:	b086      	sub	sp, #24
+ 8000660:	af00      	add	r7, sp, #0
+	//debug
+	HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
+ 8000662:	2104      	movs	r1, #4
+ 8000664:	486a      	ldr	r0, [pc, #424]	; (8000810 <keyboardScan+0x1b4>)
+ 8000666:	f001 fc0e 	bl	8001e86 <HAL_GPIO_TogglePin>
+	HAL_Delay(5);
+ 800066a:	2005      	movs	r0, #5
+ 800066c:	f001 f908 	bl	8001880 <HAL_Delay>
+	HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
+ 8000670:	2104      	movs	r1, #4
+ 8000672:	4867      	ldr	r0, [pc, #412]	; (8000810 <keyboardScan+0x1b4>)
+ 8000674:	f001 fc07 	bl	8001e86 <HAL_GPIO_TogglePin>
+	HAL_Delay(5);
+ 8000678:	2005      	movs	r0, #5
+ 800067a:	f001 f901 	bl	8001880 <HAL_Delay>
+
+	//Keyboard Scan!
+	for(int i = 0; i < NUM_ROWS; i++) {
+ 800067e:	2300      	movs	r3, #0
+ 8000680:	617b      	str	r3, [r7, #20]
+ 8000682:	e0bc      	b.n	80007fe <keyboardScan+0x1a2>
+		uint32_t current_tick = HAL_GetTick();
+ 8000684:	f001 f8f0 	bl	8001868 <HAL_GetTick>
+ 8000688:	6078      	str	r0, [r7, #4]
+		HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
+ 800068a:	4a62      	ldr	r2, [pc, #392]	; (8000814 <keyboardScan+0x1b8>)
+ 800068c:	697b      	ldr	r3, [r7, #20]
+ 800068e:	f852 0023 	ldr.w	r0, [r2, r3, lsl #2]
+ 8000692:	4a61      	ldr	r2, [pc, #388]	; (8000818 <keyboardScan+0x1bc>)
+ 8000694:	697b      	ldr	r3, [r7, #20]
+ 8000696:	f832 3013 	ldrh.w	r3, [r2, r3, lsl #1]
+ 800069a:	2201      	movs	r2, #1
+ 800069c:	4619      	mov	r1, r3
+ 800069e:	f001 fbd9 	bl	8001e54 <HAL_GPIO_WritePin>
+		HAL_Delay(1); // delay after setting row high
+ 80006a2:	2001      	movs	r0, #1
+ 80006a4:	f001 f8ec 	bl	8001880 <HAL_Delay>
+
+		for(int j = 0; j < NUM_COLS; j++) {
+ 80006a8:	2300      	movs	r3, #0
+ 80006aa:	613b      	str	r3, [r7, #16]
+ 80006ac:	e091      	b.n	80007d2 <keyboardScan+0x176>
+			uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
+ 80006ae:	4a5b      	ldr	r2, [pc, #364]	; (800081c <keyboardScan+0x1c0>)
+ 80006b0:	693b      	ldr	r3, [r7, #16]
+ 80006b2:	f852 2023 	ldr.w	r2, [r2, r3, lsl #2]
+ 80006b6:	495a      	ldr	r1, [pc, #360]	; (8000820 <keyboardScan+0x1c4>)
+ 80006b8:	693b      	ldr	r3, [r7, #16]
+ 80006ba:	f831 3013 	ldrh.w	r3, [r1, r3, lsl #1]
+ 80006be:	4619      	mov	r1, r3
+ 80006c0:	4610      	mov	r0, r2
+ 80006c2:	f001 fbaf 	bl	8001e24 <HAL_GPIO_ReadPin>
+ 80006c6:	4603      	mov	r3, r0
+ 80006c8:	2b01      	cmp	r3, #1
+ 80006ca:	bf0c      	ite	eq
+ 80006cc:	2301      	moveq	r3, #1
+ 80006ce:	2300      	movne	r3, #0
+ 80006d0:	b2db      	uxtb	r3, r3
+ 80006d2:	70fb      	strb	r3, [r7, #3]
+
+			if (is_pressed && key_state[i][j] == IDLE) {
+ 80006d4:	78fb      	ldrb	r3, [r7, #3]
+ 80006d6:	2b00      	cmp	r3, #0
+ 80006d8:	d03d      	beq.n	8000756 <keyboardScan+0xfa>
+ 80006da:	4a52      	ldr	r2, [pc, #328]	; (8000824 <keyboardScan+0x1c8>)
+ 80006dc:	697b      	ldr	r3, [r7, #20]
+ 80006de:	009b      	lsls	r3, r3, #2
+ 80006e0:	441a      	add	r2, r3
+ 80006e2:	693b      	ldr	r3, [r7, #16]
+ 80006e4:	4413      	add	r3, r2
+ 80006e6:	781b      	ldrb	r3, [r3, #0]
+ 80006e8:	2b00      	cmp	r3, #0
+ 80006ea:	d134      	bne.n	8000756 <keyboardScan+0xfa>
+				// Key has been pressed from an idle state
+
+				// Find a slot in the HID report
+				for (int k = 0; k < NUM_KEYS; k++) {
+ 80006ec:	2300      	movs	r3, #0
+ 80006ee:	60fb      	str	r3, [r7, #12]
+ 80006f0:	e015      	b.n	800071e <keyboardScan+0xc2>
+					if (hid_report[k] == 0) { // 0 indicates an empty slot
+ 80006f2:	4a4d      	ldr	r2, [pc, #308]	; (8000828 <keyboardScan+0x1cc>)
+ 80006f4:	68fb      	ldr	r3, [r7, #12]
+ 80006f6:	4413      	add	r3, r2
+ 80006f8:	781b      	ldrb	r3, [r3, #0]
+ 80006fa:	2b00      	cmp	r3, #0
+ 80006fc:	d10c      	bne.n	8000718 <keyboardScan+0xbc>
+						hid_report[k] = keycode_map[i][j]; // Add the key to the HID report
+ 80006fe:	4a4b      	ldr	r2, [pc, #300]	; (800082c <keyboardScan+0x1d0>)
+ 8000700:	697b      	ldr	r3, [r7, #20]
+ 8000702:	009b      	lsls	r3, r3, #2
+ 8000704:	441a      	add	r2, r3
+ 8000706:	693b      	ldr	r3, [r7, #16]
+ 8000708:	4413      	add	r3, r2
+ 800070a:	7819      	ldrb	r1, [r3, #0]
+ 800070c:	4a46      	ldr	r2, [pc, #280]	; (8000828 <keyboardScan+0x1cc>)
+ 800070e:	68fb      	ldr	r3, [r7, #12]
+ 8000710:	4413      	add	r3, r2
+ 8000712:	460a      	mov	r2, r1
+ 8000714:	701a      	strb	r2, [r3, #0]
+						break;
+ 8000716:	e005      	b.n	8000724 <keyboardScan+0xc8>
+				for (int k = 0; k < NUM_KEYS; k++) {
+ 8000718:	68fb      	ldr	r3, [r7, #12]
+ 800071a:	3301      	adds	r3, #1
+ 800071c:	60fb      	str	r3, [r7, #12]
+ 800071e:	68fb      	ldr	r3, [r7, #12]
+ 8000720:	2b0f      	cmp	r3, #15
+ 8000722:	dde6      	ble.n	80006f2 <keyboardScan+0x96>
+					}
+				}
+				key_state[i][j] = PRESSED;
+ 8000724:	4a3f      	ldr	r2, [pc, #252]	; (8000824 <keyboardScan+0x1c8>)
+ 8000726:	697b      	ldr	r3, [r7, #20]
+ 8000728:	009b      	lsls	r3, r3, #2
+ 800072a:	441a      	add	r2, r3
+ 800072c:	693b      	ldr	r3, [r7, #16]
+ 800072e:	4413      	add	r3, r2
+ 8000730:	2201      	movs	r2, #1
+ 8000732:	701a      	strb	r2, [r3, #0]
+				last_key_time[i][j] = current_tick;
+ 8000734:	493e      	ldr	r1, [pc, #248]	; (8000830 <keyboardScan+0x1d4>)
+ 8000736:	697b      	ldr	r3, [r7, #20]
+ 8000738:	009a      	lsls	r2, r3, #2
+ 800073a:	693b      	ldr	r3, [r7, #16]
+ 800073c:	4413      	add	r3, r2
+ 800073e:	687a      	ldr	r2, [r7, #4]
+ 8000740:	f841 2023 	str.w	r2, [r1, r3, lsl #2]
+
+				sprintf(last_key, "%d%d", i+1, j+1);  // Save the last key pressed
+ 8000744:	697b      	ldr	r3, [r7, #20]
+ 8000746:	1c5a      	adds	r2, r3, #1
+ 8000748:	693b      	ldr	r3, [r7, #16]
+ 800074a:	3301      	adds	r3, #1
+ 800074c:	4939      	ldr	r1, [pc, #228]	; (8000834 <keyboardScan+0x1d8>)
+ 800074e:	483a      	ldr	r0, [pc, #232]	; (8000838 <keyboardScan+0x1dc>)
+ 8000750:	f007 fe0c 	bl	800836c <siprintf>
+ 8000754:	e03a      	b.n	80007cc <keyboardScan+0x170>
+
+			} else if (!is_pressed && key_state[i][j] == PRESSED && current_tick - last_key_time[i][j] > DEBOUNCE_DELAY) {
+ 8000756:	78fb      	ldrb	r3, [r7, #3]
+ 8000758:	2b00      	cmp	r3, #0
+ 800075a:	d137      	bne.n	80007cc <keyboardScan+0x170>
+ 800075c:	4a31      	ldr	r2, [pc, #196]	; (8000824 <keyboardScan+0x1c8>)
+ 800075e:	697b      	ldr	r3, [r7, #20]
+ 8000760:	009b      	lsls	r3, r3, #2
+ 8000762:	441a      	add	r2, r3
+ 8000764:	693b      	ldr	r3, [r7, #16]
+ 8000766:	4413      	add	r3, r2
+ 8000768:	781b      	ldrb	r3, [r3, #0]
+ 800076a:	2b01      	cmp	r3, #1
+ 800076c:	d12e      	bne.n	80007cc <keyboardScan+0x170>
+ 800076e:	4930      	ldr	r1, [pc, #192]	; (8000830 <keyboardScan+0x1d4>)
+ 8000770:	697b      	ldr	r3, [r7, #20]
+ 8000772:	009a      	lsls	r2, r3, #2
+ 8000774:	693b      	ldr	r3, [r7, #16]
+ 8000776:	4413      	add	r3, r2
+ 8000778:	f851 3023 	ldr.w	r3, [r1, r3, lsl #2]
+ 800077c:	687a      	ldr	r2, [r7, #4]
+ 800077e:	1ad3      	subs	r3, r2, r3
+ 8000780:	2b0a      	cmp	r3, #10
+ 8000782:	d923      	bls.n	80007cc <keyboardScan+0x170>
+				// Key has been released
+
+				// Remove the key from the HID report
+				for (int k = 0; k < NUM_KEYS; k++) {
+ 8000784:	2300      	movs	r3, #0
+ 8000786:	60bb      	str	r3, [r7, #8]
+ 8000788:	e015      	b.n	80007b6 <keyboardScan+0x15a>
+					if (hid_report[k] == keycode_map[i][j]) {
+ 800078a:	4a27      	ldr	r2, [pc, #156]	; (8000828 <keyboardScan+0x1cc>)
+ 800078c:	68bb      	ldr	r3, [r7, #8]
+ 800078e:	4413      	add	r3, r2
+ 8000790:	781a      	ldrb	r2, [r3, #0]
+ 8000792:	4926      	ldr	r1, [pc, #152]	; (800082c <keyboardScan+0x1d0>)
+ 8000794:	697b      	ldr	r3, [r7, #20]
+ 8000796:	009b      	lsls	r3, r3, #2
+ 8000798:	4419      	add	r1, r3
+ 800079a:	693b      	ldr	r3, [r7, #16]
+ 800079c:	440b      	add	r3, r1
+ 800079e:	781b      	ldrb	r3, [r3, #0]
+ 80007a0:	429a      	cmp	r2, r3
+ 80007a2:	d105      	bne.n	80007b0 <keyboardScan+0x154>
+						hid_report[k] = 0; // Remove the key
+ 80007a4:	4a20      	ldr	r2, [pc, #128]	; (8000828 <keyboardScan+0x1cc>)
+ 80007a6:	68bb      	ldr	r3, [r7, #8]
+ 80007a8:	4413      	add	r3, r2
+ 80007aa:	2200      	movs	r2, #0
+ 80007ac:	701a      	strb	r2, [r3, #0]
+						break;
+ 80007ae:	e005      	b.n	80007bc <keyboardScan+0x160>
+				for (int k = 0; k < NUM_KEYS; k++) {
+ 80007b0:	68bb      	ldr	r3, [r7, #8]
+ 80007b2:	3301      	adds	r3, #1
+ 80007b4:	60bb      	str	r3, [r7, #8]
+ 80007b6:	68bb      	ldr	r3, [r7, #8]
+ 80007b8:	2b0f      	cmp	r3, #15
+ 80007ba:	dde6      	ble.n	800078a <keyboardScan+0x12e>
+					}
+				}
+
+				key_state[i][j] = IDLE;
+ 80007bc:	4a19      	ldr	r2, [pc, #100]	; (8000824 <keyboardScan+0x1c8>)
+ 80007be:	697b      	ldr	r3, [r7, #20]
+ 80007c0:	009b      	lsls	r3, r3, #2
+ 80007c2:	441a      	add	r2, r3
+ 80007c4:	693b      	ldr	r3, [r7, #16]
+ 80007c6:	4413      	add	r3, r2
+ 80007c8:	2200      	movs	r2, #0
+ 80007ca:	701a      	strb	r2, [r3, #0]
+		for(int j = 0; j < NUM_COLS; j++) {
+ 80007cc:	693b      	ldr	r3, [r7, #16]
+ 80007ce:	3301      	adds	r3, #1
+ 80007d0:	613b      	str	r3, [r7, #16]
+ 80007d2:	693b      	ldr	r3, [r7, #16]
+ 80007d4:	2b03      	cmp	r3, #3
+ 80007d6:	f77f af6a 	ble.w	80006ae <keyboardScan+0x52>
+			}
+		}
+
+		HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_RESET);
+ 80007da:	4a0e      	ldr	r2, [pc, #56]	; (8000814 <keyboardScan+0x1b8>)
+ 80007dc:	697b      	ldr	r3, [r7, #20]
+ 80007de:	f852 0023 	ldr.w	r0, [r2, r3, lsl #2]
+ 80007e2:	4a0d      	ldr	r2, [pc, #52]	; (8000818 <keyboardScan+0x1bc>)
+ 80007e4:	697b      	ldr	r3, [r7, #20]
+ 80007e6:	f832 3013 	ldrh.w	r3, [r2, r3, lsl #1]
+ 80007ea:	2200      	movs	r2, #0
+ 80007ec:	4619      	mov	r1, r3
+ 80007ee:	f001 fb31 	bl	8001e54 <HAL_GPIO_WritePin>
+		HAL_Delay(1); // delay after setting row low
+ 80007f2:	2001      	movs	r0, #1
+ 80007f4:	f001 f844 	bl	8001880 <HAL_Delay>
+	for(int i = 0; i < NUM_ROWS; i++) {
+ 80007f8:	697b      	ldr	r3, [r7, #20]
+ 80007fa:	3301      	adds	r3, #1
+ 80007fc:	617b      	str	r3, [r7, #20]
+ 80007fe:	697b      	ldr	r3, [r7, #20]
+ 8000800:	2b03      	cmp	r3, #3
+ 8000802:	f77f af3f 	ble.w	8000684 <keyboardScan+0x28>
+	}
+}
+ 8000806:	bf00      	nop
+ 8000808:	bf00      	nop
+ 800080a:	3718      	adds	r7, #24
+ 800080c:	46bd      	mov	sp, r7
+ 800080e:	bd80      	pop	{r7, pc}
+ 8000810:	40020000 	.word	0x40020000
+ 8000814:	20000034 	.word	0x20000034
+ 8000818:	20000044 	.word	0x20000044
+ 800081c:	2000004c 	.word	0x2000004c
+ 8000820:	2000005c 	.word	0x2000005c
+ 8000824:	200002f0 	.word	0x200002f0
+ 8000828:	200002cc 	.word	0x200002cc
+ 800082c:	20000010 	.word	0x20000010
+ 8000830:	2000028c 	.word	0x2000028c
+ 8000834:	08008c60 	.word	0x08008c60
+ 8000838:	200002ec 	.word	0x200002ec
+
+0800083c <encoderValueFunction>:
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
 int32_t encoderValueFunction(int16_t currentValue, int16_t previousValue, int32_t accumulator) {
- 8000638:	b480      	push	{r7}
- 800063a:	b085      	sub	sp, #20
- 800063c:	af00      	add	r7, sp, #0
- 800063e:	4603      	mov	r3, r0
- 8000640:	603a      	str	r2, [r7, #0]
- 8000642:	80fb      	strh	r3, [r7, #6]
- 8000644:	460b      	mov	r3, r1
- 8000646:	80bb      	strh	r3, [r7, #4]
+ 800083c:	b480      	push	{r7}
+ 800083e:	b085      	sub	sp, #20
+ 8000840:	af00      	add	r7, sp, #0
+ 8000842:	4603      	mov	r3, r0
+ 8000844:	603a      	str	r2, [r7, #0]
+ 8000846:	80fb      	strh	r3, [r7, #6]
+ 8000848:	460b      	mov	r3, r1
+ 800084a:	80bb      	strh	r3, [r7, #4]
 	int16_t difference = (int16_t)currentValue - (int16_t)previousValue;
- 8000648:	88fa      	ldrh	r2, [r7, #6]
- 800064a:	88bb      	ldrh	r3, [r7, #4]
- 800064c:	1ad3      	subs	r3, r2, r3
- 800064e:	b29b      	uxth	r3, r3
- 8000650:	81fb      	strh	r3, [r7, #14]
+ 800084c:	88fa      	ldrh	r2, [r7, #6]
+ 800084e:	88bb      	ldrh	r3, [r7, #4]
+ 8000850:	1ad3      	subs	r3, r2, r3
+ 8000852:	b29b      	uxth	r3, r3
+ 8000854:	81fb      	strh	r3, [r7, #14]
 
 	// Handle wraparound from 0 to 4095 and from 4095 to 0
 	if (abs(difference) > 2048) {
- 8000652:	f9b7 300e 	ldrsh.w	r3, [r7, #14]
- 8000656:	2b00      	cmp	r3, #0
- 8000658:	bfb8      	it	lt
- 800065a:	425b      	neglt	r3, r3
- 800065c:	b29b      	uxth	r3, r3
- 800065e:	f5b3 6f00 	cmp.w	r3, #2048	; 0x800
- 8000662:	d90e      	bls.n	8000682 <encoderValueFunction+0x4a>
+ 8000856:	f9b7 300e 	ldrsh.w	r3, [r7, #14]
+ 800085a:	2b00      	cmp	r3, #0
+ 800085c:	bfb8      	it	lt
+ 800085e:	425b      	neglt	r3, r3
+ 8000860:	b29b      	uxth	r3, r3
+ 8000862:	f5b3 6f00 	cmp.w	r3, #2048	; 0x800
+ 8000866:	d90e      	bls.n	8000886 <encoderValueFunction+0x4a>
 		if (difference > 0) {
- 8000664:	f9b7 300e 	ldrsh.w	r3, [r7, #14]
- 8000668:	2b00      	cmp	r3, #0
- 800066a:	dd05      	ble.n	8000678 <encoderValueFunction+0x40>
+ 8000868:	f9b7 300e 	ldrsh.w	r3, [r7, #14]
+ 800086c:	2b00      	cmp	r3, #0
+ 800086e:	dd05      	ble.n	800087c <encoderValueFunction+0x40>
 			difference -= 4096;
- 800066c:	89fb      	ldrh	r3, [r7, #14]
- 800066e:	f5a3 5380 	sub.w	r3, r3, #4096	; 0x1000
- 8000672:	b29b      	uxth	r3, r3
- 8000674:	81fb      	strh	r3, [r7, #14]
- 8000676:	e004      	b.n	8000682 <encoderValueFunction+0x4a>
+ 8000870:	89fb      	ldrh	r3, [r7, #14]
+ 8000872:	f5a3 5380 	sub.w	r3, r3, #4096	; 0x1000
+ 8000876:	b29b      	uxth	r3, r3
+ 8000878:	81fb      	strh	r3, [r7, #14]
+ 800087a:	e004      	b.n	8000886 <encoderValueFunction+0x4a>
 		} else {
 			difference += 4096;
- 8000678:	89fb      	ldrh	r3, [r7, #14]
- 800067a:	f503 5380 	add.w	r3, r3, #4096	; 0x1000
- 800067e:	b29b      	uxth	r3, r3
- 8000680:	81fb      	strh	r3, [r7, #14]
+ 800087c:	89fb      	ldrh	r3, [r7, #14]
+ 800087e:	f503 5380 	add.w	r3, r3, #4096	; 0x1000
+ 8000882:	b29b      	uxth	r3, r3
+ 8000884:	81fb      	strh	r3, [r7, #14]
 		}
 	}
 
 	if (abs(difference) > 10) {
- 8000682:	f9b7 300e 	ldrsh.w	r3, [r7, #14]
- 8000686:	2b00      	cmp	r3, #0
- 8000688:	bfb8      	it	lt
- 800068a:	425b      	neglt	r3, r3
- 800068c:	b29b      	uxth	r3, r3
- 800068e:	2b0a      	cmp	r3, #10
- 8000690:	d904      	bls.n	800069c <encoderValueFunction+0x64>
+ 8000886:	f9b7 300e 	ldrsh.w	r3, [r7, #14]
+ 800088a:	2b00      	cmp	r3, #0
+ 800088c:	bfb8      	it	lt
+ 800088e:	425b      	neglt	r3, r3
+ 8000890:	b29b      	uxth	r3, r3
+ 8000892:	2b0a      	cmp	r3, #10
+ 8000894:	d904      	bls.n	80008a0 <encoderValueFunction+0x64>
 		accumulator += difference;
- 8000692:	f9b7 300e 	ldrsh.w	r3, [r7, #14]
- 8000696:	683a      	ldr	r2, [r7, #0]
- 8000698:	4413      	add	r3, r2
- 800069a:	603b      	str	r3, [r7, #0]
+ 8000896:	f9b7 300e 	ldrsh.w	r3, [r7, #14]
+ 800089a:	683a      	ldr	r2, [r7, #0]
+ 800089c:	4413      	add	r3, r2
+ 800089e:	603b      	str	r3, [r7, #0]
 	}
 
 	// Exponential smoothing
 	float alpha = ALPHA_SMOOTHING; // Smoothing factor, adjust as needed
- 800069c:	4b1b      	ldr	r3, [pc, #108]	; (800070c <encoderValueFunction+0xd4>)
- 800069e:	60bb      	str	r3, [r7, #8]
+ 80008a0:	4b1b      	ldr	r3, [pc, #108]	; (8000910 <encoderValueFunction+0xd4>)
+ 80008a2:	60bb      	str	r3, [r7, #8]
 	smoothedAccumulator = alpha * accumulator + (1 - alpha) * smoothedAccumulator;
- 80006a0:	683b      	ldr	r3, [r7, #0]
- 80006a2:	ee07 3a90 	vmov	s15, r3
- 80006a6:	eeb8 7ae7 	vcvt.f32.s32	s14, s15
- 80006aa:	edd7 7a02 	vldr	s15, [r7, #8]
- 80006ae:	ee27 7a27 	vmul.f32	s14, s14, s15
- 80006b2:	eef7 6a00 	vmov.f32	s13, #112	; 0x3f800000  1.0
- 80006b6:	edd7 7a02 	vldr	s15, [r7, #8]
- 80006ba:	ee76 6ae7 	vsub.f32	s13, s13, s15
- 80006be:	4b14      	ldr	r3, [pc, #80]	; (8000710 <encoderValueFunction+0xd8>)
- 80006c0:	681b      	ldr	r3, [r3, #0]
- 80006c2:	ee07 3a90 	vmov	s15, r3
- 80006c6:	eef8 7ae7 	vcvt.f32.s32	s15, s15
- 80006ca:	ee66 7aa7 	vmul.f32	s15, s13, s15
- 80006ce:	ee77 7a27 	vadd.f32	s15, s14, s15
- 80006d2:	eefd 7ae7 	vcvt.s32.f32	s15, s15
- 80006d6:	ee17 2a90 	vmov	r2, s15
- 80006da:	4b0d      	ldr	r3, [pc, #52]	; (8000710 <encoderValueFunction+0xd8>)
- 80006dc:	601a      	str	r2, [r3, #0]
+ 80008a4:	683b      	ldr	r3, [r7, #0]
+ 80008a6:	ee07 3a90 	vmov	s15, r3
+ 80008aa:	eeb8 7ae7 	vcvt.f32.s32	s14, s15
+ 80008ae:	edd7 7a02 	vldr	s15, [r7, #8]
+ 80008b2:	ee27 7a27 	vmul.f32	s14, s14, s15
+ 80008b6:	eef7 6a00 	vmov.f32	s13, #112	; 0x3f800000  1.0
+ 80008ba:	edd7 7a02 	vldr	s15, [r7, #8]
+ 80008be:	ee76 6ae7 	vsub.f32	s13, s13, s15
+ 80008c2:	4b14      	ldr	r3, [pc, #80]	; (8000914 <encoderValueFunction+0xd8>)
+ 80008c4:	681b      	ldr	r3, [r3, #0]
+ 80008c6:	ee07 3a90 	vmov	s15, r3
+ 80008ca:	eef8 7ae7 	vcvt.f32.s32	s15, s15
+ 80008ce:	ee66 7aa7 	vmul.f32	s15, s13, s15
+ 80008d2:	ee77 7a27 	vadd.f32	s15, s14, s15
+ 80008d6:	eefd 7ae7 	vcvt.s32.f32	s15, s15
+ 80008da:	ee17 2a90 	vmov	r2, s15
+ 80008de:	4b0d      	ldr	r3, [pc, #52]	; (8000914 <encoderValueFunction+0xd8>)
+ 80008e0:	601a      	str	r2, [r3, #0]
 
 	// Limit smoothedAccumulator to the range -127 to 127
 	smoothedAccumulator = max(-127, min(127, smoothedAccumulator));
- 80006de:	4b0c      	ldr	r3, [pc, #48]	; (8000710 <encoderValueFunction+0xd8>)
- 80006e0:	681b      	ldr	r3, [r3, #0]
- 80006e2:	f113 0f7f 	cmn.w	r3, #127	; 0x7f
- 80006e6:	db05      	blt.n	80006f4 <encoderValueFunction+0xbc>
- 80006e8:	4b09      	ldr	r3, [pc, #36]	; (8000710 <encoderValueFunction+0xd8>)
- 80006ea:	681b      	ldr	r3, [r3, #0]
- 80006ec:	2b7f      	cmp	r3, #127	; 0x7f
- 80006ee:	bfa8      	it	ge
- 80006f0:	237f      	movge	r3, #127	; 0x7f
- 80006f2:	e001      	b.n	80006f8 <encoderValueFunction+0xc0>
- 80006f4:	f06f 037e 	mvn.w	r3, #126	; 0x7e
- 80006f8:	4a05      	ldr	r2, [pc, #20]	; (8000710 <encoderValueFunction+0xd8>)
- 80006fa:	6013      	str	r3, [r2, #0]
+ 80008e2:	4b0c      	ldr	r3, [pc, #48]	; (8000914 <encoderValueFunction+0xd8>)
+ 80008e4:	681b      	ldr	r3, [r3, #0]
+ 80008e6:	f113 0f7f 	cmn.w	r3, #127	; 0x7f
+ 80008ea:	db05      	blt.n	80008f8 <encoderValueFunction+0xbc>
+ 80008ec:	4b09      	ldr	r3, [pc, #36]	; (8000914 <encoderValueFunction+0xd8>)
+ 80008ee:	681b      	ldr	r3, [r3, #0]
+ 80008f0:	2b7f      	cmp	r3, #127	; 0x7f
+ 80008f2:	bfa8      	it	ge
+ 80008f4:	237f      	movge	r3, #127	; 0x7f
+ 80008f6:	e001      	b.n	80008fc <encoderValueFunction+0xc0>
+ 80008f8:	f06f 037e 	mvn.w	r3, #126	; 0x7e
+ 80008fc:	4a05      	ldr	r2, [pc, #20]	; (8000914 <encoderValueFunction+0xd8>)
+ 80008fe:	6013      	str	r3, [r2, #0]
 
 	return smoothedAccumulator;
- 80006fc:	4b04      	ldr	r3, [pc, #16]	; (8000710 <encoderValueFunction+0xd8>)
- 80006fe:	681b      	ldr	r3, [r3, #0]
+ 8000900:	4b04      	ldr	r3, [pc, #16]	; (8000914 <encoderValueFunction+0xd8>)
+ 8000902:	681b      	ldr	r3, [r3, #0]
 }
- 8000700:	4618      	mov	r0, r3
- 8000702:	3714      	adds	r7, #20
- 8000704:	46bd      	mov	sp, r7
- 8000706:	f85d 7b04 	ldr.w	r7, [sp], #4
- 800070a:	4770      	bx	lr
- 800070c:	3e4ccccd 	.word	0x3e4ccccd
- 8000710:	200002f8 	.word	0x200002f8
+ 8000904:	4618      	mov	r0, r3
+ 8000906:	3714      	adds	r7, #20
+ 8000908:	46bd      	mov	sp, r7
+ 800090a:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 800090e:	4770      	bx	lr
+ 8000910:	3e4ccccd 	.word	0x3e4ccccd
+ 8000914:	20000308 	.word	0x20000308
 
-08000714 <main>:
+08000918 <main>:
 /**
   * @brief  The application entry point.
   * @retval int
   */
 int main(void)
 {
- 8000714:	b590      	push	{r4, r7, lr}
- 8000716:	b093      	sub	sp, #76	; 0x4c
- 8000718:	af00      	add	r7, sp, #0
+ 8000918:	b590      	push	{r4, r7, lr}
+ 800091a:	b085      	sub	sp, #20
+ 800091c:	af00      	add	r7, sp, #0
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
- 800071a:	f001 f83f 	bl	800179c <HAL_Init>
+ 800091e:	f000 ff3d 	bl	800179c <HAL_Init>
 
   /* USER CODE BEGIN Init */
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
- 800071e:	f000 fa75 	bl	8000c0c <SystemClock_Config>
+ 8000922:	f000 f973 	bl	8000c0c <SystemClock_Config>
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
- 8000722:	f000 fb6f 	bl	8000e04 <MX_GPIO_Init>
+ 8000926:	f000 fa6d 	bl	8000e04 <MX_GPIO_Init>
   MX_I2C1_Init();
- 8000726:	f000 fadb 	bl	8000ce0 <MX_I2C1_Init>
+ 800092a:	f000 f9d9 	bl	8000ce0 <MX_I2C1_Init>
   MX_I2C2_Init();
- 800072a:	f000 fb07 	bl	8000d3c <MX_I2C2_Init>
+ 800092e:	f000 fa05 	bl	8000d3c <MX_I2C2_Init>
   MX_USB_DEVICE_Init();
- 800072e:	f007 f9b3 	bl	8007a98 <MX_USB_DEVICE_Init>
+ 8000932:	f007 f8b1 	bl	8007a98 <MX_USB_DEVICE_Init>
   MX_SPI2_Init();
- 8000732:	f000 fb31 	bl	8000d98 <MX_SPI2_Init>
+ 8000936:	f000 fa2f 	bl	8000d98 <MX_SPI2_Init>
   /* USER CODE BEGIN 2 */
 
   HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
- 8000736:	2104      	movs	r1, #4
- 8000738:	48b2      	ldr	r0, [pc, #712]	; (8000a04 <main+0x2f0>)
- 800073a:	f001 fba4 	bl	8001e86 <HAL_GPIO_TogglePin>
+ 800093a:	2104      	movs	r1, #4
+ 800093c:	4899      	ldr	r0, [pc, #612]	; (8000ba4 <main+0x28c>)
+ 800093e:	f001 faa2 	bl	8001e86 <HAL_GPIO_TogglePin>
 
   HAL_Delay(50);
- 800073e:	2032      	movs	r0, #50	; 0x32
- 8000740:	f001 f89e 	bl	8001880 <HAL_Delay>
+ 8000942:	2032      	movs	r0, #50	; 0x32
+ 8000944:	f000 ff9c 	bl	8001880 <HAL_Delay>
 
   SSD1306_Init (); // initialize the display
- 8000744:	f000 fbd0 	bl	8000ee8 <SSD1306_Init>
+ 8000948:	f000 face 	bl	8000ee8 <SSD1306_Init>
 
   HAL_Delay(50);
- 8000748:	2032      	movs	r0, #50	; 0x32
- 800074a:	f001 f899 	bl	8001880 <HAL_Delay>
+ 800094c:	2032      	movs	r0, #50	; 0x32
+ 800094e:	f000 ff97 	bl	8001880 <HAL_Delay>
 
   SSD1306_GotoXY (0,0);
- 800074e:	2100      	movs	r1, #0
- 8000750:	2000      	movs	r0, #0
- 8000752:	f000 fd33 	bl	80011bc <SSD1306_GotoXY>
+ 8000952:	2100      	movs	r1, #0
+ 8000954:	2000      	movs	r0, #0
+ 8000956:	f000 fc31 	bl	80011bc <SSD1306_GotoXY>
   SSD1306_Puts ("Kompetter-X", &Font_11x18, 1);
- 8000756:	2201      	movs	r2, #1
- 8000758:	49ab      	ldr	r1, [pc, #684]	; (8000a08 <main+0x2f4>)
- 800075a:	48ac      	ldr	r0, [pc, #688]	; (8000a0c <main+0x2f8>)
- 800075c:	f000 fdc4 	bl	80012e8 <SSD1306_Puts>
+ 800095a:	2201      	movs	r2, #1
+ 800095c:	4992      	ldr	r1, [pc, #584]	; (8000ba8 <main+0x290>)
+ 800095e:	4893      	ldr	r0, [pc, #588]	; (8000bac <main+0x294>)
+ 8000960:	f000 fcc2 	bl	80012e8 <SSD1306_Puts>
   SSD1306_GotoXY (0, 20);
- 8000760:	2114      	movs	r1, #20
- 8000762:	2000      	movs	r0, #0
- 8000764:	f000 fd2a 	bl	80011bc <SSD1306_GotoXY>
+ 8000964:	2114      	movs	r1, #20
+ 8000966:	2000      	movs	r0, #0
+ 8000968:	f000 fc28 	bl	80011bc <SSD1306_GotoXY>
   SSD1306_Puts ("v.02", &Font_7x10, 1);
- 8000768:	2201      	movs	r2, #1
- 800076a:	49a9      	ldr	r1, [pc, #676]	; (8000a10 <main+0x2fc>)
- 800076c:	48a9      	ldr	r0, [pc, #676]	; (8000a14 <main+0x300>)
- 800076e:	f000 fdbb 	bl	80012e8 <SSD1306_Puts>
+ 800096c:	2201      	movs	r2, #1
+ 800096e:	4990      	ldr	r1, [pc, #576]	; (8000bb0 <main+0x298>)
+ 8000970:	4890      	ldr	r0, [pc, #576]	; (8000bb4 <main+0x29c>)
+ 8000972:	f000 fcb9 	bl	80012e8 <SSD1306_Puts>
   SSD1306_UpdateScreen();
- 8000772:	f000 fc7d 	bl	8001070 <SSD1306_UpdateScreen>
+ 8000976:	f000 fb7b 	bl	8001070 <SSD1306_UpdateScreen>
 
   HAL_Delay(1500);
- 8000776:	f240 50dc 	movw	r0, #1500	; 0x5dc
- 800077a:	f001 f881 	bl	8001880 <HAL_Delay>
+ 800097a:	f240 50dc 	movw	r0, #1500	; 0x5dc
+ 800097e:	f000 ff7f 	bl	8001880 <HAL_Delay>
 
   SSD1306_Clear();
- 800077e:	f000 fdd8 	bl	8001332 <SSD1306_Clear>
+ 8000982:	f000 fcd6 	bl	8001332 <SSD1306_Clear>
   HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
- 8000782:	2104      	movs	r1, #4
- 8000784:	489f      	ldr	r0, [pc, #636]	; (8000a04 <main+0x2f0>)
- 8000786:	f001 fb7e 	bl	8001e86 <HAL_GPIO_TogglePin>
+ 8000986:	2104      	movs	r1, #4
+ 8000988:	4886      	ldr	r0, [pc, #536]	; (8000ba4 <main+0x28c>)
+ 800098a:	f001 fa7c 	bl	8001e86 <HAL_GPIO_TogglePin>
   SSD1306_GotoXY(0, 30);
- 800078a:	211e      	movs	r1, #30
- 800078c:	2000      	movs	r0, #0
- 800078e:	f000 fd15 	bl	80011bc <SSD1306_GotoXY>
+ 800098e:	211e      	movs	r1, #30
+ 8000990:	2000      	movs	r0, #0
+ 8000992:	f000 fc13 	bl	80011bc <SSD1306_GotoXY>
   SSD1306_Puts("Key: ", &Font_7x10, 1);
- 8000792:	2201      	movs	r2, #1
- 8000794:	499e      	ldr	r1, [pc, #632]	; (8000a10 <main+0x2fc>)
- 8000796:	48a0      	ldr	r0, [pc, #640]	; (8000a18 <main+0x304>)
- 8000798:	f000 fda6 	bl	80012e8 <SSD1306_Puts>
+ 8000996:	2201      	movs	r2, #1
+ 8000998:	4985      	ldr	r1, [pc, #532]	; (8000bb0 <main+0x298>)
+ 800099a:	4887      	ldr	r0, [pc, #540]	; (8000bb8 <main+0x2a0>)
+ 800099c:	f000 fca4 	bl	80012e8 <SSD1306_Puts>
   SSD1306_GotoXY(0, 40);
- 800079c:	2128      	movs	r1, #40	; 0x28
- 800079e:	2000      	movs	r0, #0
- 80007a0:	f000 fd0c 	bl	80011bc <SSD1306_GotoXY>
+ 80009a0:	2128      	movs	r1, #40	; 0x28
+ 80009a2:	2000      	movs	r0, #0
+ 80009a4:	f000 fc0a 	bl	80011bc <SSD1306_GotoXY>
   SSD1306_Puts("--  ", &Font_11x18, 1);
- 80007a4:	2201      	movs	r2, #1
- 80007a6:	4998      	ldr	r1, [pc, #608]	; (8000a08 <main+0x2f4>)
- 80007a8:	489c      	ldr	r0, [pc, #624]	; (8000a1c <main+0x308>)
- 80007aa:	f000 fd9d 	bl	80012e8 <SSD1306_Puts>
+ 80009a8:	2201      	movs	r2, #1
+ 80009aa:	497f      	ldr	r1, [pc, #508]	; (8000ba8 <main+0x290>)
+ 80009ac:	4883      	ldr	r0, [pc, #524]	; (8000bbc <main+0x2a4>)
+ 80009ae:	f000 fc9b 	bl	80012e8 <SSD1306_Puts>
 
   SSD1306_GotoXY(40, 30);
- 80007ae:	211e      	movs	r1, #30
- 80007b0:	2028      	movs	r0, #40	; 0x28
- 80007b2:	f000 fd03 	bl	80011bc <SSD1306_GotoXY>
+ 80009b2:	211e      	movs	r1, #30
+ 80009b4:	2028      	movs	r0, #40	; 0x28
+ 80009b6:	f000 fc01 	bl	80011bc <SSD1306_GotoXY>
   SSD1306_Puts("Magnet: ", &Font_7x10, 1);
- 80007b6:	2201      	movs	r2, #1
- 80007b8:	4995      	ldr	r1, [pc, #596]	; (8000a10 <main+0x2fc>)
- 80007ba:	4899      	ldr	r0, [pc, #612]	; (8000a20 <main+0x30c>)
- 80007bc:	f000 fd94 	bl	80012e8 <SSD1306_Puts>
+ 80009ba:	2201      	movs	r2, #1
+ 80009bc:	497c      	ldr	r1, [pc, #496]	; (8000bb0 <main+0x298>)
+ 80009be:	4880      	ldr	r0, [pc, #512]	; (8000bc0 <main+0x2a8>)
+ 80009c0:	f000 fc92 	bl	80012e8 <SSD1306_Puts>
   SSD1306_GotoXY(40, 40);
- 80007c0:	2128      	movs	r1, #40	; 0x28
- 80007c2:	2028      	movs	r0, #40	; 0x28
- 80007c4:	f000 fcfa 	bl	80011bc <SSD1306_GotoXY>
+ 80009c4:	2128      	movs	r1, #40	; 0x28
+ 80009c6:	2028      	movs	r0, #40	; 0x28
+ 80009c8:	f000 fbf8 	bl	80011bc <SSD1306_GotoXY>
   SSD1306_Puts("--  ", &Font_11x18, 1);
- 80007c8:	2201      	movs	r2, #1
- 80007ca:	498f      	ldr	r1, [pc, #572]	; (8000a08 <main+0x2f4>)
- 80007cc:	4893      	ldr	r0, [pc, #588]	; (8000a1c <main+0x308>)
- 80007ce:	f000 fd8b 	bl	80012e8 <SSD1306_Puts>
+ 80009cc:	2201      	movs	r2, #1
+ 80009ce:	4976      	ldr	r1, [pc, #472]	; (8000ba8 <main+0x290>)
+ 80009d0:	487a      	ldr	r0, [pc, #488]	; (8000bbc <main+0x2a4>)
+ 80009d2:	f000 fc89 	bl	80012e8 <SSD1306_Puts>
   SSD1306_UpdateScreen();
- 80007d2:	f000 fc4d 	bl	8001070 <SSD1306_UpdateScreen>
+ 80009d6:	f000 fb4b 	bl	8001070 <SSD1306_UpdateScreen>
 
-  //debounce scan:
-  enum KeyState { IDLE, PRESSED };
-  enum KeyState key_state[NUM_ROWS][NUM_COLS];  // Declare the array of states
-
-  for(int i = 0; i < NUM_ROWS; i++) {
- 80007d6:	2300      	movs	r3, #0
- 80007d8:	647b      	str	r3, [r7, #68]	; 0x44
- 80007da:	e014      	b.n	8000806 <main+0xf2>
-    for(int j = 0; j < NUM_COLS; j++) {
- 80007dc:	2300      	movs	r3, #0
- 80007de:	643b      	str	r3, [r7, #64]	; 0x40
- 80007e0:	e00b      	b.n	80007fa <main+0xe6>
-	  key_state[i][j] = IDLE;  // Initialize each state to IDLE
- 80007e2:	6c7b      	ldr	r3, [r7, #68]	; 0x44
- 80007e4:	009b      	lsls	r3, r3, #2
- 80007e6:	3348      	adds	r3, #72	; 0x48
- 80007e8:	19da      	adds	r2, r3, r7
- 80007ea:	6c3b      	ldr	r3, [r7, #64]	; 0x40
- 80007ec:	4413      	add	r3, r2
- 80007ee:	3b40      	subs	r3, #64	; 0x40
- 80007f0:	2200      	movs	r2, #0
- 80007f2:	701a      	strb	r2, [r3, #0]
-    for(int j = 0; j < NUM_COLS; j++) {
- 80007f4:	6c3b      	ldr	r3, [r7, #64]	; 0x40
- 80007f6:	3301      	adds	r3, #1
- 80007f8:	643b      	str	r3, [r7, #64]	; 0x40
- 80007fa:	6c3b      	ldr	r3, [r7, #64]	; 0x40
- 80007fc:	2b03      	cmp	r3, #3
- 80007fe:	ddf0      	ble.n	80007e2 <main+0xce>
-  for(int i = 0; i < NUM_ROWS; i++) {
- 8000800:	6c7b      	ldr	r3, [r7, #68]	; 0x44
- 8000802:	3301      	adds	r3, #1
- 8000804:	647b      	str	r3, [r7, #68]	; 0x44
- 8000806:	6c7b      	ldr	r3, [r7, #68]	; 0x44
- 8000808:	2b03      	cmp	r3, #3
- 800080a:	dde7      	ble.n	80007dc <main+0xc8>
-	}
-  }
+  keyboardScannerInit();
+ 80009da:	f7ff fe19 	bl	8000610 <keyboardScannerInit>
 
   // Initialize lastEncoderVal with the initial encoder value
   lastEncoderVal = AS5600_ReadAngle(&hi2c2);
- 800080c:	4885      	ldr	r0, [pc, #532]	; (8000a24 <main+0x310>)
- 800080e:	f7ff feb1 	bl	8000574 <AS5600_ReadAngle>
- 8000812:	4603      	mov	r3, r0
- 8000814:	b21a      	sxth	r2, r3
- 8000816:	4b84      	ldr	r3, [pc, #528]	; (8000a28 <main+0x314>)
- 8000818:	801a      	strh	r2, [r3, #0]
+ 80009de:	4879      	ldr	r0, [pc, #484]	; (8000bc4 <main+0x2ac>)
+ 80009e0:	f7ff fdc8 	bl	8000574 <AS5600_ReadAngle>
+ 80009e4:	4603      	mov	r3, r0
+ 80009e6:	b21a      	sxth	r2, r3
+ 80009e8:	4b77      	ldr	r3, [pc, #476]	; (8000bc8 <main+0x2b0>)
+ 80009ea:	801a      	strh	r2, [r3, #0]
 
 
     /* USER CODE BEGIN 3 */
 
-	//TEST
-	keyboardScanner();
- 800081a:	f7ff fef9 	bl	8000610 <keyboardScanner>
-
 	//ANGLE SENSOR
 	uint16_t angle = AS5600_ReadAngle(&hi2c2);
- 800081e:	4881      	ldr	r0, [pc, #516]	; (8000a24 <main+0x310>)
- 8000820:	f7ff fea8 	bl	8000574 <AS5600_ReadAngle>
- 8000824:	4603      	mov	r3, r0
- 8000826:	847b      	strh	r3, [r7, #34]	; 0x22
+ 80009ec:	4875      	ldr	r0, [pc, #468]	; (8000bc4 <main+0x2ac>)
+ 80009ee:	f7ff fdc1 	bl	8000574 <AS5600_ReadAngle>
+ 80009f2:	4603      	mov	r3, r0
+ 80009f4:	80fb      	strh	r3, [r7, #6]
 	uint8_t magnetPresent = AS5600_IsMagnetPresent(&hi2c2);
- 8000828:	487e      	ldr	r0, [pc, #504]	; (8000a24 <main+0x310>)
- 800082a:	f7ff fed7 	bl	80005dc <AS5600_IsMagnetPresent>
- 800082e:	4603      	mov	r3, r0
- 8000830:	f887 3021 	strb.w	r3, [r7, #33]	; 0x21
+ 80009f6:	4873      	ldr	r0, [pc, #460]	; (8000bc4 <main+0x2ac>)
+ 80009f8:	f7ff fdf0 	bl	80005dc <AS5600_IsMagnetPresent>
+ 80009fc:	4603      	mov	r3, r0
+ 80009fe:	717b      	strb	r3, [r7, #5]
 
 	smoothedAccumulator = encoderValueFunction(angle, lastEncoderVal, encoderAccumulator);
- 8000834:	f9b7 3022 	ldrsh.w	r3, [r7, #34]	; 0x22
- 8000838:	4a7b      	ldr	r2, [pc, #492]	; (8000a28 <main+0x314>)
- 800083a:	f9b2 1000 	ldrsh.w	r1, [r2]
- 800083e:	4a7b      	ldr	r2, [pc, #492]	; (8000a2c <main+0x318>)
- 8000840:	6812      	ldr	r2, [r2, #0]
- 8000842:	4618      	mov	r0, r3
- 8000844:	f7ff fef8 	bl	8000638 <encoderValueFunction>
- 8000848:	4603      	mov	r3, r0
- 800084a:	4a79      	ldr	r2, [pc, #484]	; (8000a30 <main+0x31c>)
- 800084c:	6013      	str	r3, [r2, #0]
+ 8000a00:	f9b7 3006 	ldrsh.w	r3, [r7, #6]
+ 8000a04:	4a70      	ldr	r2, [pc, #448]	; (8000bc8 <main+0x2b0>)
+ 8000a06:	f9b2 1000 	ldrsh.w	r1, [r2]
+ 8000a0a:	4a70      	ldr	r2, [pc, #448]	; (8000bcc <main+0x2b4>)
+ 8000a0c:	6812      	ldr	r2, [r2, #0]
+ 8000a0e:	4618      	mov	r0, r3
+ 8000a10:	f7ff ff14 	bl	800083c <encoderValueFunction>
+ 8000a14:	4603      	mov	r3, r0
+ 8000a16:	4a6e      	ldr	r2, [pc, #440]	; (8000bd0 <main+0x2b8>)
+ 8000a18:	6013      	str	r3, [r2, #0]
 	lastEncoderVal = angle; // Update lastEncoderVal after calling encoderValueFunction
- 800084e:	f9b7 2022 	ldrsh.w	r2, [r7, #34]	; 0x22
- 8000852:	4b75      	ldr	r3, [pc, #468]	; (8000a28 <main+0x314>)
- 8000854:	801a      	strh	r2, [r3, #0]
+ 8000a1a:	f9b7 2006 	ldrsh.w	r2, [r7, #6]
+ 8000a1e:	4b6a      	ldr	r3, [pc, #424]	; (8000bc8 <main+0x2b0>)
+ 8000a20:	801a      	strh	r2, [r3, #0]
 
 	uint8_t screenNotUpdated = 0;
- 8000856:	2300      	movs	r3, #0
- 8000858:	f887 303f 	strb.w	r3, [r7, #63]	; 0x3f
+ 8000a22:	2300      	movs	r3, #0
+ 8000a24:	73fb      	strb	r3, [r7, #15]
 
 	//Handle magnet status
 	if( magnetPresent == 1){
- 800085c:	f897 3021 	ldrb.w	r3, [r7, #33]	; 0x21
- 8000860:	2b01      	cmp	r3, #1
- 8000862:	d13c      	bne.n	80008de <main+0x1ca>
+ 8000a26:	797b      	ldrb	r3, [r7, #5]
+ 8000a28:	2b01      	cmp	r3, #1
+ 8000a2a:	d13e      	bne.n	8000aaa <main+0x192>
 
 		SSD1306_GotoXY(40, 40);
- 8000864:	2128      	movs	r1, #40	; 0x28
- 8000866:	2028      	movs	r0, #40	; 0x28
- 8000868:	f000 fca8 	bl	80011bc <SSD1306_GotoXY>
+ 8000a2c:	2128      	movs	r1, #40	; 0x28
+ 8000a2e:	2028      	movs	r0, #40	; 0x28
+ 8000a30:	f000 fbc4 	bl	80011bc <SSD1306_GotoXY>
 		SSD1306_Puts("ok!  ", &Font_11x18, 1);
- 800086c:	2201      	movs	r2, #1
- 800086e:	4966      	ldr	r1, [pc, #408]	; (8000a08 <main+0x2f4>)
- 8000870:	4870      	ldr	r0, [pc, #448]	; (8000a34 <main+0x320>)
- 8000872:	f000 fd39 	bl	80012e8 <SSD1306_Puts>
+ 8000a34:	2201      	movs	r2, #1
+ 8000a36:	495c      	ldr	r1, [pc, #368]	; (8000ba8 <main+0x290>)
+ 8000a38:	4866      	ldr	r0, [pc, #408]	; (8000bd4 <main+0x2bc>)
+ 8000a3a:	f000 fc55 	bl	80012e8 <SSD1306_Puts>
 
 		//Convert the angle to a string
 		char angle_str[5]; // Buffer to hold the string. Make sure it's large enough to hold all digits of the angle and the null-terminating character.
 
 	    //Convert to a string with leading spaces
 	    sprintf(angle_str, "%4u", angle);
- 8000876:	8c7a      	ldrh	r2, [r7, #34]	; 0x22
- 8000878:	463b      	mov	r3, r7
- 800087a:	496f      	ldr	r1, [pc, #444]	; (8000a38 <main+0x324>)
- 800087c:	4618      	mov	r0, r3
- 800087e:	f007 fd75 	bl	800836c <siprintf>
+ 8000a3e:	88fa      	ldrh	r2, [r7, #6]
+ 8000a40:	463b      	mov	r3, r7
+ 8000a42:	4965      	ldr	r1, [pc, #404]	; (8000bd8 <main+0x2c0>)
+ 8000a44:	4618      	mov	r0, r3
+ 8000a46:	f007 fc91 	bl	800836c <siprintf>
 
 		// Display the angle on the OLED display
 		SSD1306_GotoXY (0,0);
- 8000882:	2100      	movs	r1, #0
- 8000884:	2000      	movs	r0, #0
- 8000886:	f000 fc99 	bl	80011bc <SSD1306_GotoXY>
+ 8000a4a:	2100      	movs	r1, #0
+ 8000a4c:	2000      	movs	r0, #0
+ 8000a4e:	f000 fbb5 	bl	80011bc <SSD1306_GotoXY>
 		SSD1306_Puts("Angle: ", &Font_7x10, 1);
- 800088a:	2201      	movs	r2, #1
- 800088c:	4960      	ldr	r1, [pc, #384]	; (8000a10 <main+0x2fc>)
- 800088e:	486b      	ldr	r0, [pc, #428]	; (8000a3c <main+0x328>)
- 8000890:	f000 fd2a 	bl	80012e8 <SSD1306_Puts>
+ 8000a52:	2201      	movs	r2, #1
+ 8000a54:	4956      	ldr	r1, [pc, #344]	; (8000bb0 <main+0x298>)
+ 8000a56:	4861      	ldr	r0, [pc, #388]	; (8000bdc <main+0x2c4>)
+ 8000a58:	f000 fc46 	bl	80012e8 <SSD1306_Puts>
 		SSD1306_GotoXY (0, 12);
- 8000894:	210c      	movs	r1, #12
- 8000896:	2000      	movs	r0, #0
- 8000898:	f000 fc90 	bl	80011bc <SSD1306_GotoXY>
+ 8000a5c:	210c      	movs	r1, #12
+ 8000a5e:	2000      	movs	r0, #0
+ 8000a60:	f000 fbac 	bl	80011bc <SSD1306_GotoXY>
 		SSD1306_Puts(angle_str, &Font_11x18, 1);
- 800089c:	463b      	mov	r3, r7
- 800089e:	2201      	movs	r2, #1
- 80008a0:	4959      	ldr	r1, [pc, #356]	; (8000a08 <main+0x2f4>)
- 80008a2:	4618      	mov	r0, r3
- 80008a4:	f000 fd20 	bl	80012e8 <SSD1306_Puts>
+ 8000a64:	463b      	mov	r3, r7
+ 8000a66:	2201      	movs	r2, #1
+ 8000a68:	494f      	ldr	r1, [pc, #316]	; (8000ba8 <main+0x290>)
+ 8000a6a:	4618      	mov	r0, r3
+ 8000a6c:	f000 fc3c 	bl	80012e8 <SSD1306_Puts>
 
 
 		//ACCUMULATOR:
 	    //Convert to a string with leading spaces
-		sprintf(angle_str, "%5d", smoothedAccumulator);
- 80008a8:	4b61      	ldr	r3, [pc, #388]	; (8000a30 <main+0x31c>)
- 80008aa:	681a      	ldr	r2, [r3, #0]
- 80008ac:	463b      	mov	r3, r7
- 80008ae:	4964      	ldr	r1, [pc, #400]	; (8000a40 <main+0x32c>)
- 80008b0:	4618      	mov	r0, r3
- 80008b2:	f007 fd5b 	bl	800836c <siprintf>
+		sprintf(angle_str, "%5d", (int8_t)smoothedAccumulator);
+ 8000a70:	4b57      	ldr	r3, [pc, #348]	; (8000bd0 <main+0x2b8>)
+ 8000a72:	681b      	ldr	r3, [r3, #0]
+ 8000a74:	b25b      	sxtb	r3, r3
+ 8000a76:	461a      	mov	r2, r3
+ 8000a78:	463b      	mov	r3, r7
+ 8000a7a:	4959      	ldr	r1, [pc, #356]	; (8000be0 <main+0x2c8>)
+ 8000a7c:	4618      	mov	r0, r3
+ 8000a7e:	f007 fc75 	bl	800836c <siprintf>
 
 		//display accumulator
 		SSD1306_GotoXY (80,0);
- 80008b6:	2100      	movs	r1, #0
- 80008b8:	2050      	movs	r0, #80	; 0x50
- 80008ba:	f000 fc7f 	bl	80011bc <SSD1306_GotoXY>
+ 8000a82:	2100      	movs	r1, #0
+ 8000a84:	2050      	movs	r0, #80	; 0x50
+ 8000a86:	f000 fb99 	bl	80011bc <SSD1306_GotoXY>
 		SSD1306_Puts("Acc: ", &Font_7x10, 1);
- 80008be:	2201      	movs	r2, #1
- 80008c0:	4953      	ldr	r1, [pc, #332]	; (8000a10 <main+0x2fc>)
- 80008c2:	4860      	ldr	r0, [pc, #384]	; (8000a44 <main+0x330>)
- 80008c4:	f000 fd10 	bl	80012e8 <SSD1306_Puts>
+ 8000a8a:	2201      	movs	r2, #1
+ 8000a8c:	4948      	ldr	r1, [pc, #288]	; (8000bb0 <main+0x298>)
+ 8000a8e:	4855      	ldr	r0, [pc, #340]	; (8000be4 <main+0x2cc>)
+ 8000a90:	f000 fc2a 	bl	80012e8 <SSD1306_Puts>
 		SSD1306_GotoXY (60, 12);
- 80008c8:	210c      	movs	r1, #12
- 80008ca:	203c      	movs	r0, #60	; 0x3c
- 80008cc:	f000 fc76 	bl	80011bc <SSD1306_GotoXY>
+ 8000a94:	210c      	movs	r1, #12
+ 8000a96:	203c      	movs	r0, #60	; 0x3c
+ 8000a98:	f000 fb90 	bl	80011bc <SSD1306_GotoXY>
 		SSD1306_Puts(angle_str, &Font_7x10, 1);
- 80008d0:	463b      	mov	r3, r7
- 80008d2:	2201      	movs	r2, #1
- 80008d4:	494e      	ldr	r1, [pc, #312]	; (8000a10 <main+0x2fc>)
- 80008d6:	4618      	mov	r0, r3
- 80008d8:	f000 fd06 	bl	80012e8 <SSD1306_Puts>
- 80008dc:	e008      	b.n	80008f0 <main+0x1dc>
+ 8000a9c:	463b      	mov	r3, r7
+ 8000a9e:	2201      	movs	r2, #1
+ 8000aa0:	4943      	ldr	r1, [pc, #268]	; (8000bb0 <main+0x298>)
+ 8000aa2:	4618      	mov	r0, r3
+ 8000aa4:	f000 fc20 	bl	80012e8 <SSD1306_Puts>
+ 8000aa8:	e008      	b.n	8000abc <main+0x1a4>
 
 	} else {
 		SSD1306_GotoXY(40, 40);
- 80008de:	2128      	movs	r1, #40	; 0x28
- 80008e0:	2028      	movs	r0, #40	; 0x28
- 80008e2:	f000 fc6b 	bl	80011bc <SSD1306_GotoXY>
+ 8000aaa:	2128      	movs	r1, #40	; 0x28
+ 8000aac:	2028      	movs	r0, #40	; 0x28
+ 8000aae:	f000 fb85 	bl	80011bc <SSD1306_GotoXY>
 		SSD1306_Puts("No :(", &Font_11x18, 1);
- 80008e6:	2201      	movs	r2, #1
- 80008e8:	4947      	ldr	r1, [pc, #284]	; (8000a08 <main+0x2f4>)
- 80008ea:	4857      	ldr	r0, [pc, #348]	; (8000a48 <main+0x334>)
- 80008ec:	f000 fcfc 	bl	80012e8 <SSD1306_Puts>
+ 8000ab2:	2201      	movs	r2, #1
+ 8000ab4:	493c      	ldr	r1, [pc, #240]	; (8000ba8 <main+0x290>)
+ 8000ab6:	484c      	ldr	r0, [pc, #304]	; (8000be8 <main+0x2d0>)
+ 8000ab8:	f000 fc16 	bl	80012e8 <SSD1306_Puts>
 	}
 
-	//Keyboard Scan!
-	for(int i = 0; i < NUM_ROWS; i++) {
- 80008f0:	2300      	movs	r3, #0
- 80008f2:	63bb      	str	r3, [r7, #56]	; 0x38
- 80008f4:	e0f7      	b.n	8000ae6 <main+0x3d2>
-	    uint32_t current_tick = HAL_GetTick();
- 80008f6:	f000 ffb7 	bl	8001868 <HAL_GetTick>
- 80008fa:	61f8      	str	r0, [r7, #28]
-	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
- 80008fc:	4a53      	ldr	r2, [pc, #332]	; (8000a4c <main+0x338>)
- 80008fe:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8000900:	f852 0023 	ldr.w	r0, [r2, r3, lsl #2]
- 8000904:	4a52      	ldr	r2, [pc, #328]	; (8000a50 <main+0x33c>)
- 8000906:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8000908:	f832 3013 	ldrh.w	r3, [r2, r3, lsl #1]
- 800090c:	2201      	movs	r2, #1
- 800090e:	4619      	mov	r1, r3
- 8000910:	f001 faa0 	bl	8001e54 <HAL_GPIO_WritePin>
-	    HAL_Delay(1); // delay after setting row high
- 8000914:	2001      	movs	r0, #1
- 8000916:	f000 ffb3 	bl	8001880 <HAL_Delay>
-
-	    for(int j = 0; j < NUM_COLS; j++) {
- 800091a:	2300      	movs	r3, #0
- 800091c:	637b      	str	r3, [r7, #52]	; 0x34
- 800091e:	e0cc      	b.n	8000aba <main+0x3a6>
-	        uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
- 8000920:	4a4c      	ldr	r2, [pc, #304]	; (8000a54 <main+0x340>)
- 8000922:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 8000924:	f852 2023 	ldr.w	r2, [r2, r3, lsl #2]
- 8000928:	494b      	ldr	r1, [pc, #300]	; (8000a58 <main+0x344>)
- 800092a:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 800092c:	f831 3013 	ldrh.w	r3, [r1, r3, lsl #1]
- 8000930:	4619      	mov	r1, r3
- 8000932:	4610      	mov	r0, r2
- 8000934:	f001 fa76 	bl	8001e24 <HAL_GPIO_ReadPin>
- 8000938:	4603      	mov	r3, r0
- 800093a:	2b01      	cmp	r3, #1
- 800093c:	bf0c      	ite	eq
- 800093e:	2301      	moveq	r3, #1
- 8000940:	2300      	movne	r3, #0
- 8000942:	b2db      	uxtb	r3, r3
- 8000944:	76fb      	strb	r3, [r7, #27]
-
-	        if (is_pressed && key_state[i][j] == IDLE) {
- 8000946:	7efb      	ldrb	r3, [r7, #27]
- 8000948:	2b00      	cmp	r3, #0
- 800094a:	d03f      	beq.n	80009cc <main+0x2b8>
- 800094c:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 800094e:	009b      	lsls	r3, r3, #2
- 8000950:	3348      	adds	r3, #72	; 0x48
- 8000952:	19da      	adds	r2, r3, r7
- 8000954:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 8000956:	4413      	add	r3, r2
- 8000958:	3b40      	subs	r3, #64	; 0x40
- 800095a:	781b      	ldrb	r3, [r3, #0]
- 800095c:	2b00      	cmp	r3, #0
- 800095e:	d135      	bne.n	80009cc <main+0x2b8>
-	            // Key has been pressed from an idle state
-
-	            // Find a slot in the HID report
-	            for (int k = 0; k < NUM_KEYS; k++) {
- 8000960:	2300      	movs	r3, #0
- 8000962:	633b      	str	r3, [r7, #48]	; 0x30
- 8000964:	e015      	b.n	8000992 <main+0x27e>
-	                if (hid_report[k] == 0) { // 0 indicates an empty slot
- 8000966:	4a3d      	ldr	r2, [pc, #244]	; (8000a5c <main+0x348>)
- 8000968:	6b3b      	ldr	r3, [r7, #48]	; 0x30
- 800096a:	4413      	add	r3, r2
- 800096c:	781b      	ldrb	r3, [r3, #0]
- 800096e:	2b00      	cmp	r3, #0
- 8000970:	d10c      	bne.n	800098c <main+0x278>
-	                    hid_report[k] = keycode_map[i][j]; // Add the key to the HID report
- 8000972:	4a3b      	ldr	r2, [pc, #236]	; (8000a60 <main+0x34c>)
- 8000974:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8000976:	009b      	lsls	r3, r3, #2
- 8000978:	441a      	add	r2, r3
- 800097a:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 800097c:	4413      	add	r3, r2
- 800097e:	7819      	ldrb	r1, [r3, #0]
- 8000980:	4a36      	ldr	r2, [pc, #216]	; (8000a5c <main+0x348>)
- 8000982:	6b3b      	ldr	r3, [r7, #48]	; 0x30
- 8000984:	4413      	add	r3, r2
- 8000986:	460a      	mov	r2, r1
- 8000988:	701a      	strb	r2, [r3, #0]
-	                    break;
- 800098a:	e005      	b.n	8000998 <main+0x284>
-	            for (int k = 0; k < NUM_KEYS; k++) {
- 800098c:	6b3b      	ldr	r3, [r7, #48]	; 0x30
- 800098e:	3301      	adds	r3, #1
- 8000990:	633b      	str	r3, [r7, #48]	; 0x30
- 8000992:	6b3b      	ldr	r3, [r7, #48]	; 0x30
- 8000994:	2b0f      	cmp	r3, #15
- 8000996:	dde6      	ble.n	8000966 <main+0x252>
-	                }
-	            }
-	            key_state[i][j] = PRESSED;
- 8000998:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 800099a:	009b      	lsls	r3, r3, #2
- 800099c:	3348      	adds	r3, #72	; 0x48
- 800099e:	19da      	adds	r2, r3, r7
- 80009a0:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 80009a2:	4413      	add	r3, r2
- 80009a4:	3b40      	subs	r3, #64	; 0x40
- 80009a6:	2201      	movs	r2, #1
- 80009a8:	701a      	strb	r2, [r3, #0]
-	            last_key_time[i][j] = current_tick;
- 80009aa:	492e      	ldr	r1, [pc, #184]	; (8000a64 <main+0x350>)
- 80009ac:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 80009ae:	009a      	lsls	r2, r3, #2
- 80009b0:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 80009b2:	4413      	add	r3, r2
- 80009b4:	69fa      	ldr	r2, [r7, #28]
- 80009b6:	f841 2023 	str.w	r2, [r1, r3, lsl #2]
-
-	            sprintf(last_key, "%d%d", i+1, j+1);  // Save the last key pressed
- 80009ba:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 80009bc:	1c5a      	adds	r2, r3, #1
- 80009be:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 80009c0:	3301      	adds	r3, #1
- 80009c2:	4929      	ldr	r1, [pc, #164]	; (8000a68 <main+0x354>)
- 80009c4:	4829      	ldr	r0, [pc, #164]	; (8000a6c <main+0x358>)
- 80009c6:	f007 fcd1 	bl	800836c <siprintf>
- 80009ca:	e073      	b.n	8000ab4 <main+0x3a0>
-
-	        } else if (!is_pressed && key_state[i][j] == PRESSED && current_tick - last_key_time[i][j] > DEBOUNCE_DELAY) {
- 80009cc:	7efb      	ldrb	r3, [r7, #27]
- 80009ce:	2b00      	cmp	r3, #0
- 80009d0:	d170      	bne.n	8000ab4 <main+0x3a0>
- 80009d2:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 80009d4:	009b      	lsls	r3, r3, #2
- 80009d6:	3348      	adds	r3, #72	; 0x48
- 80009d8:	19da      	adds	r2, r3, r7
- 80009da:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 80009dc:	4413      	add	r3, r2
- 80009de:	3b40      	subs	r3, #64	; 0x40
- 80009e0:	781b      	ldrb	r3, [r3, #0]
- 80009e2:	2b01      	cmp	r3, #1
- 80009e4:	d166      	bne.n	8000ab4 <main+0x3a0>
- 80009e6:	491f      	ldr	r1, [pc, #124]	; (8000a64 <main+0x350>)
- 80009e8:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 80009ea:	009a      	lsls	r2, r3, #2
- 80009ec:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 80009ee:	4413      	add	r3, r2
- 80009f0:	f851 3023 	ldr.w	r3, [r1, r3, lsl #2]
- 80009f4:	69fa      	ldr	r2, [r7, #28]
- 80009f6:	1ad3      	subs	r3, r2, r3
- 80009f8:	2b0a      	cmp	r3, #10
- 80009fa:	d95b      	bls.n	8000ab4 <main+0x3a0>
-	            // Key has been released
-
-	            // Remove the key from the HID report
-	            for (int k = 0; k < NUM_KEYS; k++) {
- 80009fc:	2300      	movs	r3, #0
- 80009fe:	62fb      	str	r3, [r7, #44]	; 0x2c
- 8000a00:	e04c      	b.n	8000a9c <main+0x388>
- 8000a02:	bf00      	nop
- 8000a04:	40020000 	.word	0x40020000
- 8000a08:	20000008 	.word	0x20000008
- 8000a0c:	08008c60 	.word	0x08008c60
- 8000a10:	20000000 	.word	0x20000000
- 8000a14:	08008c6c 	.word	0x08008c6c
- 8000a18:	08008c74 	.word	0x08008c74
- 8000a1c:	08008c7c 	.word	0x08008c7c
- 8000a20:	08008c84 	.word	0x08008c84
- 8000a24:	20000354 	.word	0x20000354
- 8000a28:	200002f0 	.word	0x200002f0
- 8000a2c:	200002f4 	.word	0x200002f4
- 8000a30:	200002f8 	.word	0x200002f8
- 8000a34:	08008c90 	.word	0x08008c90
- 8000a38:	08008c98 	.word	0x08008c98
- 8000a3c:	08008c9c 	.word	0x08008c9c
- 8000a40:	08008ca4 	.word	0x08008ca4
- 8000a44:	08008ca8 	.word	0x08008ca8
- 8000a48:	08008cb0 	.word	0x08008cb0
- 8000a4c:	20000034 	.word	0x20000034
- 8000a50:	20000044 	.word	0x20000044
- 8000a54:	2000004c 	.word	0x2000004c
- 8000a58:	2000005c 	.word	0x2000005c
- 8000a5c:	200002cc 	.word	0x200002cc
- 8000a60:	2000001c 	.word	0x2000001c
- 8000a64:	2000028c 	.word	0x2000028c
- 8000a68:	08008cb8 	.word	0x08008cb8
- 8000a6c:	200002ec 	.word	0x200002ec
-	                if (hid_report[k] == keycode_map[i][j]) {
- 8000a70:	4a59      	ldr	r2, [pc, #356]	; (8000bd8 <main+0x4c4>)
- 8000a72:	6afb      	ldr	r3, [r7, #44]	; 0x2c
- 8000a74:	4413      	add	r3, r2
- 8000a76:	781a      	ldrb	r2, [r3, #0]
- 8000a78:	4958      	ldr	r1, [pc, #352]	; (8000bdc <main+0x4c8>)
- 8000a7a:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8000a7c:	009b      	lsls	r3, r3, #2
- 8000a7e:	4419      	add	r1, r3
- 8000a80:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 8000a82:	440b      	add	r3, r1
- 8000a84:	781b      	ldrb	r3, [r3, #0]
- 8000a86:	429a      	cmp	r2, r3
- 8000a88:	d105      	bne.n	8000a96 <main+0x382>
-	                    hid_report[k] = 0; // Remove the key
- 8000a8a:	4a53      	ldr	r2, [pc, #332]	; (8000bd8 <main+0x4c4>)
- 8000a8c:	6afb      	ldr	r3, [r7, #44]	; 0x2c
- 8000a8e:	4413      	add	r3, r2
- 8000a90:	2200      	movs	r2, #0
- 8000a92:	701a      	strb	r2, [r3, #0]
-	                    break;
- 8000a94:	e005      	b.n	8000aa2 <main+0x38e>
-	            for (int k = 0; k < NUM_KEYS; k++) {
- 8000a96:	6afb      	ldr	r3, [r7, #44]	; 0x2c
- 8000a98:	3301      	adds	r3, #1
- 8000a9a:	62fb      	str	r3, [r7, #44]	; 0x2c
- 8000a9c:	6afb      	ldr	r3, [r7, #44]	; 0x2c
- 8000a9e:	2b0f      	cmp	r3, #15
- 8000aa0:	dde6      	ble.n	8000a70 <main+0x35c>
-	                }
-	            }
-
-	            key_state[i][j] = IDLE;
- 8000aa2:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8000aa4:	009b      	lsls	r3, r3, #2
- 8000aa6:	3348      	adds	r3, #72	; 0x48
- 8000aa8:	19da      	adds	r2, r3, r7
- 8000aaa:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 8000aac:	4413      	add	r3, r2
- 8000aae:	3b40      	subs	r3, #64	; 0x40
- 8000ab0:	2200      	movs	r2, #0
- 8000ab2:	701a      	strb	r2, [r3, #0]
-	    for(int j = 0; j < NUM_COLS; j++) {
- 8000ab4:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 8000ab6:	3301      	adds	r3, #1
- 8000ab8:	637b      	str	r3, [r7, #52]	; 0x34
- 8000aba:	6b7b      	ldr	r3, [r7, #52]	; 0x34
- 8000abc:	2b03      	cmp	r3, #3
- 8000abe:	f77f af2f 	ble.w	8000920 <main+0x20c>
-	        }
-	    }
-
-	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_RESET);
- 8000ac2:	4a47      	ldr	r2, [pc, #284]	; (8000be0 <main+0x4cc>)
- 8000ac4:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8000ac6:	f852 0023 	ldr.w	r0, [r2, r3, lsl #2]
- 8000aca:	4a46      	ldr	r2, [pc, #280]	; (8000be4 <main+0x4d0>)
- 8000acc:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8000ace:	f832 3013 	ldrh.w	r3, [r2, r3, lsl #1]
- 8000ad2:	2200      	movs	r2, #0
- 8000ad4:	4619      	mov	r1, r3
- 8000ad6:	f001 f9bd 	bl	8001e54 <HAL_GPIO_WritePin>
-	    HAL_Delay(1); // delay after setting row low
- 8000ada:	2001      	movs	r0, #1
- 8000adc:	f000 fed0 	bl	8001880 <HAL_Delay>
-	for(int i = 0; i < NUM_ROWS; i++) {
- 8000ae0:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8000ae2:	3301      	adds	r3, #1
- 8000ae4:	63bb      	str	r3, [r7, #56]	; 0x38
- 8000ae6:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8000ae8:	2b03      	cmp	r3, #3
- 8000aea:	f77f af04 	ble.w	80008f6 <main+0x1e2>
-	}
+	keyboardScan();
+ 8000abc:	f7ff fdce 	bl	800065c <keyboardScan>
 
 	// Check if the HID report has changed
 	uint8_t report_changed = 0;
- 8000aee:	2300      	movs	r3, #0
- 8000af0:	f887 302b 	strb.w	r3, [r7, #43]	; 0x2b
+ 8000ac0:	2300      	movs	r3, #0
+ 8000ac2:	73bb      	strb	r3, [r7, #14]
 	for (int i = 0; i < NUM_KEYS; i++) {
- 8000af4:	2300      	movs	r3, #0
- 8000af6:	627b      	str	r3, [r7, #36]	; 0x24
- 8000af8:	e010      	b.n	8000b1c <main+0x408>
+ 8000ac4:	2300      	movs	r3, #0
+ 8000ac6:	60bb      	str	r3, [r7, #8]
+ 8000ac8:	e00f      	b.n	8000aea <main+0x1d2>
 	    if (hid_report[i] != hid_report_prev[i]) {
- 8000afa:	4a37      	ldr	r2, [pc, #220]	; (8000bd8 <main+0x4c4>)
- 8000afc:	6a7b      	ldr	r3, [r7, #36]	; 0x24
- 8000afe:	4413      	add	r3, r2
- 8000b00:	781a      	ldrb	r2, [r3, #0]
- 8000b02:	4939      	ldr	r1, [pc, #228]	; (8000be8 <main+0x4d4>)
- 8000b04:	6a7b      	ldr	r3, [r7, #36]	; 0x24
- 8000b06:	440b      	add	r3, r1
- 8000b08:	781b      	ldrb	r3, [r3, #0]
- 8000b0a:	429a      	cmp	r2, r3
- 8000b0c:	d003      	beq.n	8000b16 <main+0x402>
+ 8000aca:	4a48      	ldr	r2, [pc, #288]	; (8000bec <main+0x2d4>)
+ 8000acc:	68bb      	ldr	r3, [r7, #8]
+ 8000ace:	4413      	add	r3, r2
+ 8000ad0:	781a      	ldrb	r2, [r3, #0]
+ 8000ad2:	4947      	ldr	r1, [pc, #284]	; (8000bf0 <main+0x2d8>)
+ 8000ad4:	68bb      	ldr	r3, [r7, #8]
+ 8000ad6:	440b      	add	r3, r1
+ 8000ad8:	781b      	ldrb	r3, [r3, #0]
+ 8000ada:	429a      	cmp	r2, r3
+ 8000adc:	d002      	beq.n	8000ae4 <main+0x1cc>
 	        report_changed = 1;
- 8000b0e:	2301      	movs	r3, #1
- 8000b10:	f887 302b 	strb.w	r3, [r7, #43]	; 0x2b
+ 8000ade:	2301      	movs	r3, #1
+ 8000ae0:	73bb      	strb	r3, [r7, #14]
 	        break;
- 8000b14:	e005      	b.n	8000b22 <main+0x40e>
+ 8000ae2:	e005      	b.n	8000af0 <main+0x1d8>
 	for (int i = 0; i < NUM_KEYS; i++) {
- 8000b16:	6a7b      	ldr	r3, [r7, #36]	; 0x24
- 8000b18:	3301      	adds	r3, #1
- 8000b1a:	627b      	str	r3, [r7, #36]	; 0x24
- 8000b1c:	6a7b      	ldr	r3, [r7, #36]	; 0x24
- 8000b1e:	2b0f      	cmp	r3, #15
- 8000b20:	ddeb      	ble.n	8000afa <main+0x3e6>
+ 8000ae4:	68bb      	ldr	r3, [r7, #8]
+ 8000ae6:	3301      	adds	r3, #1
+ 8000ae8:	60bb      	str	r3, [r7, #8]
+ 8000aea:	68bb      	ldr	r3, [r7, #8]
+ 8000aec:	2b0f      	cmp	r3, #15
+ 8000aee:	ddec      	ble.n	8000aca <main+0x1b2>
 	    }
 	}
 
 	//Send Keyboard HID report over USB
 	if (report_changed) {
- 8000b22:	f897 302b 	ldrb.w	r3, [r7, #43]	; 0x2b
- 8000b26:	2b00      	cmp	r3, #0
- 8000b28:	d02e      	beq.n	8000b88 <main+0x474>
+ 8000af0:	7bbb      	ldrb	r3, [r7, #14]
+ 8000af2:	2b00      	cmp	r3, #0
+ 8000af4:	d031      	beq.n	8000b5a <main+0x242>
 	    // Update the Keyboard HID report
 	    keyboardhid.KEYCODE1 = hid_report[0];
- 8000b2a:	4b2b      	ldr	r3, [pc, #172]	; (8000bd8 <main+0x4c4>)
- 8000b2c:	781a      	ldrb	r2, [r3, #0]
- 8000b2e:	4b2f      	ldr	r3, [pc, #188]	; (8000bec <main+0x4d8>)
- 8000b30:	70da      	strb	r2, [r3, #3]
+ 8000af6:	4b3d      	ldr	r3, [pc, #244]	; (8000bec <main+0x2d4>)
+ 8000af8:	781a      	ldrb	r2, [r3, #0]
+ 8000afa:	4b3e      	ldr	r3, [pc, #248]	; (8000bf4 <main+0x2dc>)
+ 8000afc:	70da      	strb	r2, [r3, #3]
 	    keyboardhid.KEYCODE2 = hid_report[1];
- 8000b32:	4b29      	ldr	r3, [pc, #164]	; (8000bd8 <main+0x4c4>)
- 8000b34:	785a      	ldrb	r2, [r3, #1]
- 8000b36:	4b2d      	ldr	r3, [pc, #180]	; (8000bec <main+0x4d8>)
- 8000b38:	711a      	strb	r2, [r3, #4]
+ 8000afe:	4b3b      	ldr	r3, [pc, #236]	; (8000bec <main+0x2d4>)
+ 8000b00:	785a      	ldrb	r2, [r3, #1]
+ 8000b02:	4b3c      	ldr	r3, [pc, #240]	; (8000bf4 <main+0x2dc>)
+ 8000b04:	711a      	strb	r2, [r3, #4]
 	    keyboardhid.KEYCODE3 = hid_report[2];
- 8000b3a:	4b27      	ldr	r3, [pc, #156]	; (8000bd8 <main+0x4c4>)
- 8000b3c:	789a      	ldrb	r2, [r3, #2]
- 8000b3e:	4b2b      	ldr	r3, [pc, #172]	; (8000bec <main+0x4d8>)
- 8000b40:	715a      	strb	r2, [r3, #5]
+ 8000b06:	4b39      	ldr	r3, [pc, #228]	; (8000bec <main+0x2d4>)
+ 8000b08:	789a      	ldrb	r2, [r3, #2]
+ 8000b0a:	4b3a      	ldr	r3, [pc, #232]	; (8000bf4 <main+0x2dc>)
+ 8000b0c:	715a      	strb	r2, [r3, #5]
 	    keyboardhid.KEYCODE4 = hid_report[3];
- 8000b42:	4b25      	ldr	r3, [pc, #148]	; (8000bd8 <main+0x4c4>)
- 8000b44:	78da      	ldrb	r2, [r3, #3]
- 8000b46:	4b29      	ldr	r3, [pc, #164]	; (8000bec <main+0x4d8>)
- 8000b48:	719a      	strb	r2, [r3, #6]
+ 8000b0e:	4b37      	ldr	r3, [pc, #220]	; (8000bec <main+0x2d4>)
+ 8000b10:	78da      	ldrb	r2, [r3, #3]
+ 8000b12:	4b38      	ldr	r3, [pc, #224]	; (8000bf4 <main+0x2dc>)
+ 8000b14:	719a      	strb	r2, [r3, #6]
 	    keyboardhid.KEYCODE5 = hid_report[4];
- 8000b4a:	4b23      	ldr	r3, [pc, #140]	; (8000bd8 <main+0x4c4>)
- 8000b4c:	791a      	ldrb	r2, [r3, #4]
- 8000b4e:	4b27      	ldr	r3, [pc, #156]	; (8000bec <main+0x4d8>)
- 8000b50:	71da      	strb	r2, [r3, #7]
+ 8000b16:	4b35      	ldr	r3, [pc, #212]	; (8000bec <main+0x2d4>)
+ 8000b18:	791a      	ldrb	r2, [r3, #4]
+ 8000b1a:	4b36      	ldr	r3, [pc, #216]	; (8000bf4 <main+0x2dc>)
+ 8000b1c:	71da      	strb	r2, [r3, #7]
 	    keyboardhid.KEYCODE6 = hid_report[5];
- 8000b52:	4b21      	ldr	r3, [pc, #132]	; (8000bd8 <main+0x4c4>)
- 8000b54:	795a      	ldrb	r2, [r3, #5]
- 8000b56:	4b25      	ldr	r3, [pc, #148]	; (8000bec <main+0x4d8>)
- 8000b58:	721a      	strb	r2, [r3, #8]
+ 8000b1e:	4b33      	ldr	r3, [pc, #204]	; (8000bec <main+0x2d4>)
+ 8000b20:	795a      	ldrb	r2, [r3, #5]
+ 8000b22:	4b34      	ldr	r3, [pc, #208]	; (8000bf4 <main+0x2dc>)
+ 8000b24:	721a      	strb	r2, [r3, #8]
 
 	    // Send the Keyboard HID report
 	    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
- 8000b5a:	2209      	movs	r2, #9
- 8000b5c:	4923      	ldr	r1, [pc, #140]	; (8000bec <main+0x4d8>)
- 8000b5e:	4824      	ldr	r0, [pc, #144]	; (8000bf0 <main+0x4dc>)
- 8000b60:	f005 fdd4 	bl	800670c <USBD_HID_SendReport>
+ 8000b26:	2209      	movs	r2, #9
+ 8000b28:	4932      	ldr	r1, [pc, #200]	; (8000bf4 <main+0x2dc>)
+ 8000b2a:	4833      	ldr	r0, [pc, #204]	; (8000bf8 <main+0x2e0>)
+ 8000b2c:	f005 fdee 	bl	800670c <USBD_HID_SendReport>
 
 	    // Update the previous report state
 	    memcpy(hid_report_prev, hid_report, NUM_KEYS);
- 8000b64:	4a20      	ldr	r2, [pc, #128]	; (8000be8 <main+0x4d4>)
- 8000b66:	4b1c      	ldr	r3, [pc, #112]	; (8000bd8 <main+0x4c4>)
- 8000b68:	4614      	mov	r4, r2
- 8000b6a:	cb0f      	ldmia	r3, {r0, r1, r2, r3}
- 8000b6c:	e884 000f 	stmia.w	r4, {r0, r1, r2, r3}
+ 8000b30:	4b2f      	ldr	r3, [pc, #188]	; (8000bf0 <main+0x2d8>)
+ 8000b32:	4a2e      	ldr	r2, [pc, #184]	; (8000bec <main+0x2d4>)
+ 8000b34:	6814      	ldr	r4, [r2, #0]
+ 8000b36:	6850      	ldr	r0, [r2, #4]
+ 8000b38:	6891      	ldr	r1, [r2, #8]
+ 8000b3a:	68d2      	ldr	r2, [r2, #12]
+ 8000b3c:	601c      	str	r4, [r3, #0]
+ 8000b3e:	6058      	str	r0, [r3, #4]
+ 8000b40:	6099      	str	r1, [r3, #8]
+ 8000b42:	60da      	str	r2, [r3, #12]
 
 	    // Update the OLED display
 	    SSD1306_GotoXY(0, 40);
- 8000b70:	2128      	movs	r1, #40	; 0x28
- 8000b72:	2000      	movs	r0, #0
- 8000b74:	f000 fb22 	bl	80011bc <SSD1306_GotoXY>
+ 8000b44:	2128      	movs	r1, #40	; 0x28
+ 8000b46:	2000      	movs	r0, #0
+ 8000b48:	f000 fb38 	bl	80011bc <SSD1306_GotoXY>
 	    SSD1306_Puts(last_key, &Font_11x18, 1);
- 8000b78:	2201      	movs	r2, #1
- 8000b7a:	491e      	ldr	r1, [pc, #120]	; (8000bf4 <main+0x4e0>)
- 8000b7c:	481e      	ldr	r0, [pc, #120]	; (8000bf8 <main+0x4e4>)
- 8000b7e:	f000 fbb3 	bl	80012e8 <SSD1306_Puts>
+ 8000b4c:	2201      	movs	r2, #1
+ 8000b4e:	4916      	ldr	r1, [pc, #88]	; (8000ba8 <main+0x290>)
+ 8000b50:	482a      	ldr	r0, [pc, #168]	; (8000bfc <main+0x2e4>)
+ 8000b52:	f000 fbc9 	bl	80012e8 <SSD1306_Puts>
 	    screenNotUpdated = 1;
- 8000b82:	2301      	movs	r3, #1
- 8000b84:	f887 303f 	strb.w	r3, [r7, #63]	; 0x3f
+ 8000b56:	2301      	movs	r3, #1
+ 8000b58:	73fb      	strb	r3, [r7, #15]
 	}
 
 	//Send Mouse HID report over USB
 	if(smoothedAccumulator != 0){
- 8000b88:	4b1c      	ldr	r3, [pc, #112]	; (8000bfc <main+0x4e8>)
- 8000b8a:	681b      	ldr	r3, [r3, #0]
- 8000b8c:	2b00      	cmp	r3, #0
- 8000b8e:	d018      	beq.n	8000bc2 <main+0x4ae>
+ 8000b5a:	4b1d      	ldr	r3, [pc, #116]	; (8000bd0 <main+0x2b8>)
+ 8000b5c:	681b      	ldr	r3, [r3, #0]
+ 8000b5e:	2b00      	cmp	r3, #0
+ 8000b60:	d017      	beq.n	8000b92 <main+0x27a>
 		// Update the Mouse HID report
 		mousehid.WHEEL = (int8_t)smoothedAccumulator / 35;
- 8000b90:	4b1a      	ldr	r3, [pc, #104]	; (8000bfc <main+0x4e8>)
- 8000b92:	681b      	ldr	r3, [r3, #0]
- 8000b94:	b25b      	sxtb	r3, r3
- 8000b96:	4a1a      	ldr	r2, [pc, #104]	; (8000c00 <main+0x4ec>)
- 8000b98:	fb82 1203 	smull	r1, r2, r2, r3
- 8000b9c:	441a      	add	r2, r3
- 8000b9e:	1152      	asrs	r2, r2, #5
- 8000ba0:	17db      	asrs	r3, r3, #31
- 8000ba2:	1ad3      	subs	r3, r2, r3
- 8000ba4:	b25a      	sxtb	r2, r3
- 8000ba6:	4b17      	ldr	r3, [pc, #92]	; (8000c04 <main+0x4f0>)
- 8000ba8:	711a      	strb	r2, [r3, #4]
+ 8000b62:	4b1b      	ldr	r3, [pc, #108]	; (8000bd0 <main+0x2b8>)
+ 8000b64:	681b      	ldr	r3, [r3, #0]
+ 8000b66:	b25b      	sxtb	r3, r3
+ 8000b68:	4a25      	ldr	r2, [pc, #148]	; (8000c00 <main+0x2e8>)
+ 8000b6a:	fb82 1203 	smull	r1, r2, r2, r3
+ 8000b6e:	441a      	add	r2, r3
+ 8000b70:	1152      	asrs	r2, r2, #5
+ 8000b72:	17db      	asrs	r3, r3, #31
+ 8000b74:	1ad3      	subs	r3, r2, r3
+ 8000b76:	b25a      	sxtb	r2, r3
+ 8000b78:	4b22      	ldr	r3, [pc, #136]	; (8000c04 <main+0x2ec>)
+ 8000b7a:	711a      	strb	r2, [r3, #4]
 
 		// Remember the last value of smoothedAccumulator for the next loop
 		lastSmoothedAccumulator = smoothedAccumulator;
- 8000baa:	4b14      	ldr	r3, [pc, #80]	; (8000bfc <main+0x4e8>)
- 8000bac:	681b      	ldr	r3, [r3, #0]
- 8000bae:	4a16      	ldr	r2, [pc, #88]	; (8000c08 <main+0x4f4>)
- 8000bb0:	6013      	str	r3, [r2, #0]
+ 8000b7c:	4b14      	ldr	r3, [pc, #80]	; (8000bd0 <main+0x2b8>)
+ 8000b7e:	681b      	ldr	r3, [r3, #0]
+ 8000b80:	4a21      	ldr	r2, [pc, #132]	; (8000c08 <main+0x2f0>)
+ 8000b82:	6013      	str	r3, [r2, #0]
 
 		// Send the Mouse HID report
 		USBD_HID_SendReport(&hUsbDeviceFS, (int8_t*)&mousehid, sizeof(mousehid));
- 8000bb2:	2207      	movs	r2, #7
- 8000bb4:	4913      	ldr	r1, [pc, #76]	; (8000c04 <main+0x4f0>)
- 8000bb6:	480e      	ldr	r0, [pc, #56]	; (8000bf0 <main+0x4dc>)
- 8000bb8:	f005 fda8 	bl	800670c <USBD_HID_SendReport>
+ 8000b84:	2207      	movs	r2, #7
+ 8000b86:	491f      	ldr	r1, [pc, #124]	; (8000c04 <main+0x2ec>)
+ 8000b88:	481b      	ldr	r0, [pc, #108]	; (8000bf8 <main+0x2e0>)
+ 8000b8a:	f005 fdbf 	bl	800670c <USBD_HID_SendReport>
 
 		// Update the OLED display
 		//SSD1306_UpdateScreen();
 		screenNotUpdated = 1;
- 8000bbc:	2301      	movs	r3, #1
- 8000bbe:	f887 303f 	strb.w	r3, [r7, #63]	; 0x3f
+ 8000b8e:	2301      	movs	r3, #1
+ 8000b90:	73fb      	strb	r3, [r7, #15]
 	}
 
 	if(screenNotUpdated == 1){
- 8000bc2:	f897 303f 	ldrb.w	r3, [r7, #63]	; 0x3f
- 8000bc6:	2b01      	cmp	r3, #1
- 8000bc8:	f47f ae27 	bne.w	800081a <main+0x106>
+ 8000b92:	7bfb      	ldrb	r3, [r7, #15]
+ 8000b94:	2b01      	cmp	r3, #1
+ 8000b96:	f47f af29 	bne.w	80009ec <main+0xd4>
 		  SSD1306_UpdateScreen();
- 8000bcc:	f000 fa50 	bl	8001070 <SSD1306_UpdateScreen>
+ 8000b9a:	f000 fa69 	bl	8001070 <SSD1306_UpdateScreen>
 		  screenNotUpdated = 0;
- 8000bd0:	2300      	movs	r3, #0
- 8000bd2:	f887 303f 	strb.w	r3, [r7, #63]	; 0x3f
+ 8000b9e:	2300      	movs	r3, #0
+ 8000ba0:	73fb      	strb	r3, [r7, #15]
   {
- 8000bd6:	e620      	b.n	800081a <main+0x106>
- 8000bd8:	200002cc 	.word	0x200002cc
- 8000bdc:	2000001c 	.word	0x2000001c
- 8000be0:	20000034 	.word	0x20000034
- 8000be4:	20000044 	.word	0x20000044
- 8000be8:	200002dc 	.word	0x200002dc
- 8000bec:	20000010 	.word	0x20000010
- 8000bf0:	20000814 	.word	0x20000814
- 8000bf4:	20000008 	.word	0x20000008
- 8000bf8:	200002ec 	.word	0x200002ec
- 8000bfc:	200002f8 	.word	0x200002f8
+ 8000ba2:	e723      	b.n	80009ec <main+0xd4>
+ 8000ba4:	40020000 	.word	0x40020000
+ 8000ba8:	20000008 	.word	0x20000008
+ 8000bac:	08008c68 	.word	0x08008c68
+ 8000bb0:	20000000 	.word	0x20000000
+ 8000bb4:	08008c74 	.word	0x08008c74
+ 8000bb8:	08008c7c 	.word	0x08008c7c
+ 8000bbc:	08008c84 	.word	0x08008c84
+ 8000bc0:	08008c8c 	.word	0x08008c8c
+ 8000bc4:	20000364 	.word	0x20000364
+ 8000bc8:	20000300 	.word	0x20000300
+ 8000bcc:	20000304 	.word	0x20000304
+ 8000bd0:	20000308 	.word	0x20000308
+ 8000bd4:	08008c98 	.word	0x08008c98
+ 8000bd8:	08008ca0 	.word	0x08008ca0
+ 8000bdc:	08008ca4 	.word	0x08008ca4
+ 8000be0:	08008cac 	.word	0x08008cac
+ 8000be4:	08008cb0 	.word	0x08008cb0
+ 8000be8:	08008cb8 	.word	0x08008cb8
+ 8000bec:	200002cc 	.word	0x200002cc
+ 8000bf0:	200002dc 	.word	0x200002dc
+ 8000bf4:	20000020 	.word	0x20000020
+ 8000bf8:	20000824 	.word	0x20000824
+ 8000bfc:	200002ec 	.word	0x200002ec
  8000c00:	ea0ea0eb 	.word	0xea0ea0eb
  8000c04:	2000002c 	.word	0x2000002c
- 8000c08:	200002fc 	.word	0x200002fc
+ 8000c08:	2000030c 	.word	0x2000030c
 
 08000c0c <SystemClock_Config>:
 /**
@@ -1602,7 +1619,7 @@ static void MX_I2C1_Init(void)
 }
  8000d2c:	bf00      	nop
  8000d2e:	bd80      	pop	{r7, pc}
- 8000d30:	20000300 	.word	0x20000300
+ 8000d30:	20000310 	.word	0x20000310
  8000d34:	40005400 	.word	0x40005400
  8000d38:	00061a80 	.word	0x00061a80
 
@@ -1673,7 +1690,7 @@ static void MX_I2C2_Init(void)
 }
  8000d88:	bf00      	nop
  8000d8a:	bd80      	pop	{r7, pc}
- 8000d8c:	20000354 	.word	0x20000354
+ 8000d8c:	20000364 	.word	0x20000364
  8000d90:	40005800 	.word	0x40005800
  8000d94:	000186a0 	.word	0x000186a0
 
@@ -1756,7 +1773,7 @@ static void MX_SPI2_Init(void)
 }
  8000df8:	bf00      	nop
  8000dfa:	bd80      	pop	{r7, pc}
- 8000dfc:	200003a8 	.word	0x200003a8
+ 8000dfc:	200003b8 	.word	0x200003b8
  8000e00:	40003800 	.word	0x40003800
 
 08000e04 <MX_GPIO_Init>:
@@ -2140,8 +2157,8 @@ uint8_t SSD1306_Init(void) {
  8001062:	46bd      	mov	sp, r7
  8001064:	bd80      	pop	{r7, pc}
  8001066:	bf00      	nop
- 8001068:	20000300 	.word	0x20000300
- 800106c:	20000800 	.word	0x20000800
+ 8001068:	20000310 	.word	0x20000310
+ 800106c:	20000810 	.word	0x20000810
 
 08001070 <SSD1306_UpdateScreen>:
 
@@ -2198,7 +2215,7 @@ void SSD1306_UpdateScreen(void) {
  80010c2:	3708      	adds	r7, #8
  80010c4:	46bd      	mov	sp, r7
  80010c6:	bd80      	pop	{r7, pc}
- 80010c8:	20000400 	.word	0x20000400
+ 80010c8:	20000410 	.word	0x20000410
 
 080010cc <SSD1306_Fill>:
 	for (i = 0; i < sizeof(SSD1306_Buffer); i++) {
@@ -2230,7 +2247,7 @@ void SSD1306_Fill(SSD1306_COLOR_t color) {
  80010f2:	46bd      	mov	sp, r7
  80010f4:	bd80      	pop	{r7, pc}
  80010f6:	bf00      	nop
- 80010f8:	20000400 	.word	0x20000400
+ 80010f8:	20000410 	.word	0x20000410
 
 080010fc <SSD1306_DrawPixel>:
 
@@ -2341,8 +2358,8 @@ void SSD1306_DrawPixel(uint16_t x, uint16_t y, SSD1306_COLOR_t color) {
  80011ac:	f85d 7b04 	ldr.w	r7, [sp], #4
  80011b0:	4770      	bx	lr
  80011b2:	bf00      	nop
- 80011b4:	20000800 	.word	0x20000800
- 80011b8:	20000400 	.word	0x20000400
+ 80011b4:	20000810 	.word	0x20000810
+ 80011b8:	20000410 	.word	0x20000410
 
 080011bc <SSD1306_GotoXY>:
 
@@ -2370,7 +2387,7 @@ void SSD1306_GotoXY(uint16_t x, uint16_t y) {
  80011dc:	46bd      	mov	sp, r7
  80011de:	f85d 7b04 	ldr.w	r7, [sp], #4
  80011e2:	4770      	bx	lr
- 80011e4:	20000800 	.word	0x20000800
+ 80011e4:	20000810 	.word	0x20000810
 
 080011e8 <SSD1306_Putc>:
 
@@ -2529,7 +2546,7 @@ char SSD1306_Putc(char ch, FontDef_t* Font, SSD1306_COLOR_t color) {
  80012de:	46bd      	mov	sp, r7
  80012e0:	bd80      	pop	{r7, pc}
  80012e2:	bf00      	nop
- 80012e4:	20000800 	.word	0x20000800
+ 80012e4:	20000810 	.word	0x20000810
 
 080012e8 <SSD1306_Puts>:
 
@@ -2724,7 +2741,7 @@ HAL_I2C_Master_Transmit(&hi2c1, address, dt, count+1, 10);
  8001430:	f507 778a 	add.w	r7, r7, #276	; 0x114
  8001434:	46bd      	mov	sp, r7
  8001436:	bd90      	pop	{r4, r7, pc}
- 8001438:	20000300 	.word	0x20000300
+ 8001438:	20000310 	.word	0x20000310
 
 0800143c <ssd1306_I2C_Write>:
 
@@ -2761,7 +2778,7 @@ void ssd1306_I2C_Write(uint8_t address, uint8_t reg, uint8_t data) {
  800146e:	46bd      	mov	sp, r7
  8001470:	bd80      	pop	{r7, pc}
  8001472:	bf00      	nop
- 8001474:	20000300 	.word	0x20000300
+ 8001474:	20000310 	.word	0x20000310
 
 08001478 <HAL_MspInit>:
 /* USER CODE END 0 */
@@ -3243,7 +3260,7 @@ void OTG_FS_IRQHandler(void)
  80016ae:	bf00      	nop
  80016b0:	bd80      	pop	{r7, pc}
  80016b2:	bf00      	nop
- 80016b4:	20000ce4 	.word	0x20000ce4
+ 80016b4:	20000cf4 	.word	0x20000cf4
 
 080016b8 <_sbrk>:
  *
@@ -3323,8 +3340,8 @@ void *_sbrk(ptrdiff_t incr)
  8001712:	bd80      	pop	{r7, pc}
  8001714:	20020000 	.word	0x20020000
  8001718:	00000400 	.word	0x00000400
- 800171c:	20000808 	.word	0x20000808
- 8001720:	20001110 	.word	0x20001110
+ 800171c:	20000818 	.word	0x20000818
+ 8001720:	20001120 	.word	0x20001120
 
 08001724 <SystemInit>:
   *         configuration.
@@ -3430,7 +3447,7 @@ LoopFillZerobss:
  8001776:	f006 fdcd 	bl	8008314 <__libc_init_array>
 /* Call the application's entry point.*/
   bl  main
- 800177a:	f7fe ffcb 	bl	8000714 <main>
+ 800177a:	f7ff f8cd 	bl	8000918 <main>
   bx  lr    
  800177e:	4770      	bx	lr
   ldr   sp, =_estack     /* set stack pointer */
@@ -3444,7 +3461,7 @@ LoopFillZerobss:
   ldr r2, =_sbss
  8001790:	20000270 	.word	0x20000270
   ldr r4, =_ebss
- 8001794:	20001110 	.word	0x20001110
+ 8001794:	20001120 	.word	0x20001120
 
 08001798 <ADC_IRQHandler>:
  * @retval None       
@@ -3607,7 +3624,7 @@ __weak void HAL_IncTick(void)
  800185c:	4770      	bx	lr
  800185e:	bf00      	nop
  8001860:	2000006c 	.word	0x2000006c
- 8001864:	2000080c 	.word	0x2000080c
+ 8001864:	2000081c 	.word	0x2000081c
 
 08001868 <HAL_GetTick>:
   * @note This function is declared as __weak to be overwritten in case of other 
@@ -3627,7 +3644,7 @@ __weak uint32_t HAL_GetTick(void)
  8001874:	f85d 7b04 	ldr.w	r7, [sp], #4
  8001878:	4770      	bx	lr
  800187a:	bf00      	nop
- 800187c:	2000080c 	.word	0x2000080c
+ 800187c:	2000081c 	.word	0x2000081c
 
 08001880 <HAL_Delay>:
   *       implementations in user file.
@@ -19618,7 +19635,7 @@ static USBD_StatusTypeDef USBD_SetConfig(USBD_HandleTypeDef *pdev, USBD_SetupReq
  8007732:	46bd      	mov	sp, r7
  8007734:	bd80      	pop	{r7, pc}
  8007736:	bf00      	nop
- 8007738:	20000810 	.word	0x20000810
+ 8007738:	20000820 	.word	0x20000820
 
 0800773c <USBD_GetConfig>:
   * @param  pdev: device instance
@@ -20353,7 +20370,7 @@ void MX_USB_DEVICE_Init(void)
  8007ad4:	bd80      	pop	{r7, pc}
  8007ad6:	bf00      	nop
  8007ad8:	200001bc 	.word	0x200001bc
- 8007adc:	20000814 	.word	0x20000814
+ 8007adc:	20000824 	.word	0x20000824
  8007ae0:	20000070 	.word	0x20000070
 
 08007ae4 <USBD_FS_DeviceDescriptor>:
@@ -20453,7 +20470,7 @@ uint8_t * USBD_FS_ProductStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length
  8007b5a:	46bd      	mov	sp, r7
  8007b5c:	bd80      	pop	{r7, pc}
  8007b5e:	bf00      	nop
- 8007b60:	20000ae4 	.word	0x20000ae4
+ 8007b60:	20000af4 	.word	0x20000af4
  8007b64:	08008cc0 	.word	0x08008cc0
 
 08007b68 <USBD_FS_ManufacturerStrDescriptor>:
@@ -20482,7 +20499,7 @@ uint8_t * USBD_FS_ManufacturerStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *l
  8007b82:	3708      	adds	r7, #8
  8007b84:	46bd      	mov	sp, r7
  8007b86:	bd80      	pop	{r7, pc}
- 8007b88:	20000ae4 	.word	0x20000ae4
+ 8007b88:	20000af4 	.word	0x20000af4
  8007b8c:	08008cd0 	.word	0x08008cd0
 
 08007b90 <USBD_FS_SerialStrDescriptor>:
@@ -20561,7 +20578,7 @@ uint8_t * USBD_FS_ConfigStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
  8007be2:	46bd      	mov	sp, r7
  8007be4:	bd80      	pop	{r7, pc}
  8007be6:	bf00      	nop
- 8007be8:	20000ae4 	.word	0x20000ae4
+ 8007be8:	20000af4 	.word	0x20000af4
  8007bec:	08008ce0 	.word	0x08008ce0
 
 08007bf0 <USBD_FS_InterfaceStrDescriptor>:
@@ -20605,7 +20622,7 @@ uint8_t * USBD_FS_InterfaceStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *leng
  8007c1e:	46bd      	mov	sp, r7
  8007c20:	bd80      	pop	{r7, pc}
  8007c22:	bf00      	nop
- 8007c24:	20000ae4 	.word	0x20000ae4
+ 8007c24:	20000af4 	.word	0x20000af4
  8007c28:	08008cec 	.word	0x08008cec
 
 08007c2c <Get_SerialNum>:
@@ -21319,7 +21336,7 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
  800801e:	3708      	adds	r7, #8
  8008020:	46bd      	mov	sp, r7
  8008022:	bd80      	pop	{r7, pc}
- 8008024:	20000ce4 	.word	0x20000ce4
+ 8008024:	20000cf4 	.word	0x20000cf4
 
 08008028 <USBD_LL_Start>:
   * @brief  Starts the low level portion of the device driver.
@@ -21767,7 +21784,7 @@ void *USBD_static_malloc(uint32_t size)
  8008290:	f85d 7b04 	ldr.w	r7, [sp], #4
  8008294:	4770      	bx	lr
  8008296:	bf00      	nop
- 8008298:	200010ec 	.word	0x200010ec
+ 8008298:	200010fc 	.word	0x200010fc
 
 0800829c <USBD_static_free>:
   * @brief  Dummy memory free
@@ -22659,7 +22676,7 @@ USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status)
  8008a6a:	e7ca      	b.n	8008a02 <_free_r+0x26>
  8008a6c:	b003      	add	sp, #12
  8008a6e:	bd30      	pop	{r4, r5, pc}
- 8008a70:	20001100 	.word	0x20001100
+ 8008a70:	20001110 	.word	0x20001110
 
 08008a74 <sbrk_aligned>:
  8008a74:	b570      	push	{r4, r5, r6, lr}
@@ -22687,7 +22704,7 @@ USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status)
  8008aa8:	f04f 34ff 	mov.w	r4, #4294967295
  8008aac:	4620      	mov	r0, r4
  8008aae:	bd70      	pop	{r4, r5, r6, pc}
- 8008ab0:	20001104 	.word	0x20001104
+ 8008ab0:	20001114 	.word	0x20001114
 
 08008ab4 <_malloc_r>:
  8008ab4:	e92d 41f0 	stmdb	sp!, {r4, r5, r6, r7, r8, lr}
@@ -22791,7 +22808,7 @@ USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status)
  8008b92:	6025      	str	r5, [r4, #0]
  8008b94:	e7de      	b.n	8008b54 <_malloc_r+0xa0>
  8008b96:	bf00      	nop
- 8008b98:	20001100 	.word	0x20001100
+ 8008b98:	20001110 	.word	0x20001110
 
 08008b9c <_realloc_r>:
  8008b9c:	e92d 41f0 	stmdb	sp!, {r4, r5, r6, r7, r8, lr}
@@ -22847,19 +22864,19 @@ USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status)
  8008c12:	b103      	cbz	r3, 8008c16 <_sbrk_r+0x1a>
  8008c14:	6023      	str	r3, [r4, #0]
  8008c16:	bd38      	pop	{r3, r4, r5, pc}
- 8008c18:	20001108 	.word	0x20001108
+ 8008c18:	20001118 	.word	0x20001118
 
 08008c1c <__malloc_lock>:
  8008c1c:	4801      	ldr	r0, [pc, #4]	; (8008c24 <__malloc_lock+0x8>)
  8008c1e:	f000 b811 	b.w	8008c44 <__retarget_lock_acquire_recursive>
  8008c22:	bf00      	nop
- 8008c24:	2000110c 	.word	0x2000110c
+ 8008c24:	2000111c 	.word	0x2000111c
 
 08008c28 <__malloc_unlock>:
  8008c28:	4801      	ldr	r0, [pc, #4]	; (8008c30 <__malloc_unlock+0x8>)
  8008c2a:	f000 b80c 	b.w	8008c46 <__retarget_lock_release_recursive>
  8008c2e:	bf00      	nop
- 8008c30:	2000110c 	.word	0x2000110c
+ 8008c30:	2000111c 	.word	0x2000111c
 
 08008c34 <_malloc_usable_size_r>:
  8008c34:	f851 3c04 	ldr.w	r3, [r1, #-4]
