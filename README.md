@@ -16,4 +16,4 @@ Stm32 based HID macro 4x4 keypad with magnetic encoder.
 
 * Remember to test each module and functionality as you implement it. This will make it easier to catch and fix bugs early on. Also, consider using version control (like Git) to keep track of your changes and make it easier to revert back if something goes wrong.
 
-* This is a high-level roadmap and you might need to adjust it based on your specific requirements and constraints. Good luck with your project!
+* This is a high-level roadmap and you might need to adjust it based on your specific requirements and constraints. Good luck with your project! 
