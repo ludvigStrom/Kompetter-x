@@ -1,8 +1,8 @@
-main.c:123:9:encoderValueFunction	5
-main.c:155:5:main	20
-main.c:383:6:SystemClock_Config	3
-main.c:427:13:MX_I2C1_Init	2
-main.c:461:13:MX_I2C2_Init	2
-main.c:495:13:MX_SPI2_Init	2
-main.c:533:13:MX_GPIO_Init	1
-main.c:572:6:Error_Handler	1
+main.c:124:9:encoderValueFunction	5
+main.c:156:5:main	20
+main.c:390:6:SystemClock_Config	3
+main.c:434:13:MX_I2C1_Init	2
+main.c:468:13:MX_I2C2_Init	2
+main.c:502:13:MX_SPI2_Init	2
+main.c:540:13:MX_GPIO_Init	1
+main.c:579:6:Error_Handler	1

@@ -16,6 +16,7 @@
 #include <stdint.h>
 #include "utils.h"
 #include "ImprovedKeylayouts.h"
+#include "keyboardScanner.h"
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
@@ -232,7 +233,11 @@ int main(void)
   {
     /* USER CODE END WHILE */
 
+
     /* USER CODE BEGIN 3 */
+
+	//TEST
+	keyboardScanner();
 
 	//ANGLE SENSOR
 	uint16_t angle = AS5600_ReadAngle(&hi2c2);
