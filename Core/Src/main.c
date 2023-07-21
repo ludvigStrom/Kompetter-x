@@ -44,7 +44,7 @@ typedef struct {
     uint8_t VENDOR_DEFINED[2];  // Vendor-defined usage
 } mouseHID;
 
-mouseHID mousehid = {0x02,0,0,0,0,0};
+mouseHID mousehid = {0x02, 0, 0, 0, 0, {0, 0}};
 
 uint8_t screenNotUpdated = 1;
 
@@ -175,7 +175,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
 	angleSensorScrollScan(&hi2c2);
 	keyboardScan();
 
@@ -219,7 +218,7 @@ int main(void)
 		lastSmoothedAccumulator = smoothedAccumulator;
 
 		// Send the Mouse HID report
-		USBD_HID_SendReport(&hUsbDeviceFS, (int8_t*)&mousehid, sizeof(mousehid));
+		USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&mousehid, sizeof(mousehid));
 
 		// Update the OLED display
 		screenNotUpdated = 1;

@@ -1255,11 +1255,11 @@ int main(void)
  8000afc:	2104      	movs	r1, #4
  8000afe:	483e      	ldr	r0, [pc, #248]	; (8000bf8 <main+0x1d0>)
  8000b00:	f001 f9dd 	bl	8001ebe <HAL_GPIO_TogglePin>
+  while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
 	angleSensorScrollScan(&hi2c2);
  8000b04:	4844      	ldr	r0, [pc, #272]	; (8000c18 <main+0x1f0>)
  8000b06:	f7ff fe03 	bl	8000710 <angleSensorScrollScan>
@@ -1402,7 +1402,7 @@ int main(void)
  8000bd2:	6013      	str	r3, [r2, #0]
 
 		// Send the Mouse HID report
-		USBD_HID_SendReport(&hUsbDeviceFS, (int8_t*)&mousehid, sizeof(mousehid));
+		USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&mousehid, sizeof(mousehid));
  8000bd4:	2207      	movs	r2, #7
  8000bd6:	4919      	ldr	r1, [pc, #100]	; (8000c3c <main+0x214>)
  8000bd8:	4813      	ldr	r0, [pc, #76]	; (8000c28 <main+0x200>)
