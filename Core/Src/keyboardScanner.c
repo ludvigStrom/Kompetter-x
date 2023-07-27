@@ -2,6 +2,8 @@
 #include "main.h" // Include this if necessary for GPIO functions
 #include "ImprovedKeylayouts.h"
 #include <stdio.h>
+#include "usbHidReport.h"
+
 
 #define DEBOUNCE_DELAY 10 // Debounce delay in milliseconds
 
@@ -30,46 +32,31 @@ void keyboardScannerInit(void)
 
 void keyboardScan(void)
 {
-	//Keyboard Scan!
-	for(int i = 0; i < NUM_ROWS; i++) {
-		uint32_t current_tick = HAL_GetTick();
-		HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
-		HAL_Delay(1); // delay after setting row high
+    //Keyboard Scan!
+    for(int i = 0; i < NUM_ROWS; i++) {
+        uint32_t current_tick = HAL_GetTick();
+        HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
+        HAL_Delay(1); // delay after setting row high
 
-		for(int j = 0; j < NUM_COLS; j++) {
-			uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
+        for(int j = 0; j < NUM_COLS; j++) {
+            uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
 
-			if (is_pressed && key_state[i][j] == IDLE) {
-				// Key has been pressed from an idle state
+            if (is_pressed && key_state[i][j] == IDLE) {
+                // Key has been pressed from an idle state
+                usbHidAddKey(keycode_map[i][j]); // Add the key to the HID report
+                key_state[i][j] = PRESSED;
+                last_key_time[i][j] = current_tick;
 
-				// Find a slot in the HID report
-				for (int k = 0; k < NUM_KEYS; k++) {
-					if (hid_report[k] == 0) { // 0 indicates an empty slot
-						hid_report[k] = keycode_map[i][j]; // Add the key to the HID report
-						break;
-					}
-				}
-				key_state[i][j] = PRESSED;
-				last_key_time[i][j] = current_tick;
+                sprintf(last_key, "%d%d", i+1, j+1);  // Save the last key pressed
 
-				sprintf(last_key, "%d%d", i+1, j+1);  // Save the last key pressed
+            } else if (!is_pressed && key_state[i][j] == PRESSED && current_tick - last_key_time[i][j] > DEBOUNCE_DELAY) {
+                // Key has been released
+                usbHidRemoveKey(keycode_map[i][j]); // Remove the key from the HID report
+                key_state[i][j] = IDLE;
+            }
+        }
 
-			} else if (!is_pressed && key_state[i][j] == PRESSED && current_tick - last_key_time[i][j] > DEBOUNCE_DELAY) {
-				// Key has been released
-
-				// Remove the key from the HID report
-				for (int k = 0; k < NUM_KEYS; k++) {
-					if (hid_report[k] == keycode_map[i][j]) {
-						hid_report[k] = 0; // Remove the key
-						break;
-					}
-				}
-
-				key_state[i][j] = IDLE;
-			}
-		}
-
-		HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_RESET);
-		HAL_Delay(1); // delay after setting row low
-	}
+        HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_RESET);
+        HAL_Delay(1); // delay after setting row low
+    }
 }

@@ -17,34 +17,9 @@
 #include "utils.h"
 #include "ImprovedKeylayouts.h"
 #include "keyboardScanner.h"
+#include "usbHidReport.h"
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
-
-typedef struct
-{
-    uint8_t REPORT_ID;
-    uint8_t MODIFIER;
-    uint8_t RESERVED;
-    uint8_t KEYCODE1;
-    uint8_t KEYCODE2;
-    uint8_t KEYCODE3;
-    uint8_t KEYCODE4;
-    uint8_t KEYCODE5;
-    uint8_t KEYCODE6;
-} keyboardHID;
-
-keyboardHID keyboardhid = {0x01,0,0,0,0,0,0,0,0};
-
-typedef struct {
-    uint8_t REPORT_ID;    		// REPORT_ID
-    uint8_t BUTTONS;     		// Button states - bitmapped
-    int8_t  X;           		// X-axis movement
-    int8_t  Y;           		// Y-axis movement
-    int8_t  WHEEL;       		// Wheel movement
-    uint8_t VENDOR_DEFINED[2];  // Vendor-defined usage
-} mouseHID;
-
-mouseHID mousehid = {0x02, 0, 0, 0, 0, {0, 0}};
 
 uint8_t screenNotUpdated = 1;
 
@@ -128,6 +103,8 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 
+  usbHidInit(&hUsbDeviceFS);
+
   HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
 
   HAL_Delay(50);
@@ -167,67 +144,40 @@ int main(void)
 
   /* USER CODE END 2 */
 
-
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
+      /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-	angleSensorScrollScan(&hi2c2);
-	keyboardScan();
+      /* USER CODE BEGIN 3 */
+      angleSensorScrollScan(&hi2c2);
+      keyboardScan();
 
-	// Check if the HID report has changed for the keyboard
-	uint8_t report_changed = 0;
-	for (int i = 0; i < NUM_KEYS; i++) {
-	    if (hid_report[i] != hid_report_prev[i]) {
-	        report_changed = 1;
-	        break;
-	    }
-	}
+      // Check if the HID report has changed for the keyboard
+      if (usbHidkeyReportChanged()) {
+          usbHidSendKeyboardReport();
 
-	//Send Keyboard HID report over USB
-	if (report_changed) {
-	    // Update the Keyboard HID report
-	    keyboardhid.KEYCODE1 = hid_report[0];
-	    keyboardhid.KEYCODE2 = hid_report[1];
-	    keyboardhid.KEYCODE3 = hid_report[2];
-	    keyboardhid.KEYCODE4 = hid_report[3];
-	    keyboardhid.KEYCODE5 = hid_report[4];
-	    keyboardhid.KEYCODE6 = hid_report[5];
+          // Update the OLED display
+          SSD1306_GotoXY(0, 40);
+          SSD1306_Puts(last_key, &Font_11x18, 1);
+          screenNotUpdated = 1;
+      }
 
-	    // Send the Keyboard HID report
-	    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
+      //Send Mouse HID report over USB
 
-	    // Update the previous report state
-	    memcpy(hid_report_prev, hid_report, NUM_KEYS);
+      if(smoothedAccumulator != 0){
+          usbHidUpdateMouseReport(0, 0, (int8_t)smoothedAccumulator / 35, 0);
+          usbHidSendMouseReport();
 
-	    // Update the OLED display
-	    SSD1306_GotoXY(0, 40);
-	    SSD1306_Puts(last_key, &Font_11x18, 1);
-	    screenNotUpdated = 1;
-	}
+          // Update the OLED display
+          screenNotUpdated = 1;
+      }
 
-	//Send Mouse HID report over USB
-	if(smoothedAccumulator != 0){
-		// Update the Mouse HID report
-		mousehid.WHEEL = (int8_t)smoothedAccumulator / 35;
-
-		// Remember the last value of smoothedAccumulator for the next loop
-		lastSmoothedAccumulator = smoothedAccumulator;
-
-		// Send the Mouse HID report
-		USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&mousehid, sizeof(mousehid));
-
-		// Update the OLED display
-		screenNotUpdated = 1;
-	}
-
-	if(screenNotUpdated == 1){
-		  SSD1306_UpdateScreen();
-		  screenNotUpdated = 0;
-	}
+      if(screenNotUpdated == 1){
+          SSD1306_UpdateScreen();
+          screenNotUpdated = 0;
+      }
   }
 
   /* USER CODE END 3 */
