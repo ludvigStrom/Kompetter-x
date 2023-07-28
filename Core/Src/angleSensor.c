@@ -5,7 +5,6 @@
 
 #define ALPHA_SMOOTHING 0.2
 
-int16_t currentEncoderVal = 0;
 int16_t lastEncoderVal = 0;
 int32_t encoderAccumulator = 0;
 int32_t smoothedAccumulator = 0;
@@ -13,10 +12,10 @@ int32_t lastSmoothedAccumulator = 0;
 
 void angleSensorInit(I2C_HandleTypeDef *hi2c)
 {
-	lastEncoderVal = AS5600_ReadAngle(hi2c);
+	lastEncoderVal = angleSensorReadAngle(hi2c);
 }
 
-uint16_t AS5600_ReadAngle(I2C_HandleTypeDef *hi2c)
+uint16_t angleSensorReadAngle(I2C_HandleTypeDef *hi2c)
 {
     uint8_t buffer[2];
     uint16_t angle;
@@ -30,7 +29,7 @@ uint16_t AS5600_ReadAngle(I2C_HandleTypeDef *hi2c)
     return angle;
 }
 
-uint8_t AS5600_ReadStatus(I2C_HandleTypeDef *hi2c)
+uint8_t angleSensorReadStatus(I2C_HandleTypeDef *hi2c)
 {
     uint8_t status;
 
@@ -40,9 +39,9 @@ uint8_t AS5600_ReadStatus(I2C_HandleTypeDef *hi2c)
     return status;
 }
 
-uint8_t AS5600_IsMagnetPresent(I2C_HandleTypeDef *hi2c)
+uint8_t angleSensorIsMagnetPresent(I2C_HandleTypeDef *hi2c)
 {
-    uint8_t status = AS5600_ReadStatus(hi2c);
+    uint8_t status = angleSensorReadStatus(hi2c);
 
     // Check if the magnet is too high or too low
     if((status & 0x08) || (status & 0x10)) {
@@ -82,13 +81,13 @@ int32_t encoderValueFunction(int16_t currentValue, int16_t previousValue, int32_
 
 void angleSensorScrollScan(I2C_HandleTypeDef *hi2c){
 	//ANGLE SENSOR
-	uint16_t angle = AS5600_ReadAngle(hi2c);
+	uint16_t angle = angleSensorReadAngle(hi2c);
 
 	smoothedAccumulator = encoderValueFunction(angle, lastEncoderVal, encoderAccumulator);
 	lastEncoderVal = angle; // Update lastEncoderVal after calling encoderValueFunction
 
 	//Handle magnet status
-	if( AS5600_IsMagnetPresent(hi2c) == 1){
+	if( angleSensorIsMagnetPresent(hi2c) == 1){
 
 		SSD1306_GotoXY(40, 40);
 		SSD1306_Puts("ok!  ", &Font_11x18, 1);

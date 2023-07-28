@@ -1,2 +1,3 @@
-keyboardScanner.c:23:6:keyboardScannerInit	3
-keyboardScanner.c:33:6:keyboardScan	8
+keyboardScanner.c:42:6:keyboardScannerInit	3
+keyboardScanner.c:52:6:keyboardScan	11
+keyboardScanner.c:96:6:keyboardChangeLayout	1

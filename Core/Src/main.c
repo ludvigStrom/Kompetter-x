@@ -1,14 +1,6 @@
 #include "main.h"
 #include "usb_device.h"
-
-#include "fonts.h"
-#include "ssd1306.h"
 #include "angleSensor.h"
-#include <string.h>
-#include "stdio.h"
-#include "usbd_hid.h"
-#include <stdint.h>
-#include "utils.h"
 #include "ImprovedKeylayouts.h"
 #include "keyboardScanner.h"
 #include "usbHidReport.h"
@@ -37,7 +29,6 @@ static void MX_SPI2_Init(void);
 int main(void)
 {
   HAL_Init();
-
   SystemClock_Config();
 
   MX_GPIO_Init();
@@ -48,17 +39,13 @@ int main(void)
 
   HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
 
-  HAL_Delay(50);
-
   usbHidInit(&hUsbDeviceFS);
   keyboardScannerInit();
   angleSensorInit(&hi2c2);
-
-  HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
-
-  uint8_t magnetPresent = AS5600_IsMagnetPresent(&hi2c2);
-
+  uint8_t magnetPresent = angleSensorIsMagnetPresent(&hi2c2);
   displayInit();
+
+  HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
 
   while (1)
   {
@@ -74,7 +61,7 @@ int main(void)
           usbHidSendMouseReport();
       }
 
-      displayUpdate(last_key, currentEncoderVal, smoothedAccumulator, magnetPresent);
+      displayUpdate(last_key, lastEncoderVal, smoothedAccumulator, magnetPresent);
   }
 }
 

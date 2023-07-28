@@ -30,12 +30,13 @@ typedef struct {
 } MouseHID;
 
 void usbHidInit(USBD_HandleTypeDef *usbDeviceHandle);
-void usbHidAddKey(uint8_t keycode);
-void usbHidRemoveKey(uint8_t keycode);
+void usbHidAddKey(uint8_t keycode, uint8_t mod);
+void usbHidRemoveKey(uint8_t keycode, uint8_t mod);
 void usbHidSendKeyboardReport(void);
-void usbHidHandleMacro(USBD_HandleTypeDef *usbDeviceHandle, uint8_t* macro, uint8_t macro_length);
+void usbHidHandleMacro(uint8_t* macro, uint8_t macro_length);
 uint8_t usbHidkeyReportChanged(void);
 void usbHidUpdateMouseReport(int8_t x, int8_t y, int8_t wheel, uint8_t buttons);
 void usbHidSendMouseReport(void);
+
 
 #endif

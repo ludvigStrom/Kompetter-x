@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "stm32f4xx_hal.h"
+#include "ImprovedKeylayouts.h"
 
 #define NUM_ROWS 4
 #define NUM_COLS 4
@@ -10,8 +11,17 @@
 
 enum KeyState { IDLE, PRESSED };
 
+
+typedef struct {
+    uint8_t keycode;
+    uint8_t* macro;
+    uint8_t macro_length;
+    uint16_t mod;
+} Key;
+
 void keyboardScannerInit(void);
 void keyboardScan(void);
+void keyboardChangeLayout(Key new_layout[NUM_ROWS][NUM_COLS]);
 
 extern uint32_t last_key_time[NUM_ROWS][NUM_COLS];
 extern uint8_t hid_report[NUM_KEYS];

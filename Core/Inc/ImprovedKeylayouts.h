@@ -23,20 +23,18 @@ THE SOFTWARE.
 
 /*Adapted to C by Ludvig Ström 2023*/
 
-// Include guard
 #pragma once
 
-// Keyboard Modifiers
-typedef uint16_t KeyboardMods;
+typedef uint8_t KeyboardMods;
 enum {
-    MOD_LEFT_CTRL       = (1 <<  8),
-    MOD_LEFT_SHIFT      = (1 <<  9),
-    MOD_LEFT_ALT        = (1 << 10),
-    MOD_LEFT_GUI        = (1 << 11),
-    MOD_RIGHT_CTRL      = (1 << 12),
-    MOD_RIGHT_SHIFT     = (1 << 13),
-    MOD_RIGHT_ALT       = (1 << 14),
-    MOD_RIGHT_GUI       = (1 << 15),
+    MOD_LEFT_CTRL       = (1 << 0),
+    MOD_LEFT_SHIFT      = (1 << 1),
+    MOD_LEFT_ALT        = (1 << 2),
+    MOD_LEFT_GUI        = (1 << 3),
+    MOD_RIGHT_CTRL      = (1 << 4),
+    MOD_RIGHT_SHIFT     = (1 << 5),
+    MOD_RIGHT_ALT       = (1 << 6),
+    MOD_RIGHT_GUI       = (1 << 7),
 };
 
 typedef uint8_t KeyboardLeds;

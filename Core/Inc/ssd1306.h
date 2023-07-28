@@ -283,18 +283,12 @@ void SSD1306_Scrolldiagright(uint8_t start_row, uint8_t end_row);
 void SSD1306_Scrolldiagleft(uint8_t start_row, uint8_t end_row);
 
 
-
 void SSD1306_Stopscroll(void);
 
 
 // inverts the display i = 1->inverted, i = 0->normal
 
 void SSD1306_InvertDisplay (int i);
-
-
-
-
-
 
 // clear the display
 
