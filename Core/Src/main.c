@@ -1,11 +1,5 @@
-/* USER CODE BEGIN Header */
-/* USER CODE END Header */
-/* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_device.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 
 #include "fonts.h"
 #include "ssd1306.h"
@@ -16,382 +10,82 @@
 #include <stdint.h>
 #include "utils.h"
 #include "ImprovedKeylayouts.h"
+#include "keyboardScanner.h"
+#include "usbHidReport.h"
+#include "displayManager.h"
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
-typedef struct
-{
-    uint8_t REPORT_ID;
-    uint8_t MODIFIER;
-    uint8_t RESERVED;
-    uint8_t KEYCODE1;
-    uint8_t KEYCODE2;
-    uint8_t KEYCODE3;
-    uint8_t KEYCODE4;
-    uint8_t KEYCODE5;
-    uint8_t KEYCODE6;
-} keyboardHID;
-
-keyboardHID keyboardhid = {0x01,0,0,0,0,0,0,0,0};
-
-#define NUM_ROWS 4
-#define NUM_COLS 4
-#define NUM_KEYS 16
-
-uint8_t keycode_map[NUM_ROWS][NUM_COLS] = {
-    {KEY_1, KEY_2, KEY_3, KEY_4}, // HID keycodes for '1', '2', '3', '4'
-    {KEY_5, KEY_6, KEY_7, KEY_8}, // HID keycodes for '5', '6', '7', '8'
-    {KEY_9, KEY_A, KEY_B, KEY_C}, // HID keycodes for '9', 'A', 'B', 'C'
-    {KEY_D, KEY_E, KEY_F, KEY_G}  // HID keycodes for 'D', 'E', 'F', 'G'
-};
-
-typedef struct {
-    uint8_t REPORT_ID;    		// REPORT_ID
-    uint8_t BUTTONS;     		// Button states - bitmapped
-    int8_t  X;           		// X-axis movement
-    int8_t  Y;           		// Y-axis movement
-    int8_t  WHEEL;       		// Wheel movement
-    uint8_t VENDOR_DEFINED[2];  // Vendor-defined usage
-} mouseHID;
-
-mouseHID mousehid = {0x02,0,0,0,0,0};
-
-#define ALPHA_SMOOTHING 0.2
-
-#define DEBOUNCE_DELAY 10 // Debounce delay in milliseconds
-
-//Keyboard scanning
-uint32_t last_key_time[NUM_ROWS][NUM_COLS] = {0};
-uint8_t hid_report[NUM_KEYS] = {0};
-uint8_t hid_report_prev[NUM_KEYS] = {0};
-char last_key[3] = {0};
-
-//Magnetic encoder
-int16_t currentEncoderVal = 0;
-int16_t lastEncoderVal = 0;
-int32_t encoderAccumulator = 0;
-int32_t smoothedAccumulator = 0;
-int32_t lastSmoothedAccumulator = 0;
+uint8_t screenNotUpdated = 1;
 
 GPIO_TypeDef* row_ports[NUM_ROWS] = {KEY_ROW_1_GPIO_Port, KEY_ROW_2_GPIO_Port, KEY_ROW_3_GPIO_Port, KEY_ROW_4_GPIO_Port};
 uint16_t row_pins[NUM_ROWS] = {KEY_ROW_1_Pin, KEY_ROW_2_Pin, KEY_ROW_3_Pin, KEY_ROW_4_Pin};
 GPIO_TypeDef* col_ports[NUM_COLS] = {KEY_COL_1_GPIO_Port, KEY_COL_2_GPIO_Port, KEY_COL_3_GPIO_Port, KEY_COL_4_GPIO_Port};
 uint16_t col_pins[NUM_COLS] = {KEY_COL_1_Pin, KEY_COL_2_Pin, KEY_COL_3_Pin, KEY_COL_4_Pin};
 
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c2;
 
 SPI_HandleTypeDef hspi2;
 
-/* USER CODE BEGIN PV */
-char txBuf[8];
-uint8_t count = 1;
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_I2C2_Init(void);
 static void MX_SPI2_Init(void);
-/* USER CODE BEGIN PFP */
 
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-int32_t encoderValueFunction(int16_t currentValue, int16_t previousValue, int32_t accumulator) {
-	int16_t difference = (int16_t)currentValue - (int16_t)previousValue;
-
-	// Handle wraparound from 0 to 4095 and from 4095 to 0
-	if (abs(difference) > 2048) {
-		if (difference > 0) {
-			difference -= 4096;
-		} else {
-			difference += 4096;
-		}
-	}
-
-	if (abs(difference) > 10) {
-		accumulator += difference;
-	}
-
-	// Exponential smoothing
-	float alpha = ALPHA_SMOOTHING; // Smoothing factor, adjust as needed
-	smoothedAccumulator = alpha * accumulator + (1 - alpha) * smoothedAccumulator;
-
-	// Limit smoothedAccumulator to the range -127 to 127
-	smoothedAccumulator = max(-127, min(127, smoothedAccumulator));
-
-	return smoothedAccumulator;
-}
-
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
   SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_I2C2_Init();
   MX_USB_DEVICE_Init();
   MX_SPI2_Init();
-  /* USER CODE BEGIN 2 */
 
   HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
 
   HAL_Delay(50);
 
-  SSD1306_Init (); // initialize the display
+  usbHidInit(&hUsbDeviceFS);
+  keyboardScannerInit();
+  angleSensorInit(&hi2c2);
 
-  HAL_Delay(50);
+  HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
 
-  SSD1306_GotoXY (0,0);
-  SSD1306_Puts ("Kompetter-X", &Font_11x18, 1);
-  SSD1306_GotoXY (0, 20);
-  SSD1306_Puts ("v.02", &Font_7x10, 1);
-  SSD1306_UpdateScreen();
+  uint8_t magnetPresent = AS5600_IsMagnetPresent(&hi2c2);
 
-  HAL_Delay(1500);
+  displayInit();
 
-  SSD1306_Clear();
-  HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
-  SSD1306_GotoXY(0, 30);
-  SSD1306_Puts("Key: ", &Font_7x10, 1);
-  SSD1306_GotoXY(0, 40);
-  SSD1306_Puts("--  ", &Font_11x18, 1);
-
-  SSD1306_GotoXY(40, 30);
-  SSD1306_Puts("Magnet: ", &Font_7x10, 1);
-  SSD1306_GotoXY(40, 40);
-  SSD1306_Puts("--  ", &Font_11x18, 1);
-  SSD1306_UpdateScreen();
-
-  //debounce scan:
-  enum KeyState { IDLE, PRESSED };
-  enum KeyState key_state[NUM_ROWS][NUM_COLS];  // Declare the array of states
-
-  for(int i = 0; i < NUM_ROWS; i++) {
-    for(int j = 0; j < NUM_COLS; j++) {
-	  key_state[i][j] = IDLE;  // Initialize each state to IDLE
-	}
-  }
-
-  // Initialize lastEncoderVal with the initial encoder value
-  lastEncoderVal = AS5600_ReadAngle(&hi2c2);
-
-  /* USER CODE END 2 */
-
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
+      angleSensorScrollScan(&hi2c2);
+      keyboardScan();
 
-    /* USER CODE BEGIN 3 */
+      if (usbHidkeyReportChanged()) {
+          usbHidSendKeyboardReport();
+      }
 
-	//ANGLE SENSOR
-	uint16_t angle = AS5600_ReadAngle(&hi2c2);
-	uint8_t magnetPresent = AS5600_IsMagnetPresent(&hi2c2);
+      if(smoothedAccumulator != 0){
+          usbHidUpdateMouseReport(0, 0, (int8_t)smoothedAccumulator / 35, 0);
+          usbHidSendMouseReport();
+      }
 
-	smoothedAccumulator = encoderValueFunction(angle, lastEncoderVal, encoderAccumulator);
-	lastEncoderVal = angle; // Update lastEncoderVal after calling encoderValueFunction
-
-	uint8_t screenNotUpdated = 0;
-
-	//Handle magnet status
-	if( magnetPresent == 1){
-
-		SSD1306_GotoXY(40, 40);
-		SSD1306_Puts("ok!  ", &Font_11x18, 1);
-
-		//Convert the angle to a string
-		char angle_str[5]; // Buffer to hold the string. Make sure it's large enough to hold all digits of the angle and the null-terminating character.
-
-	    //Convert to a string with leading spaces
-	    sprintf(angle_str, "%4u", angle);
-
-		// Display the angle on the OLED display
-		SSD1306_GotoXY (0,0);
-		SSD1306_Puts("Angle: ", &Font_7x10, 1);
-		SSD1306_GotoXY (0, 12);
-		SSD1306_Puts(angle_str, &Font_11x18, 1);
-
-
-		//ACCUMULATOR:
-	    //Convert to a string with leading spaces
-		sprintf(angle_str, "%5d", smoothedAccumulator);
-
-		//display accumulator
-		SSD1306_GotoXY (80,0);
-		SSD1306_Puts("Acc: ", &Font_7x10, 1);
-		SSD1306_GotoXY (60, 12);
-		SSD1306_Puts(angle_str, &Font_7x10, 1);
-
-	} else {
-		SSD1306_GotoXY(40, 40);
-		SSD1306_Puts("No :(", &Font_11x18, 1);
-	}
-
-	//Keyboard Scan!
-	for(int i = 0; i < NUM_ROWS; i++) {
-	    uint32_t current_tick = HAL_GetTick();
-	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_SET);
-	    HAL_Delay(1); // delay after setting row high
-
-	    for(int j = 0; j < NUM_COLS; j++) {
-	        uint8_t is_pressed = HAL_GPIO_ReadPin(col_ports[j], col_pins[j]) == GPIO_PIN_SET;
-
-	        if (is_pressed && key_state[i][j] == IDLE) {
-	            // Key has been pressed from an idle state
-
-	            // Find a slot in the HID report
-	            for (int k = 0; k < NUM_KEYS; k++) {
-	                if (hid_report[k] == 0) { // 0 indicates an empty slot
-	                    hid_report[k] = keycode_map[i][j]; // Add the key to the HID report
-	                    break;
-	                }
-	            }
-	            key_state[i][j] = PRESSED;
-	            last_key_time[i][j] = current_tick;
-
-	            sprintf(last_key, "%d%d", i+1, j+1);  // Save the last key pressed
-
-	        } else if (!is_pressed && key_state[i][j] == PRESSED && current_tick - last_key_time[i][j] > DEBOUNCE_DELAY) {
-	            // Key has been released
-
-	            // Remove the key from the HID report
-	            for (int k = 0; k < NUM_KEYS; k++) {
-	                if (hid_report[k] == keycode_map[i][j]) {
-	                    hid_report[k] = 0; // Remove the key
-	                    break;
-	                }
-	            }
-
-	            key_state[i][j] = IDLE;
-	        }
-	    }
-
-	    HAL_GPIO_WritePin(row_ports[i], row_pins[i], GPIO_PIN_RESET);
-	    HAL_Delay(1); // delay after setting row low
-	}
-
-	// Check if the HID report has changed
-	uint8_t report_changed = 0;
-	for (int i = 0; i < NUM_KEYS; i++) {
-	    if (hid_report[i] != hid_report_prev[i]) {
-	        report_changed = 1;
-	        break;
-	    }
-	}
-
-	//Send Keyboard HID report over USB
-	if (report_changed) {
-	    // Update the Keyboard HID report
-	    keyboardhid.KEYCODE1 = hid_report[0];
-	    keyboardhid.KEYCODE2 = hid_report[1];
-	    keyboardhid.KEYCODE3 = hid_report[2];
-	    keyboardhid.KEYCODE4 = hid_report[3];
-	    keyboardhid.KEYCODE5 = hid_report[4];
-	    keyboardhid.KEYCODE6 = hid_report[5];
-
-	    // Send the Keyboard HID report
-	    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboardhid, sizeof(keyboardhid));
-
-	    // Update the previous report state
-	    memcpy(hid_report_prev, hid_report, NUM_KEYS);
-
-	    // Update the OLED display
-	    SSD1306_GotoXY(0, 40);
-	    SSD1306_Puts(last_key, &Font_11x18, 1);
-	    screenNotUpdated = 1;
-	}
-
-	//Send Mouse HID report over USB
-	if(smoothedAccumulator != 0){
-		// Update the Mouse HID report
-		mousehid.WHEEL = (int8_t)smoothedAccumulator / 35;
-
-		// Remember the last value of smoothedAccumulator for the next loop
-		lastSmoothedAccumulator = smoothedAccumulator;
-
-		// Send the Mouse HID report
-		USBD_HID_SendReport(&hUsbDeviceFS, (int8_t*)&mousehid, sizeof(mousehid));
-
-		// Update the OLED display
-		//SSD1306_UpdateScreen();
-		screenNotUpdated = 1;
-	}
-
-	if(screenNotUpdated == 1){
-		  SSD1306_UpdateScreen();
-		  screenNotUpdated = 0;
-	}
+      displayUpdate(last_key, currentEncoderVal, smoothedAccumulator, magnetPresent);
   }
-
-  /* USER CODE END 3 */
 }
 
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage
-  */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -404,8 +98,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
+
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
@@ -419,21 +112,8 @@ void SystemClock_Config(void)
   }
 }
 
-/**
-  * @brief I2C1 Initialization Function
-  * @param None
-  * @retval None
-  */
 static void MX_I2C1_Init(void)
 {
-
-  /* USER CODE BEGIN I2C1_Init 0 */
-
-  /* USER CODE END I2C1_Init 0 */
-
-  /* USER CODE BEGIN I2C1_Init 1 */
-
-  /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
   hi2c1.Init.ClockSpeed = 400000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
@@ -447,27 +127,10 @@ static void MX_I2C1_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN I2C1_Init 2 */
-
-  /* USER CODE END I2C1_Init 2 */
-
 }
 
-/**
-  * @brief I2C2 Initialization Function
-  * @param None
-  * @retval None
-  */
 static void MX_I2C2_Init(void)
 {
-
-  /* USER CODE BEGIN I2C2_Init 0 */
-
-  /* USER CODE END I2C2_Init 0 */
-
-  /* USER CODE BEGIN I2C2_Init 1 */
-
-  /* USER CODE END I2C2_Init 1 */
   hi2c2.Instance = I2C2;
   hi2c2.Init.ClockSpeed = 100000;
   hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
@@ -481,28 +144,12 @@ static void MX_I2C2_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN I2C2_Init 2 */
-
-  /* USER CODE END I2C2_Init 2 */
 
 }
 
-/**
-  * @brief SPI2 Initialization Function
-  * @param None
-  * @retval None
-  */
 static void MX_SPI2_Init(void)
 {
 
-  /* USER CODE BEGIN SPI2_Init 0 */
-
-  /* USER CODE END SPI2_Init 0 */
-
-  /* USER CODE BEGIN SPI2_Init 1 */
-
-  /* USER CODE END SPI2_Init 1 */
-  /* SPI2 parameter configuration*/
   hspi2.Instance = SPI2;
   hspi2.Init.Mode = SPI_MODE_MASTER;
   hspi2.Init.Direction = SPI_DIRECTION_2LINES;
@@ -519,28 +166,18 @@ static void MX_SPI2_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN SPI2_Init 2 */
-
-  /* USER CODE END SPI2_Init 2 */
 
 }
 
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin|KEY_ROW_1_Pin|KEY_ROW_2_Pin|KEY_ROW_3_Pin
                           |KEY_ROW_4_Pin, GPIO_PIN_RESET);
 
@@ -561,40 +198,19 @@ static void MX_GPIO_Init(void)
 
 }
 
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
-
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
 void Error_Handler(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
+
   __disable_irq();
   while (1)
   {
   }
-  /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+
 void assert_failed(uint8_t *file, uint32_t line)
 {
-  /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  /* USER CODE END 6 */
-}
-#endif /* USE_FULL_ASSERT */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+}
+#endif
