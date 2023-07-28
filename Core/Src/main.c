@@ -12,6 +12,7 @@
 #include "ImprovedKeylayouts.h"
 #include "keyboardScanner.h"
 #include "usbHidReport.h"
+#include "displayManager.h"
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
@@ -35,90 +36,46 @@ static void MX_SPI2_Init(void);
 
 int main(void)
 {
-
   HAL_Init();
 
-
-  /* Configure the system clock */
   SystemClock_Config();
 
-
-  /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_I2C2_Init();
   MX_USB_DEVICE_Init();
   MX_SPI2_Init();
-  /* USER CODE BEGIN 2 */
+
+  HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
+
+  HAL_Delay(50);
 
   usbHidInit(&hUsbDeviceFS);
-
-  HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
-
-  HAL_Delay(50);
-
-  SSD1306_Init (); // initialize the display
-
-  HAL_Delay(50);
-
-  SSD1306_GotoXY (0,0);
-  SSD1306_Puts ("Kompetter-X", &Font_11x18, 1);
-  SSD1306_GotoXY (0, 20);
-  SSD1306_Puts ("v.02", &Font_7x10, 1);
-  SSD1306_UpdateScreen();
-
-  HAL_Delay(1500);
-
-  SSD1306_Clear();
-  HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
-  SSD1306_GotoXY(0, 30);
-  SSD1306_Puts("Key: ", &Font_7x10, 1);
-  SSD1306_GotoXY(0, 40);
-  SSD1306_Puts("--  ", &Font_11x18, 1);
-
-  SSD1306_GotoXY(40, 30);
-  SSD1306_Puts("Magnet: ", &Font_7x10, 1);
-  SSD1306_GotoXY(40, 40);
-  SSD1306_Puts("--  ", &Font_11x18, 1);
-  SSD1306_UpdateScreen();
-
   keyboardScannerInit();
+  angleSensorInit(&hi2c2);
 
   HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
-  angleSensorInit(&hi2c2);
-  HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
+
+  uint8_t magnetPresent = AS5600_IsMagnetPresent(&hi2c2);
+
+  displayInit();
 
   while (1)
   {
       angleSensorScrollScan(&hi2c2);
       keyboardScan();
 
-      // Check if the HID report has changed for the keyboard
       if (usbHidkeyReportChanged()) {
           usbHidSendKeyboardReport();
-
-          // Update the OLED display
-          SSD1306_GotoXY(0, 40);
-          SSD1306_Puts(last_key, &Font_11x18, 1);
-          screenNotUpdated = 1;
       }
-
-      //Send Mouse HID report over USB
 
       if(smoothedAccumulator != 0){
           usbHidUpdateMouseReport(0, 0, (int8_t)smoothedAccumulator / 35, 0);
           usbHidSendMouseReport();
-
-          // Update the OLED display
-          screenNotUpdated = 1;
       }
 
-      if(screenNotUpdated == 1){
-          SSD1306_UpdateScreen();
-          screenNotUpdated = 0;
-      }
+      displayUpdate(last_key, currentEncoderVal, smoothedAccumulator, magnetPresent);
   }
-
 }
 
 void SystemClock_Config(void)
