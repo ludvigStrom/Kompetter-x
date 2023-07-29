@@ -5,6 +5,7 @@
 #include "keyboardScanner.h"
 #include "usbHidReport.h"
 #include "displayManager.h"
+#include "shared_data.h"
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
@@ -48,21 +49,32 @@ int main(void)
   HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
 
   while (1)
-  {
-      angleSensorScrollScan(&hi2c2);
-      keyboardScan();
+	{
+		angleSensorScrollScan(&hi2c2);
+		keyboardScan();
 
-      if (usbHidkeyReportChanged()) {
-          usbHidSendKeyboardReport();
-      }
+		if (usbHidkeyReportChanged()) {
+			usbHidSendKeyboardReport();
+		}
 
-      if(smoothedAccumulator != 0){
-          usbHidUpdateMouseReport(0, 0, (int8_t)smoothedAccumulator / 35, 0);
-          usbHidSendMouseReport();
-      }
+		if(smoothedAccumulator != 0){
+			usbHidUpdateMouseReport(0, 0, (int8_t)smoothedAccumulator / 35, 0);
+			usbHidSendMouseReport();
+		}
 
-      displayUpdate(last_key, lastEncoderVal, smoothedAccumulator, magnetPresent);
-  }
+		if (DataReceivedFlag){
+			// Process the data in SharedDataBuffer...
+
+			HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
+			HAL_Delay(100);
+			HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin); // Toggle state of LED
+
+			// Clear the flag
+			DataReceivedFlag = 0;
+		}
+
+		displayUpdate(last_key, lastEncoderVal, smoothedAccumulator, magnetPresent);
+	}
 }
 
 void SystemClock_Config(void)

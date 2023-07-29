@@ -27,6 +27,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include  "usbd_ioreq.h"
+#include "shared_data.h"
 
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
@@ -44,9 +45,13 @@ extern "C" {
 #define HID_EPIN_ADDR                              0x81U
 #define HID_EPIN_SIZE                              0x04U
 
+//MY OUT EVENT ENDPOINT
+#define HID_EPOUT_ADDR                             0x01U
+#define HID_EPOUT_SIZE                             0x40U
+
 #define USB_HID_CONFIG_DESC_SIZ                    34U
 #define USB_HID_DESC_SIZ                           9U
-#define HID_MOUSE_REPORT_DESC_SIZE                 141U
+#define HID_MOUSE_REPORT_DESC_SIZE                 170U//141U
 
 #define HID_DESCRIPTOR_TYPE                        0x21U
 #define HID_REPORT_DESC                            0x22U
@@ -81,6 +86,13 @@ typedef enum
   HID_BUSY,
 } HID_StateTypeDef;
 
+typedef struct
+{
+  uint32_t             Protocol;
+  uint32_t             IdleState;
+  uint32_t             AltSetting;
+  uint8_t              OutBuff[64 + 1]; // Buffer for Out data
+} HID_HandleTypeDef;
 
 typedef struct
 {
@@ -88,6 +100,7 @@ typedef struct
   uint32_t IdleState;
   uint32_t AltSetting;
   HID_StateTypeDef state;
+  uint8_t OutBuff[HID_EPOUT_SIZE + 1];
 } USBD_HID_HandleTypeDef;
 /**
   * @}

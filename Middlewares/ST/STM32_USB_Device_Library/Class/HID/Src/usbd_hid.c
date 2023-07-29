@@ -46,6 +46,7 @@ EndBSPDependencies */
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_hid.h"
 #include "usbd_ctlreq.h"
+#include "shared_data.h"
 
 
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
@@ -91,6 +92,7 @@ static uint8_t USBD_HID_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx);
 static uint8_t USBD_HID_DeInit(USBD_HandleTypeDef *pdev, uint8_t cfgidx);
 static uint8_t USBD_HID_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req);
 static uint8_t USBD_HID_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum);
+static uint8_t USBD_HID_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum);
 
 static uint8_t *USBD_HID_GetFSCfgDesc(uint16_t *length);
 static uint8_t *USBD_HID_GetHSCfgDesc(uint16_t *length);
@@ -113,7 +115,7 @@ USBD_ClassTypeDef USBD_HID =
   NULL,              /* EP0_TxSent */
   NULL,              /* EP0_RxReady */
   USBD_HID_DataIn,   /* DataIn */
-  NULL,              /* DataOut */
+  USBD_HID_DataOut,  /* DataOut */
   NULL,              /* SOF */
   NULL,
   NULL,
@@ -385,7 +387,22 @@ __ALIGN_BEGIN static uint8_t HID_MOUSE_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE] __
 	0x22,   0x75,
 	0x06,   0x95,
 	0x01,   0xb1,
-	0x01,   0xc0
+	0x01,   0xc0,
+
+	0x06, 0x00, 0xff, 	// Usage Page (Vendor Defined Page 1)
+	0x09, 0x01, 		//  Usage (Vendor Usage 1)
+	0xa1, 0x01, 		// Collection (Application)
+	0x85, 0x03, 		// Report ID (3)
+	0x15, 0x00, 		// Logical Minimum (0)
+	0x26, 0xff, 0x00, 	// Logical Maximum (255)
+	0x75, 0x08, 		// Report Size (8 bits)
+	0x95, 0x40, 		// Report Count (64, so the report size will be 64 bytes)
+	0x09, 0x01, 		// Usage (Vendor Usage 1)
+	0x91, 0x02, 		// Output (Data, Variable, Absolute)
+	0x95, 0x01, 		// Report Count (1, for the next item)
+	0x09, 0x01, 		// Usage (Vendor Usage 1)
+	0xb1, 0x02, 		// Feature (Data, Variable, Absolute)
+	0xc0
 };
 
 
@@ -432,6 +449,13 @@ static uint8_t USBD_HID_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
   /* Open EP IN */
   (void)USBD_LL_OpenEP(pdev, HID_EPIN_ADDR, USBD_EP_TYPE_INTR, HID_EPIN_SIZE);
   pdev->ep_in[HID_EPIN_ADDR & 0xFU].is_used = 1U;
+
+  /* Open EP OUT */
+  (void)USBD_LL_OpenEP(pdev, HID_EPOUT_ADDR, USBD_EP_TYPE_INTR, HID_EPOUT_SIZE);
+  pdev->ep_out[HID_EPOUT_ADDR & 0xFU].is_used = 1U;
+
+  /* Prepare Out endpoint to receive next packet */
+  (void)USBD_LL_PrepareReceive(pdev, HID_EPOUT_ADDR, hhid->OutBuff, HID_EPOUT_SIZE);
 
   hhid->state = HID_IDLE;
 
@@ -694,6 +718,7 @@ static uint8_t *USBD_HID_GetOtherSpeedCfgDesc(uint16_t *length)
   * @param  epnum: endpoint index
   * @retval status
   */
+
 static uint8_t USBD_HID_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
   UNUSED(epnum);
@@ -704,6 +729,18 @@ static uint8_t USBD_HID_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
   return (uint8_t)USBD_OK;
 }
 
+//DATA INPUT FROM HOST
+static uint8_t  USBD_HID_DataOut (USBD_HandleTypeDef *pdev, uint8_t epnum){
+  HID_HandleTypeDef *hhid = (HID_HandleTypeDef*)pdev->pClassData;
+
+  /* Get the received data length */
+  hhid->OutBuff[0] = USBD_GetRxCount(pdev, epnum);
+
+  /* Provide the buffer pointer to the next layer */
+  USBD_LL_PrepareReceive(pdev, HID_EPOUT_ADDR , hhid->OutBuff,HID_EPOUT_SIZE);
+
+  return USBD_OK;
+}
 
 /**
   * @brief  DeviceQualifierDescriptor

@@ -28,7 +28,7 @@ Key keycode_map[NUM_ROWS][NUM_COLS] = {
     {
         {KEY_M, NULL, 0, 0},
         {KEY_N, NULL, 0, MOD_LEFT_SHIFT},
-        {KEY_O, (uint8_t[]){KEY_A, KEY_B}, 2, 0},
+        {KEY_A, (uint8_t[]){KEY_S, KEY_S, KEY_W}, 3, 0},
         {KEY_D, NULL, 0, MOD_LEFT_CTRL | MOD_LEFT_SHIFT}
     }
 };
